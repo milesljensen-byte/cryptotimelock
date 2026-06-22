@@ -16,6 +16,7 @@ const MAX_LOCK_SECONDS = 315360000;     // 10 years   (largest preset)
 let durMode = 'preset';                 // 'preset' | 'date'
 let selMs   = null;                     // chosen preset duration (ms)
 let lockTick = null;                    // setInterval handle for live vault bars
+let datePicker = null;                  // flatpickr instance for the custom date picker
 
 // ─── CONNECT LIFECYCLE ───────────────────────────────
 async function onConnected(){
@@ -243,9 +244,17 @@ function getUnlockSeconds(){
     if(!selMs) return null;
     return Math.floor((Date.now()+selMs)/1000);
   } else {
-    const v=document.getElementById('date').value;
-    if(!v) return null;
-    const ts=Math.floor(new Date(v).getTime()/1000);
+    // Prefer the flatpickr instance's parsed Date; fall back to the raw input
+    // value (native datetime-local) if the picker didn't load.
+    let d=null;
+    if(datePicker && datePicker.selectedDates && datePicker.selectedDates[0]){
+      d=datePicker.selectedDates[0];
+    } else {
+      const v=document.getElementById('date').value;
+      if(v) d=new Date(v);
+    }
+    if(!d) return null;
+    const ts=Math.floor(d.getTime()/1000);
     if(!ts || ts*1000<=Date.now()) return null;
     return ts;
   }
@@ -605,7 +614,7 @@ async function doLock(){
     document.getElementById('amount').value='';
     selMs=null;
     document.querySelectorAll('#presets .preset').forEach(p=>p.classList.remove('on'));
-    const dEl=document.getElementById('date'); if(dEl) dEl.value='';
+    if(datePicker) datePicker.clear(); else { const dEl=document.getElementById('date'); if(dEl) dEl.value=''; }
     showLockAnim('done');
     setApprovalStep(0);
     showOk('✓ '+currentSymbol+' locked successfully!');
@@ -697,12 +706,32 @@ function initApp(){
   });
   const dateEl=document.getElementById('date');
   if(dateEl){
-    dateEl.addEventListener('input',updateSummary);
-    const toLocal=d=>new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
     const min=new Date(Date.now()+MIN_LOCK_SECONDS*1000); min.setSeconds(0,0);
     const max=new Date(Date.now()+MAX_LOCK_SECONDS*1000); max.setSeconds(0,0);
-    dateEl.min=toLocal(min);
-    dateEl.max=toLocal(max);
+    if(typeof flatpickr!=='undefined'){
+      // Clean custom calendar (themed in style.css). On real phones flatpickr
+      // falls back to the native iOS/Android wheel picker automatically.
+      datePicker=flatpickr(dateEl,{
+        enableTime:true,
+        time_24hr:true,
+        minuteIncrement:5,
+        minDate:min,
+        maxDate:max,
+        dateFormat:'M j, Y · H:i',
+        appendTo:document.body,   // escape the form card's overflow:hidden
+        position:'auto',
+        onChange:updateSummary,
+        onClose:updateSummary
+      });
+    } else {
+      // Fallback: native datetime-local if the picker library didn't load
+      dateEl.removeAttribute('readonly');
+      dateEl.type='datetime-local';
+      dateEl.addEventListener('input',updateSummary);
+      const toLocal=d=>new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+      dateEl.min=toLocal(min);
+      dateEl.max=toLocal(max);
+    }
   }
 
   // Lock button

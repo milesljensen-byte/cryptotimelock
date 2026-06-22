@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -544,7 +545,7 @@
         <button class="preset" type="button" data-ms="315360000000">10 years</button>
       </div>
       <div class="datebox" id="datebox">
-        <input class="control" id="date" type="datetime-local"/>
+        <input class="control" id="date" type="text" placeholder="Select unlock date &amp; time" readonly/>
         <div class="date-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>Pick any time between 10 minutes and 10 years from now.</div>
       </div>
     </div>
@@ -693,6 +694,9 @@ if (typeof ethers === 'undefined') {
   });
 }
 </script>
+
+<!-- flatpickr — custom date/time picker for the lock duration -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 
 <script src="js/config.js"></script>
 <script src="js/wallet.js"></script>

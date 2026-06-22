@@ -479,10 +479,12 @@
   .flatpickr-calendar.arrowBottom:before,.flatpickr-calendar.arrowBottom:after{display:none}
   .flatpickr-months{padding:6px 4px 2px;align-items:center}
   .flatpickr-months .flatpickr-month{color:var(--ink);height:auto}
-  .flatpickr-current-month{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;padding-top:2px}
-  .flatpickr-current-month .flatpickr-monthDropdown-months{font-family:'Syne',sans-serif;font-weight:700;color:var(--ink);background:transparent}
-  .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month{background:var(--bg-elev);color:var(--ink)}
-  .flatpickr-current-month input.cur-year{color:var(--ink);font-weight:700}
+  .flatpickr-current-month{font-family:'Syne',sans-serif;font-weight:700;font-size:1.02rem;padding-top:4px;color:var(--ink)}
+  .flatpickr-current-month span.cur-month{color:var(--ink);font-weight:700}
+  .flatpickr-current-month span.cur-month:hover{background:rgba(201,168,76,.1)}
+  .flatpickr-current-month .numInputWrapper{color:var(--ink)}
+  .flatpickr-current-month input.cur-year{color:var(--ink);font-weight:700;background:transparent}
+  .flatpickr-current-month input.cur-year:hover{background:rgba(201,168,76,.1)}
   .numInputWrapper span.arrowUp:after{border-bottom-color:var(--gold)}
   .numInputWrapper span.arrowDown:after{border-top-color:var(--gold)}
   .numInputWrapper:hover{background:rgba(201,168,76,.08)}

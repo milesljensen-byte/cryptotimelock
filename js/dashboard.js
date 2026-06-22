@@ -712,25 +712,23 @@ function initApp(){
       // Clean custom calendar (themed in style.css). On real phones flatpickr
       // falls back to the native iOS/Android wheel picker automatically.
       datePicker=flatpickr(dateEl,{
-        enableTime:true,
-        time_24hr:true,
-        minuteIncrement:5,
         minDate:min,
         maxDate:max,
-        dateFormat:'M j, Y · H:i',
-        appendTo:document.body,   // escape the form card's overflow:hidden
+        dateFormat:'M j, Y',          // date only — e.g. "Jun 22, 2026"
+        monthSelectorType:'static',   // show "Month Year" as plain text in the header
+        appendTo:document.body,       // escape the form card's overflow:hidden
         position:'auto',
         onChange:updateSummary,
         onClose:updateSummary
       });
     } else {
-      // Fallback: native datetime-local if the picker library didn't load
+      // Fallback: native date input if the picker library didn't load
       dateEl.removeAttribute('readonly');
-      dateEl.type='datetime-local';
+      dateEl.type='date';
       dateEl.addEventListener('input',updateSummary);
-      const toLocal=d=>new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
-      dateEl.min=toLocal(min);
-      dateEl.max=toLocal(max);
+      const toDate=d=>new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+      dateEl.min=toDate(min);
+      dateEl.max=toDate(max);
     }
   }
 

@@ -164,8 +164,10 @@ let acct=null, prov=null, cont=null, locks=[];
 
 // ── ALCHEMY READ RPC — all reads + tx polling go direct, only signing uses wallet ──
 // MEDIUM FIX: renamed from ANKR_RPC (was mislabelled — this is an Alchemy endpoint).
-// ⚠️  REPLACE THIS KEY before deploying — the original is exposed in source and should be rotated.
-const ALCHEMY_RPC = 'https://eth-mainnet.g.alchemy.com/v2/xZcr6nckHwQrCNToAxzKk';
+// ⚠️  This key is visible in client-side source by design (static site). It MUST have
+//    an HTTP referrer / domain allowlist set in the Alchemy dashboard (cryptotimelock.xyz),
+//    otherwise anyone who copies it can use it from anywhere on your account's dime.
+const ALCHEMY_RPC = 'https://eth-mainnet.g.alchemy.com/v2/bCL4dfF5rTmgrc-lKLMpe';
 // Runtime guard — warn if the Alchemy key is still a placeholder.
 if(ALCHEMY_RPC.includes('REPLACE_WITH_YOUR_KEY')){
   console.warn('[TimeLock] ALCHEMY_RPC is not configured. Replace the placeholder key in the JS config section before deploying.');

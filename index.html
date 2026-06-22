@@ -309,18 +309,34 @@
   <!-- STATS -->
   <div class="stats">
     <div class="stat">
-      <div class="lab">Active locks</div>
+      <div class="stat-top">
+        <span class="stat-ico"><svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg></span>
+        <div class="lab">Active locks</div>
+      </div>
       <div class="val" id="stat-active">0</div>
     </div>
     <div class="stat">
-      <div class="lab">Total locked</div>
+      <div class="stat-top">
+        <span class="stat-ico"><svg viewBox="0 0 24 24"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span>
+        <div class="lab">Total locked</div>
+      </div>
       <div class="val plain" id="stat-total">&mdash;</div>
     </div>
     <div class="stat">
-      <div class="lab">Next unlock</div>
+      <div class="stat-top">
+        <span class="stat-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+        <div class="lab">Next unlock</div>
+      </div>
       <div class="val plain" id="stat-next" style="font-size:1.5rem">&mdash;</div>
     </div>
   </div>
+
+    <!-- ADMIN TOGGLE — only shown to admins; reveals the panel on click -->
+    <button id="adminToggle" type="button" class="admin-toggle" onclick="toggleAdminPanel()" style="display:none">
+      <span class="at-ico"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5c0 4.4 3.1 8.3 7.5 9.5 4.4-1.2 7.5-5.1 7.5-9.5V6z"/><path d="M9.2 12.2l2 2 3.6-4"/></svg></span>
+      <span class="at-label">Show admin panel</span>
+      <svg class="at-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
 
     <div id="adminPanel" style="display:none">
       <div class="form-card" style="border-color:rgba(212,168,67,.25);margin-bottom:1.75rem">

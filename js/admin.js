@@ -11,10 +11,16 @@ async function checkAdmin(){
                           && acct.toLowerCase()===pendingFeeAddr.toLowerCase();
 
     if(!isFee && !isOwner && !isGuardian && !isPendingFee){
-      document.getElementById('adminPanel').style.display='none'; return;
+      document.getElementById('adminPanel').style.display='none';
+      const t=document.getElementById('adminToggle'); if(t) t.style.display='none';
+      return;
     }
 
-    document.getElementById('adminPanel').style.display='block';
+    // Reveal the toggle button (admins only). The panel itself stays collapsed
+    // until the user clicks it — see toggleAdminPanel(). Sub-sections below are
+    // still populated so the content is ready the moment it's expanded.
+    const adminToggle=document.getElementById('adminToggle');
+    if(adminToggle) adminToggle.style.display='flex';
 
     // Owner-only controls: emergency pause + token allowlist
     document.getElementById('pauseSection').style.display      = isOwner ? '' : 'none';
@@ -38,6 +44,17 @@ async function checkAdmin(){
     if(isPendingFee){ await loadPendingFeeRecipientStatus(); }
     if(isOwner || isGuardian){ await loadRecoveryStatus(); }
   }catch(e){console.error(e)}
+}
+
+// Expand / collapse the admin panel from the "Show admin panel" toggle.
+function toggleAdminPanel(){
+  const panel=document.getElementById('adminPanel');
+  const btn=document.getElementById('adminToggle');
+  if(!panel||!btn) return;
+  const open=btn.classList.toggle('open');
+  panel.style.display = open ? 'block' : 'none';
+  const label=btn.querySelector('.at-label');
+  if(label) label.textContent = open ? 'Hide admin panel' : 'Show admin panel';
 }
 
 // ─── PAUSE ───────────────────────────────────────────

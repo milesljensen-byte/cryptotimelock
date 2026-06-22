@@ -95,6 +95,13 @@ function disconnectWallet(){
   if(lockTick){ clearInterval(lockTick); lockTick=null; }
   document.getElementById('walletMenu').style.display='none';
   document.getElementById('adminPanel') && (document.getElementById('adminPanel').style.display='none');
+  // Reset the admin reveal toggle back to hidden + collapsed
+  const adminToggle=document.getElementById('adminToggle');
+  if(adminToggle){
+    adminToggle.style.display='none';
+    adminToggle.classList.remove('open');
+    const al=adminToggle.querySelector('.at-label'); if(al) al.textContent='Show admin panel';
+  }
   document.getElementById('pausedBanner').style.display='none';
   setConnectedUI(false);
   // Reset token select + lists to the disconnected placeholder state
@@ -106,7 +113,7 @@ function disconnectWallet(){
   document.getElementById('vcount').textContent='0 locks';
   document.getElementById('stat-active').textContent='0';
   document.getElementById('stat-total').textContent='—';
-  document.getElementById('stat-next').textContent='—';
+  setNextUnlock('—');
   updateSummary();
   showOk('Wallet disconnected');
 }
@@ -303,7 +310,15 @@ function renderStats(){
   }
 
   const next=active.filter(l=>!l.canWithdraw).sort((a,b)=>a.unlockTime-b.unlockTime)[0];
-  document.getElementById('stat-next').textContent = next ? relTime(next.unlockTime*1000-Date.now()) : (active.length?'Ready':'—');
+  setNextUnlock(next ? relTime(next.unlockTime*1000-Date.now()) : (active.length?'Ready':'—'));
+}
+
+// Writes the "next unlock" stat and greens it out when something is ready now.
+function setNextUnlock(text){
+  const el=document.getElementById('stat-next');
+  if(!el) return;
+  el.textContent=text;
+  el.classList.toggle('ready', text==='Ready');
 }
 
 // ─── ACTIVE-LOCK LIMIT UI ────────────────────────────
@@ -518,8 +533,7 @@ function tickLocks(){
   // refresh "next unlock" stat live
   const active=locks.filter(l=>l.withdrawn!==true&&l.withdrawn!=='true'&&parseFloat(l.amount)>0);
   const next=active.filter(l=>!l.canWithdraw).sort((a,b)=>a.unlockTime-b.unlockTime)[0];
-  const nEl=document.getElementById('stat-next');
-  if(nEl) nEl.textContent = next ? relTime(next.unlockTime*1000-Date.now()) : (active.length?'Ready':'—');
+  setNextUnlock(next ? relTime(next.unlockTime*1000-Date.now()) : (active.length?'Ready':'—'));
 }
 
 // ─── LOCK ────────────────────────────────────────────

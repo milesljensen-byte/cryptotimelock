@@ -467,7 +467,7 @@
   .empty .ico{font-size:2.6rem;display:block;margin-bottom:16px;opacity:.8}
   .empty p{color:var(--muted);font-family:'Space Mono';font-size:.9rem}
 
-  .vault-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr));gap:18px}
+  .vault-list{display:grid;gap:18px}
   .vcard{position:relative;border-radius:22px;padding:28px 30px 26px;overflow:hidden;
     background:linear-gradient(158deg,rgba(30,25,15,.97),rgba(14,11,7,.98));
     border:1px solid rgba(201,168,76,.3);
@@ -494,7 +494,7 @@
   .vstatus.withdrawn .vc-dot{background:rgba(242,237,227,.4);animation:none;box-shadow:none}
 
   /* past (withdrawn) locks — collapsed behind a toggle */
-  .past-toggle{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  .past-toggle{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
     margin-top:4px;padding:14px 20px;cursor:pointer;border-radius:14px;
     background:rgba(20,16,9,.4);border:1px solid var(--line-soft);
     font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.1em;
@@ -504,7 +504,7 @@
   .past-toggle .pt-chev{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;
     stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease}
   .past-toggle[aria-expanded="true"] .pt-chev{transform:rotate(180deg)}
-  .past-list{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr));gap:18px}
+  .past-list{display:grid;gap:18px}
   .past-list[hidden]{display:none}
 
   .vc-amount{display:flex;align-items:baseline;gap:12px}
@@ -640,7 +640,7 @@
   .vstatus.withdrawn{color:var(--muted);background:rgba(242,237,227,.05);border:1px solid var(--line-soft)}
   .vdates b{display:block;margin-top:3px}
   .pct{color:var(--muted)}
-  .loading-row{grid-column:1/-1;font-family:'Space Mono';font-size:.84rem;color:var(--muted);padding:26px 4px}
+  .loading-row{font-family:'Space Mono';font-size:.84rem;color:var(--muted);padding:26px 4px}
 
   /* ---------- withdrawn cards: kill all glow/shine, fully inert ---------- */
   .vcard.spent{box-shadow:0 10px 24px rgba(0,0,0,.4)!important}
@@ -1664,17 +1664,13 @@ if(ALCHEMY_RPC.includes('REPLACE_WITH_YOUR_KEY')){
 let readProv = null;
 let readCont = null;
 
-// waitForTx — polls via Alchemy direct instead of the wallet relay.
-// Checks immediately (in case the tx is already mined), then every 1.5s. This
-// only trims detection lag *after* a block is mined — it cannot speed up block
-// inclusion itself, which is set by the network.
+// waitForTx — polls via Alchemy direct instead of the wallet relay
 async function waitForTx(tx){
   const rp = readProv || prov;
   let receipt = null;
   while(!receipt){
+    await new Promise(r=>setTimeout(r, 2000));
     try{ receipt = await rp.getTransactionReceipt(tx.hash); }catch(e){}
-    if(receipt) break;
-    await new Promise(r=>setTimeout(r, 1500));
   }
   return receipt;
 }
@@ -3289,7 +3285,8 @@ async function doLock(){
     showLockAnim('done');
     setApprovalStep(0);
     showOk('✓ '+currentSymbol+' locked successfully!');
-    await Promise.all([loadTokenBalances(), loadLocks()]);
+    await loadTokenBalances();
+    await loadLocks();
     updateSummary();
   }catch(e){ showErr(e.reason||e.message); showLockAnim('hide'); setApprovalStep(0); }
   finally{
@@ -3320,7 +3317,8 @@ async function doWithdraw(id){
     await waitForTx(tx);
     showLockAnim('withdraw-done');
     showOk('✓ Withdrawal successful!');
-    await Promise.all([loadTokenBalances(), loadLocks()]);
+    await loadTokenBalances();
+    await loadLocks();
     syncTokenLabels();
   }catch(e){
     showErr(e.reason||e.message);

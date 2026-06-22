@@ -168,6 +168,8 @@ async function connectWalletConnect(){
     wcProvider = await EthereumProvider.init({
       projectId: WC_PROJECT_ID,
       optionalChains: [1],
+      optionalMethods: ['eth_sendTransaction','eth_signTransaction','personal_sign','eth_sign','eth_signTypedData','eth_signTypedData_v4','wallet_switchEthereumChain','wallet_addEthereumChain'],
+      optionalEvents: ['chainChanged','accountsChanged'],
       showQrModal: true,
       qrModalOptions: { themeMode: 'dark' },
       metadata: {

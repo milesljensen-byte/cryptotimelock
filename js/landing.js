@@ -136,7 +136,7 @@ else { wireViewNav(); }
     const m=document.getElementById('terms-modal');
     const open=()=>{m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';};
     const close=()=>{m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow='';};
-    document.getElementById('open-terms').addEventListener('click',open);
+    document.querySelectorAll('.js-open-terms').forEach(el=>el.addEventListener('click',open));
     m.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',close));
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('open'))close();});
   })();

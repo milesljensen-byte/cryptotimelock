@@ -263,7 +263,11 @@
     border:1px solid var(--line-soft);transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s,border-color .35s;
   }
   .use:hover{transform:translateY(-5px);background:rgba(24,19,9,.85);border-color:var(--line)}
-  .use .emoji{font-size:1.7rem;display:block;margin-bottom:16px;filter:saturate(.9)}
+  .use-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:18px;
+    background:linear-gradient(150deg,rgba(201,168,76,.18),rgba(201,168,76,.04));border:1px solid var(--line)}
+  .use-ic svg{width:23px;height:23px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .use-ic svg .pip{fill:var(--gold-bright);stroke:none}
+  .use:hover .use-ic{border-color:rgba(201,168,76,.4)}
   .use h4{font-family:'Syne';font-weight:700;font-size:1.08rem;margin-bottom:8px}
   .use p{color:var(--muted);font-size:.94rem}
 
@@ -385,7 +389,8 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
 
   /* nav */
-  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:linear-gradient(to bottom,rgba(12,10,8,.92),rgba(12,10,8,.55));border-bottom:1px solid var(--line-soft)}
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:linear-gradient(to bottom,rgba(12,10,8,.92),rgba(12,10,8,.55));border-bottom:1px solid var(--line-soft);transition:background .3s ease,border-color .3s ease,box-shadow .3s ease}
+  body.nav-scrolled nav{background:rgba(12,10,8,.97);border-bottom-color:var(--line);box-shadow:0 10px 34px -18px rgba(0,0,0,.85)}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
   .brand{display:flex;align-items:center;gap:11px;font-family:'Syne';font-weight:700;font-size:1.22rem;letter-spacing:.02em;color:var(--ink);text-decoration:none}
   .brand-mark{width:26px;height:26px}
@@ -615,13 +620,12 @@
   .use-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   .use{padding:28px 24px;border-radius:18px;background:rgba(20,16,9,.5);border:1px solid var(--line-soft);transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s,border-color .35s}
   .use:hover{transform:translateY(-5px);background:rgba(24,19,9,.85);border-color:var(--line)}
-  .use .emoji{font-size:1.6rem;display:block;margin-bottom:14px}
+  .use.signature .use-ic{margin:0 0 14px}
   .use h4{font-family:'Syne';font-weight:700;font-size:1.04rem;margin-bottom:7px}
   .use p{color:var(--muted);font-size:.92rem}
   /* signature tile — centred, matches sibling card padding/height */
   .use.signature{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;
     background:linear-gradient(150deg,rgba(201,168,76,.12),transparent);border-color:var(--line)}
-  .use.signature .emoji{margin:0 0 12px}
   .use.signature h4{font-family:'Space Mono';font-weight:700;font-size:.84rem;letter-spacing:.06em;
     color:var(--gold-bright);line-height:1.5;margin:0}
 

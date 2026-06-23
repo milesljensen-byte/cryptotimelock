@@ -140,4 +140,11 @@ else { wireViewNav(); }
     m.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',close));
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('open'))close();});
   })();
+
+  // Solidify the nav (stronger bg + subtle shadow) once the page is scrolled.
+  (function(){
+    const onScroll=()=>document.body.classList.toggle('nav-scrolled', window.scrollY > 12);
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  })();
 })();

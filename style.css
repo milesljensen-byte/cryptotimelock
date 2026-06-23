@@ -13,7 +13,7 @@
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;color-scheme:dark}
+  html{scroll-behavior:smooth;color-scheme:dark;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.38) transparent}
   body{
     background:var(--bg);
     color:var(--ink);
@@ -24,6 +24,14 @@
     overflow-x:hidden;
     position:relative;
   }
+
+  /* on-brand text selection + page scrollbar */
+  ::selection{background:rgba(201,168,76,.26);color:var(--ink)}
+  ::-moz-selection{background:rgba(201,168,76,.26);color:var(--ink)}
+  ::-webkit-scrollbar{width:11px;height:11px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(201,168,76,.30);border-radius:9px;border:3px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(201,168,76,.52);background-clip:content-box}
 
   /* ambient aurora + grain */
   .aurora{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
@@ -190,6 +198,7 @@
 
   /* ---------- section frame ---------- */
   section.block{padding:96px 0;position:relative}
+  section.block[id]{scroll-margin-top:92px} /* keep heading clear of the sticky nav on anchor jumps */
   .sec-head{margin-bottom:54px;max-width:46em}
   .sec-eyebrow{font-family:'Space Mono';font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
   h2{font-family:'Syne';font-weight:700;font-size:clamp(2rem,4vw,3.1rem);letter-spacing:-.02em;line-height:1.05}
@@ -276,7 +285,10 @@
   .faq .ans p{color:var(--muted);padding:0 4px 26px;font-size:1rem;max-width:60em}
 
   /* ---------- CTA ---------- */
-  .final-cta{text-align:center;padding:110px 0 100px}
+  .final-cta{text-align:center;padding:110px 0 100px;position:relative}
+  .final-cta::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:680px;height:420px;max-width:92vw;border-radius:50%;pointer-events:none;z-index:-1;
+    background:radial-gradient(50% 50% at 50% 50%,rgba(201,168,76,.10),transparent 70%);filter:blur(22px)}
   .final-cta h2{margin-bottom:18px}
   .final-cta p{color:var(--muted);max-width:30em;margin:0 auto 34px;font-size:1.1rem}
 

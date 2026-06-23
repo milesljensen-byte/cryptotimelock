@@ -101,12 +101,11 @@
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
   .eyebrow{
     font-family:'Space Mono';font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--gold);display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;
+    color:var(--gold);display:inline-flex;align-items:center;margin-bottom:24px;
   }
-  .eyebrow::before{content:"";width:26px;height:1px;background:var(--gold)}
   h1{
-    font-family:'Syne';font-weight:800;line-height:1.02;letter-spacing:-.02em;
-    font-size:clamp(2.7rem,6vw,4.6rem);margin-bottom:24px;
+    font-family:'Syne';font-weight:800;line-height:1.04;letter-spacing:-.02em;
+    font-size:clamp(2.4rem,5vw,3.85rem);margin-bottom:24px;
   }
   h1 .lit{
     background:linear-gradient(120deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
@@ -415,8 +414,7 @@
 
   /* page head */
   .page-head{padding:46px 0 8px}
-  .ph-eyebrow{font-family:'Space Mono';font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:10px;margin-bottom:14px}
-  .ph-eyebrow::before{content:"";width:24px;height:1px;background:var(--gold)}
+  .ph-eyebrow{font-family:'Space Mono';font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;margin-bottom:14px}
   .page-head h1{font-family:'Syne';font-weight:800;font-size:clamp(2rem,4.5vw,3rem);letter-spacing:-.02em}
 
   /* stats */

@@ -140,8 +140,8 @@ else { wireViewNav(); }
       card.classList.remove('lc-flip');
       void card.offsetWidth;              // restart the animation cleanly
       card.classList.add('lc-flip');
-      setTimeout(()=>{ idx=(idx+1)%EXAMPLES.length; applyExample(); }, 300); // swap at the tucked-away midpoint
-      setTimeout(()=>{ card.classList.remove('lc-flip'); flipping=false; }, 720);
+      setTimeout(()=>{ idx=(idx+1)%EXAMPLES.length; applyExample(); }, 450); // swap while it's at the back, behind the deck
+      setTimeout(()=>{ card.classList.remove('lc-flip'); flipping=false; }, 820);
     }
     card.addEventListener('mouseenter',nextExample);
     card.addEventListener('click',nextExample);

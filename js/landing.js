@@ -130,22 +130,21 @@ else { wireViewNav(); }
     }
     applyExample(); setInterval(tick,250);
 
-    // flip to the next example on hover (desktop) or tap (touch).
-    // The whole card is dealt off to the side and swung back; content is
-    // swapped at the midpoint while it's tucked away and faded, so you see
-    // a new card return rather than a static cross-fade.
-    let flipping=false;
-    function nextExample(){
-      if(flipping) return;
-      flipping=true;
-      card.classList.remove('lc-flip');
-      void card.offsetWidth;              // restart the animation cleanly
-      card.classList.add('lc-flip');
-      setTimeout(()=>{ idx=(idx+1)%EXAMPLES.length; applyExample(); }, 450); // swap while it's at the back, behind the deck
-      setTimeout(()=>{ card.classList.remove('lc-flip'); flipping=false; }, 820);
+    // Cycle through the examples automatically with a subtle content fade.
+    // Hovering or tapping the card also advances it and resets the timer.
+    let autoTimer=null;
+    function flip(){
+      idx=(idx+1)%EXAMPLES.length;
+      applyExample();
+      card.classList.remove('lc-swap');
+      void card.offsetWidth;              // restart the fade cleanly
+      card.classList.add('lc-swap');
     }
-    card.addEventListener('mouseenter',nextExample);
-    card.addEventListener('click',nextExample);
+    function scheduleAuto(){ clearInterval(autoTimer); autoTimer=setInterval(flip,4500); }
+    scheduleAuto();
+    function manualFlip(){ flip(); scheduleAuto(); }
+    card.addEventListener('mouseenter',manualFlip);
+    card.addEventListener('click',manualFlip);
 
     // ---- scroll advances the lock timeline ----
     // Range is measured against this card's own position, so the bar

@@ -124,7 +124,7 @@
   .lock-halo{position:absolute;width:540px;height:480px;border-radius:50%;z-index:0;
     background:radial-gradient(50% 50% at 50% 45%,rgba(201,168,76,.26),rgba(201,168,76,.05) 58%,transparent 74%);
     filter:blur(26px);animation:lockBreath 8s ease-in-out infinite}
-  .lock-stack{position:relative;z-index:2;width:432px;max-width:90vw;perspective:1300px;transform-style:preserve-3d}
+  .lock-stack{position:relative;z-index:2;width:432px;max-width:90vw}
   /* faint stacked cards behind = depth + hint of holding multiple locks */
   .lc-ghost{position:absolute;left:50%;transform:translateX(-50%);border-radius:22px;height:120px;
     background:linear-gradient(158deg,rgba(30,25,15,.7),rgba(14,11,7,.7));
@@ -137,16 +137,12 @@
   /* nudge the deck when the front card is hovered, hinting there's more behind */
   .lock-stack:hover .lc-ghost.g1{transform:translateX(-50%) translateY(-5px);opacity:1}
   .lock-stack:hover .lc-ghost.g2{transform:translateX(-50%) translateY(-10px);opacity:.7}
-  /* send the front card back behind the deck in 3D, then bring it forward
-     again showing the next example (content swapped at the back midpoint) */
-  @keyframes lcToBack{
-    0%  {transform:translateZ(0) translateY(0) rotateX(0deg);opacity:1}
-    26% {transform:translateZ(60px) translateY(8px) rotateX(-3deg);opacity:1}
-    50% {transform:translateZ(-180px) translateY(-30px) rotateX(10deg) scale(.97);opacity:.42}
-    60% {transform:translateZ(-180px) translateY(-30px) rotateX(10deg) scale(.97);opacity:.42}
-    100%{transform:translateZ(0) translateY(0) rotateX(0deg);opacity:1}
-  }
-  .lockcard.lc-flip{animation:lcToBack .82s cubic-bezier(.45,.05,.3,1);will-change:transform,opacity}
+  /* subtle content fade when switching to the next example */
+  @keyframes lcContentSwap{0%{opacity:0;transform:translateY(7px)}100%{opacity:1;transform:none}}
+  .lockcard.lc-swap .lc-amount,
+  .lockcard.lc-swap .lc-sub,
+  .lockcard.lc-swap .lc-count,
+  .lockcard.lc-swap .lc-dates{animation:lcContentSwap .42s cubic-bezier(.2,.8,.2,1)}
   .lockcard{position:relative;z-index:2;width:100%;padding:32px 32px 30px;cursor:pointer;
     border-radius:22px;
     background:linear-gradient(158deg,rgba(30,25,15,.97),rgba(14,11,7,.98));

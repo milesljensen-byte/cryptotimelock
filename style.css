@@ -493,7 +493,7 @@
   .flatpickr-calendar.arrowTop:before,.flatpickr-calendar.arrowTop:after,
   .flatpickr-calendar.arrowBottom:before,.flatpickr-calendar.arrowBottom:after{display:none}
   .flatpickr-months{padding:6px 4px 2px;align-items:center}
-  .flatpickr-months .flatpickr-month{color:var(--ink);height:auto}
+  .flatpickr-months .flatpickr-month{color:var(--ink)}
   .flatpickr-current-month{font-family:'Syne',sans-serif;font-weight:700;font-size:1.02rem;padding-top:4px;color:var(--ink)}
   .flatpickr-current-month span.cur-month{color:var(--ink);font-weight:700}
   .flatpickr-current-month span.cur-month:hover{background:rgba(201,168,76,.1)}

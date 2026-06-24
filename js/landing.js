@@ -111,14 +111,23 @@ else { wireViewNav(); }
       const outOfSight=Math.max(cardDocTop-navH,window.innerHeight*0.25);
       scrollRange=outOfSight*0.805;         // finish comfortably before it disappears (~15% slower pace)
     }
-    function onScroll(){
+    // rAF-batched: coalesce bursts of scroll events into one update per frame
+    // so the timeline advances smoothly in step with the screen's refresh.
+    let rafPending=false;
+    function applyScroll(){
+      rafPending=false;
       scrollFrac=Math.min(Math.max(window.scrollY/scrollRange,0),1);
       tick();
+    }
+    function onScroll(){
+      if(rafPending) return;
+      rafPending=true;
+      requestAnimationFrame(applyScroll);
     }
     computeScrollRange();
     window.addEventListener('resize',computeScrollRange);
     window.addEventListener('load',computeScrollRange);
-    window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+    window.addEventListener('scroll',onScroll,{passive:true}); applyScroll();
   })();
 
   // FAQ accordion
@@ -142,9 +151,20 @@ else { wireViewNav(); }
   })();
 
   // Solidify the nav (stronger bg + subtle shadow) once the page is scrolled.
+  // rAF-batched and only writes the class when the state actually changes,
+  // so it adds no per-scroll work that could stutter the timeline animation.
   (function(){
-    const onScroll=()=>document.body.classList.toggle('nav-scrolled', window.scrollY > 12);
-    window.addEventListener('scroll', onScroll, {passive:true});
-    onScroll();
+    let scrolled=false, rafPending=false;
+    function update(){
+      rafPending=false;
+      const s=window.scrollY>12;
+      if(s!==scrolled){ scrolled=s; document.body.classList.toggle('nav-scrolled', s); }
+    }
+    window.addEventListener('scroll',()=>{
+      if(rafPending) return;
+      rafPending=true;
+      requestAnimationFrame(update);
+    },{passive:true});
+    update();
   })();
 })();

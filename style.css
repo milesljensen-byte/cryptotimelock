@@ -174,7 +174,7 @@
   .lc-amount{display:flex;align-items:baseline;gap:13px;position:relative}
   .lc-amount .lc-ico{align-self:center;display:inline-flex;flex:0 0 auto}
   .lc-amount .eth{width:33px;height:33px;filter:drop-shadow(0 2px 6px rgba(201,168,76,.4))}
-  .lc-amount .coin{width:32px;height:32px;filter:drop-shadow(0 2px 6px rgba(201,168,76,.32))}
+  .lc-amount .coin{width:30px;height:30px;border-radius:50%;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
   .lc-eth-val{font:700 54px/1 'Syne',sans-serif;color:#F4ECDC;letter-spacing:-.01em}
   .lc-eth-unit{font:600 19px/1 'Space Mono',monospace;color:var(--gold);letter-spacing:.04em}
   .lc-sub{margin-top:12px;font:400 13px/1.4 'Inter',sans-serif;color:rgba(242,237,227,.5)}

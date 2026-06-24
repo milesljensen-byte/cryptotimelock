@@ -104,7 +104,7 @@
     color:var(--gold);display:inline-flex;align-items:center;margin-bottom:24px;
   }
   h1{
-    font-family:'Syne';font-weight:700;line-height:1.07;letter-spacing:-.015em;
+    font-family:'Syne',sans-serif;font-weight:750;line-height:1.07;letter-spacing:-.015em;
     font-size:clamp(2rem,4vw,3rem);margin-bottom:24px;
   }
   h1 .lit{

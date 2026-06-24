@@ -81,7 +81,7 @@ else { wireViewNav(); }
     let scrollFrac=0;                     // 0..1 from scroll position
     let wasDone=false;
 
-    function applyExample(animate){
+    function applyExample(){
       const ex=EXAMPLES[idx];
       TOTAL=ex.days*DAY;
       t0=Date.now();
@@ -96,7 +96,6 @@ else { wireViewNav(); }
       const end=new Date(start.getTime()+TOTAL*1000);
       if(sEl) sEl.textContent=fmt(start);
       if(eEl) eEl.textContent=fmt(end);
-      if(animate){ card.classList.remove('lc-swap'); void card.offsetWidth; card.classList.add('lc-swap'); }
       tick();
     }
 
@@ -128,16 +127,21 @@ else { wireViewNav(); }
       if(fill) fill.style.width=pct+'%';
       if(node) node.style.left=pct+'%';
     }
-    applyExample(false); setInterval(tick,250);
+    applyExample(); setInterval(tick,250);
 
-    // flip to the next example on hover (desktop) or tap (touch)
-    let lastFlip=0;
+    // flip to the next example on hover (desktop) or tap (touch).
+    // The whole card is dealt off to the side and swung back; content is
+    // swapped at the midpoint while it's tucked away and faded, so you see
+    // a new card return rather than a static cross-fade.
+    let flipping=false;
     function nextExample(){
-      const now=Date.now();
-      if(now-lastFlip<260) return;        // debounce rapid re-triggers
-      lastFlip=now;
-      idx=(idx+1)%EXAMPLES.length;
-      applyExample(true);
+      if(flipping) return;
+      flipping=true;
+      card.classList.remove('lc-flip');
+      void card.offsetWidth;              // restart the animation cleanly
+      card.classList.add('lc-flip');
+      setTimeout(()=>{ idx=(idx+1)%EXAMPLES.length; applyExample(); }, 300); // swap at the tucked-away midpoint
+      setTimeout(()=>{ card.classList.remove('lc-flip'); flipping=false; }, 720);
     }
     card.addEventListener('mouseenter',nextExample);
     card.addEventListener('click',nextExample);

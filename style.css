@@ -171,13 +171,13 @@
     background:rgba(255,255,255,.07);overflow:visible}
   .lc-fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px;width:8%;
     background:linear-gradient(90deg,var(--gold-deep),var(--gold),var(--gold-bright));
-    box-shadow:0 0 12px rgba(201,168,76,.5);transition:width .15s linear}
+    box-shadow:0 0 12px rgba(201,168,76,.5)}
   .lc-fill::after{content:"";position:absolute;inset:0;border-radius:5px;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
     background-size:60px 100%;animation:lockShimmer 2.6s linear infinite}
   .lc-node{position:absolute;top:50%;left:8%;width:13px;height:13px;border-radius:50%;
     transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,#F6E9BC,#C9A84C 60%,#8A6D2E);
-    box-shadow:0 0 0 4px rgba(201,168,76,.18),0 0 14px rgba(201,168,76,.7);transition:left .15s linear}
+    box-shadow:0 0 0 4px rgba(201,168,76,.18),0 0 14px rgba(201,168,76,.7)}
   .lc-dates{display:flex;justify-content:space-between;margin-top:14px;
     font:400 11px/1 'Space Mono',monospace;letter-spacing:.04em;color:rgba(242,237,227,.45)}
   .lc-dates b{color:rgba(242,237,227,.72);font-weight:700}

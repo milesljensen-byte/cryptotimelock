@@ -108,6 +108,7 @@
     font-size:clamp(2rem,4vw,3rem);margin-bottom:24px;
   }
   h1 .lit{
+    display:inline-block;margin-top:.22em;
     background:linear-gradient(120deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }

@@ -56,18 +56,50 @@ else { wireViewNav(); }
     const labelEl=card.querySelector('.lc-count-label');
     const statusEl=card.querySelector('.lc-status');
 
-    // ---- lock window: 365 days, set real dates ----
-    const TOTAL=365*24*3600;              // seconds in the lock
-    const start=new Date();
-    const end=new Date(start.getTime()+TOTAL*1000);
-    const fmt=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    // ---- example locks: a small deck you flip through on hover / tap ----
+    // Each example has its own token, amount and lock length. The live
+    // countdown and the scroll-driven timeline keep working against whichever
+    // one is currently showing.
+    const valEl=card.querySelector('.lc-eth-val');
+    const unitEl=card.querySelector('.lc-eth-unit');
+    const iconEl=document.getElementById('lcIcon');
     const sEl=document.getElementById('lcStart'), eEl=document.getElementById('lcEnd');
-    if(sEl) sEl.textContent=fmt(start);
-    if(eEl) eEl.textContent=fmt(end);
+    const fmt=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    const DAY=24*3600;
 
+    const ethSvg='<svg class="eth" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 0 L23 16 L12 22 L1 16 Z" fill="#E9D08A" opacity="0.95"/><path d="M12 0 L23 16 L12 22 Z" fill="#C9A84C"/><path d="M12 24 L23 18 L12 32 L1 18 Z" fill="#C9A84C" opacity="0.9"/><path d="M12 24 L23 18 L12 32 Z" fill="#8A6D2E"/></svg>';
+    const coin=s=>'<svg class="coin" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14.5" fill="rgba(201,168,76,.12)" stroke="#C9A84C" stroke-width="1.6"/><text x="16" y="21" text-anchor="middle" font-family="Space Mono, monospace" font-weight="700" font-size="15" fill="#E9D08A">'+s+'</text></svg>';
+    const EXAMPLES=[
+      {icon:ethSvg,    amount:'1.5',   unit:'ETH',  days:365},
+      {icon:coin('₮'), amount:'1,000', unit:'USDT', days:90},
+      {icon:coin('₿'), amount:'0.25',  unit:'WBTC', days:180}
+    ];
+
+    let idx=0;
+    let TOTAL=EXAMPLES[0].days*DAY;       // seconds in the current lock
+    let t0=Date.now();
     let scrollFrac=0;                     // 0..1 from scroll position
     let wasDone=false;
-    const t0=Date.now();
+
+    function applyExample(animate){
+      const ex=EXAMPLES[idx];
+      TOTAL=ex.days*DAY;
+      t0=Date.now();
+      wasDone=false;
+      card.classList.remove('lc-done');
+      if(labelEl) labelEl.textContent='Unlocks in';
+      if(statusEl) statusEl.innerHTML='<i class="lc-dot"></i> Active';
+      if(iconEl) iconEl.innerHTML=ex.icon;
+      if(valEl) valEl.textContent=ex.amount;
+      if(unitEl) unitEl.textContent=ex.unit;
+      const start=new Date();
+      const end=new Date(start.getTime()+TOTAL*1000);
+      if(sEl) sEl.textContent=fmt(start);
+      if(eEl) eEl.textContent=fmt(end);
+      if(animate){ card.classList.remove('lc-swap'); void card.offsetWidth; card.classList.add('lc-swap'); }
+      tick();
+    }
+
     function pad(n){return String(n).padStart(2,'0');}
     function tick(){
       const baseElapsed=(Date.now()-t0)/1000;        // real time passing — always ticks at a normal, constant pace
@@ -96,7 +128,19 @@ else { wireViewNav(); }
       if(fill) fill.style.width=pct+'%';
       if(node) node.style.left=pct+'%';
     }
-    tick(); setInterval(tick,250);
+    applyExample(false); setInterval(tick,250);
+
+    // flip to the next example on hover (desktop) or tap (touch)
+    let lastFlip=0;
+    function nextExample(){
+      const now=Date.now();
+      if(now-lastFlip<260) return;        // debounce rapid re-triggers
+      lastFlip=now;
+      idx=(idx+1)%EXAMPLES.length;
+      applyExample(true);
+    }
+    card.addEventListener('mouseenter',nextExample);
+    card.addEventListener('click',nextExample);
 
     // ---- scroll advances the lock timeline ----
     // Range is measured against this card's own position, so the bar

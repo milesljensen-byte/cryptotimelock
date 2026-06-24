@@ -128,12 +128,22 @@
   /* faint stacked cards behind = depth + hint of holding multiple locks */
   .lc-ghost{position:absolute;left:50%;transform:translateX(-50%);border-radius:22px;height:120px;
     background:linear-gradient(158deg,rgba(30,25,15,.7),rgba(14,11,7,.7));
-    border:1px solid rgba(201,168,76,.14);pointer-events:none}
+    border:1px solid rgba(201,168,76,.14);pointer-events:none;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s}
   .lc-ghost::before{content:"";position:absolute;top:0;left:24px;right:24px;height:1px;
     background:linear-gradient(90deg,transparent,rgba(233,208,138,.3),transparent)}
   .lc-ghost.g1{top:-16px;width:92%;opacity:.85}
   .lc-ghost.g2{top:-32px;width:84%;opacity:.55}
-  .lockcard{position:relative;z-index:2;width:100%;padding:32px 32px 30px;
+  /* nudge the deck when the front card is hovered, hinting there's more behind */
+  .lock-stack:hover .lc-ghost.g1{transform:translateX(-50%) translateY(-5px);opacity:1}
+  .lock-stack:hover .lc-ghost.g2{transform:translateX(-50%) translateY(-10px);opacity:.7}
+  /* quick content refresh when flipping to the next example */
+  @keyframes lcContentSwap{0%{opacity:0;transform:translateY(7px)}100%{opacity:1;transform:none}}
+  .lockcard.lc-swap .lc-amount,
+  .lockcard.lc-swap .lc-sub,
+  .lockcard.lc-swap .lc-count,
+  .lockcard.lc-swap .lc-dates{animation:lcContentSwap .42s cubic-bezier(.2,.8,.2,1)}
+  .lockcard{position:relative;z-index:2;width:100%;padding:32px 32px 30px;cursor:pointer;
     border-radius:22px;
     background:linear-gradient(158deg,rgba(30,25,15,.97),rgba(14,11,7,.98));
     border:1px solid rgba(201,168,76,.3);
@@ -158,7 +168,9 @@
     box-shadow:0 0 0 0 rgba(201,168,76,.5);animation:lockDot 2.4s ease-out infinite}
 
   .lc-amount{display:flex;align-items:baseline;gap:13px;position:relative}
-  .lc-amount .eth{width:33px;height:33px;align-self:center;filter:drop-shadow(0 2px 6px rgba(201,168,76,.4))}
+  .lc-amount .lc-ico{align-self:center;display:inline-flex;flex:0 0 auto}
+  .lc-amount .eth{width:33px;height:33px;filter:drop-shadow(0 2px 6px rgba(201,168,76,.4))}
+  .lc-amount .coin{width:32px;height:32px;filter:drop-shadow(0 2px 6px rgba(201,168,76,.32))}
   .lc-eth-val{font:700 54px/1 'Syne',sans-serif;color:#F4ECDC;letter-spacing:-.01em}
   .lc-eth-unit{font:600 19px/1 'Space Mono',monospace;color:var(--gold);letter-spacing:.04em}
   .lc-sub{margin-top:12px;font:400 13px/1.4 'Inter',sans-serif;color:rgba(242,237,227,.5)}

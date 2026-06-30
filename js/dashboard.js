@@ -575,7 +575,10 @@ async function doLock(){
       const sl=document.getElementById('laSubLabel'); if(sl) sl.textContent='Reconnecting to your wallet…';
       await ensureWcReady();
     }
-    const signer=await prov.getSigner();
+    // Over WalletConnect we send via sendContractTx (single eth_sendTransaction) and
+    // never need an ethers signer — calling getSigner() would fire eth_accounts and
+    // fail if the session dropped. Only resolve a signer for injected wallets.
+    const signer = wcProvider ? null : await prov.getSigner();
     let tx;
 
     if(!selectedToken){
@@ -583,7 +586,7 @@ async function doLock(){
       showLockAnim('locking');
       tx=await sendContractTx(cont, 'lockNative', [unlockTime], ethers.parseEther(amt.toString()));
     } else {
-      const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, signer);
+      const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, wcProvider ? readProv : signer);
       const amtWei=ethers.parseUnits(amt.toString(), selectedToken.decimals);
       const minAmt=getTokenMinimum(selectedToken.decimals);
       if(amtWei < minAmt){ showErr('Amount too low — minimum is '+formatMinimum(minAmt, selectedToken.decimals)+' '+selectedToken.symbol); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }

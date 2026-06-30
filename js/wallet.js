@@ -172,7 +172,9 @@ function handleWcDisconnect(){
   if(wcReloadTimer) return;
   wcReloadTimer = setTimeout(()=>{
     wcReloadTimer = null;
-    if(!wcProvider || !wcProvider.connected) location.reload();
+    // Reset only if the SESSION is actually gone (not just a relay-socket blip that
+    // recovered). A dead session can't sign, so a clean reconnect is required.
+    if(!wcProvider || !wcProvider.session) location.reload();
   }, 2500);
 }
 

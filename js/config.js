@@ -222,6 +222,11 @@ async function waitForTx(tx){
 // Returns an object with `.hash`, so waitForTx() works for both.
 async function sendContractTx(contract, method, args, value){
   if(wcProvider){
+    // If the WalletConnect session has died, fail with a clear, recoverable
+    // message instead of a cryptic deep-SDK "Please call connect()" error.
+    if(!wcProvider.session){
+      throw new Error('Your wallet session ended. Please reconnect your wallet and try again.');
+    }
     const to   = await contract.getAddress();
     const data = contract.interface.encodeFunctionData(method, args);
     const tx   = { from: acct, to, data };

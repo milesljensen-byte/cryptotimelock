@@ -85,6 +85,13 @@ function isUserRejection(e){
 function friendlyTxError(e){
   if(isUserRejection(e)) return null;
   const m = ((e && (e.reason || e.message)) || '').toLowerCase();
+  // WalletConnect session is gone (wallet closed it, or it expired). The user must
+  // reconnect — checked first so it isn't swallowed by the generic relay branch.
+  if(wcProvider && (m.includes('call connect') || m.includes('session ended') ||
+     m.includes('no matching key') || m.includes('session topic') ||
+     m.includes('reconnect') || m.includes('session currently'))){
+    return 'Your wallet session ended. Please reconnect your wallet (tap the wallet button at the top), then try again.';
+  }
   // WalletConnect: wallet was closed / request timed out / session went stale.
   // Reassure the user and point them to retry — nothing was lost.
   if(wcProvider && (m === '' || m.includes('expired') || m.includes('timeout') ||
@@ -111,6 +118,13 @@ function txErrorDetail(e){
   if(inner && (inner.message || inner.code!=null)) parts.push((inner.code!=null?inner.code+':':'')+(inner.message||''));
   if(!parts.length){ const m=(e.reason||e.message||''); if(m) parts.push(String(m).slice(0,160)); }
   return parts.length ? '  ·  ['+parts.join(' ')+']' : '';
+}
+
+// Standard transaction-failure handler: friendly message + technical detail, and
+// silent on a plain user cancel. Used by every admin/dashboard catch block.
+function txErr(e){
+  const m = friendlyTxError(e);
+  if(m) showErr(m + txErrorDetail(e));
 }
 
 function showLockAnim(state){

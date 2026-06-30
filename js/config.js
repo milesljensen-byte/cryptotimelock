@@ -212,6 +212,26 @@ async function waitForTx(tx){
   }
   return receipt;
 }
+
+// sendContractTx — submit a contract call as ONE eth_sendTransaction.
+// Over WalletConnect, letting ethers run its usual flow (getBlockNumber +
+// estimateGas + send + receipt polling, all through the relay) makes the WC
+// provider mis-correlate the rapid calls and reject with "Invalid Id". So for
+// WalletConnect we encode the call ourselves and send a single signing request,
+// doing any reads through Alchemy. Injected wallets keep the normal ethers path.
+// Returns an object with `.hash`, so waitForTx() works for both.
+async function sendContractTx(contract, method, args, value){
+  if(wcProvider){
+    const to   = await contract.getAddress();
+    const data = contract.interface.encodeFunctionData(method, args);
+    const tx   = { from: acct, to, data };
+    if(value && value > 0n) tx.value = '0x' + value.toString(16);
+    const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
+    return { hash };
+  }
+  const overrides = (value && value > 0n) ? { value } : {};
+  return await contract[method](...args, overrides);
+}
 // Max *active* (un-withdrawn) locks per user — must match the contract constant (50).
 const MAX_ACTIVE_LOCKS = 50;
 const LOCK_WARN_AT     = 40;

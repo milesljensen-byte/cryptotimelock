@@ -581,23 +581,24 @@ async function doLock(){
     if(!selectedToken){
       if(amt < 0.001){ showErr('Minimum 0.001 for native coin'); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }
       showLockAnim('locking');
-      tx=await cont.lockNative(unlockTime,{value:ethers.parseEther(amt.toString())});
+      tx=await sendContractTx(cont, 'lockNative', [unlockTime], ethers.parseEther(amt.toString()));
     } else {
       const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, signer);
       const amtWei=ethers.parseUnits(amt.toString(), selectedToken.decimals);
       const minAmt=getTokenMinimum(selectedToken.decimals);
       if(amtWei < minAmt){ showErr('Amount too low — minimum is '+formatMinimum(minAmt, selectedToken.decimals)+' '+selectedToken.symbol); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }
-      const allowance=await erc20.allowance(acct, CONTRACT_ADDRESS);
+      // Read allowance via Alchemy (never the relay) to avoid extra WC round-trips.
+      const allowance=await new ethers.Contract(selectedToken.address, ERC20_ABI, readProv).allowance(acct, CONTRACT_ADDRESS);
 
       if(allowance < amtWei){
         showLockAnim('approving');
         setApprovalStep(1);
         if(btn) btn.innerHTML='<span class="spin"></span> Approving…';
         if(allowance > 0n){
-          const resetTx=await erc20.approve(CONTRACT_ADDRESS, 0n);
+          const resetTx=await sendContractTx(erc20, 'approve', [CONTRACT_ADDRESS, 0n]);
           await waitForTx(resetTx);
         }
-        const approveTx=await erc20.approve(CONTRACT_ADDRESS, amtWei);
+        const approveTx=await sendContractTx(erc20, 'approve', [CONTRACT_ADDRESS, amtWei]);
         await waitForTx(approveTx);
         setApprovalStep(2);
       } else {
@@ -606,7 +607,7 @@ async function doLock(){
 
       showLockAnim('locking');
       if(btn) btn.innerHTML='<span class="spin"></span> Locking…';
-      tx=await cont.lockToken(selectedToken.address, amtWei, unlockTime);
+      tx=await sendContractTx(cont, 'lockToken', [selectedToken.address, amtWei, unlockTime]);
     }
 
     showLockAnim('confirming');
@@ -622,7 +623,7 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ console.error('[CTL] lock failed:', e); let msg=friendlyTxError(e); if(msg){ const raw=(e&&(e.reason||e.message))||''; if(wcProvider && raw) msg+='  ·  ['+String(raw).slice(0,110)+']'; showErr(msg); } showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){ console.error('[CTL] lock failed:', e); const msg=friendlyTxError(e); if(msg) showErr(msg + txErrorDetail(e)); showLockAnim('hide'); setApprovalStep(0); }
   finally{
     txInFlight = false;
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
@@ -651,7 +652,7 @@ async function doWithdraw(id){
       const sl=document.getElementById('laSubLabel'); if(sl) sl.textContent='Reconnecting to your wallet…';
       await ensureWcReady();
     }
-    const tx=await cont.withdraw(id);
+    const tx=await sendContractTx(cont, 'withdraw', [id]);
     showLockAnim('withdraw-confirming');
     if(btn) btn.innerHTML='<span class="spin"></span> Confirming…';
     await waitForTx(tx);
@@ -662,12 +663,8 @@ async function doWithdraw(id){
     syncTokenLabels();
   }catch(e){
     console.error('[CTL] withdraw failed:', e);
-    let msg=friendlyTxError(e);
-    if(msg){
-      const raw=(e&&(e.reason||e.message))||'';
-      if(wcProvider && raw) msg += '  ·  ['+String(raw).slice(0,110)+']';
-      showErr(msg);
-    }
+    const msg=friendlyTxError(e);
+    if(msg) showErr(msg + txErrorDetail(e));
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }

@@ -100,6 +100,19 @@ function friendlyTxError(e){
   return (e && (e.reason || e.message)) || 'Transaction failed';
 }
 
+// Compact technical detail appended to WalletConnect error messages, so the cause
+// can be reported without opening devtools. Shows the RPC method and inner error.
+function txErrorDetail(e){
+  if(!wcProvider || !e) return '';
+  const parts=[];
+  const meth = (e.payload && e.payload.method) || (e.info && e.info.payload && e.info.payload.method);
+  if(meth) parts.push(meth);
+  const inner = e.error || (e.info && e.info.error);
+  if(inner && (inner.message || inner.code!=null)) parts.push((inner.code!=null?inner.code+':':'')+(inner.message||''));
+  if(!parts.length){ const m=(e.reason||e.message||''); if(m) parts.push(String(m).slice(0,160)); }
+  return parts.length ? '  ·  ['+parts.join(' ')+']' : '';
+}
+
 function showLockAnim(state){
   const overlay = document.getElementById('lockAnimOverlay');
   const shackle = document.getElementById('laShackle');

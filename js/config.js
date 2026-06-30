@@ -185,6 +185,28 @@ async function waitForTx(tx){
   }
   return receipt;
 }
+
+// Send a contract write. For WalletConnect we do NOT route through ethers'
+// signer — doing so makes ethers fire eth_chainId / eth_accounts / estimateGas
+// at the WC provider, and any one of those hitting a backgrounded relay throws
+// the cryptic "Please call connect() before request()". Instead we encode the
+// calldata locally and publish a SINGLE eth_sendTransaction straight through the
+// WC provider; the wallet does its own gas estimation, and waitForTx() polls the
+// receipt via Alchemy. Injected (browser-extension) wallets keep the normal
+// ethers path. Returns an object with `.hash` so waitForTx() works for both.
+async function sendContractTx(contract, method, args, value){
+  if(wcProvider){
+    await ensureWcReady();                       // wake a backgrounded relay (best-effort)
+    const to   = await contract.getAddress();    // local — no RPC
+    const data = contract.interface.encodeFunctionData(method, args);
+    const tx   = { from: acct, to, data };
+    if(value && value > 0n) tx.value = '0x' + value.toString(16);
+    const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
+    return { hash };
+  }
+  const overrides = (value && value > 0n) ? { value } : {};
+  return await contract[method](...args, overrides);
+}
 // Max *active* (un-withdrawn) locks per user — must match the contract constant (50).
 const MAX_ACTIVE_LOCKS = 50;
 const LOCK_WARN_AT     = 40;

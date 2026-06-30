@@ -574,23 +574,20 @@ async function doLock(){
   if(btn){ btn.innerHTML='<span class="spin"></span> Sending…'; }
   showLockAnim('start');
   try{
-    // Wake the WalletConnect relay if the wallet was backgrounded, so the
-    // getSigner()/eth_accounts call below doesn't hit a not-ready provider.
-    if(wcProvider) await ensureWcReady();
-    const signer=await prov.getSigner();
     let tx;
 
     if(!selectedToken){
       if(amt < 0.001){ showErr('Minimum 0.001 for native coin'); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }
       showLockAnim('locking');
-      tx=await cont.lockNative(unlockTime,{value:ethers.parseEther(amt.toString())});
+      tx=await sendContractTx(cont, 'lockNative', [unlockTime], ethers.parseEther(amt.toString()));
     } else {
-      const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, signer);
-      // Reads (allowance) MUST go through the Alchemy read provider, not the
-      // wallet signer. Mobile wallets over WalletConnect are unreliable for
-      // eth_call and often return empty data, which makes ethers throw a
-      // cryptic CALL_EXCEPTION / "missing revert data". Writes (approve) still
-      // go through the signer below.
+      // Reads (allowance) go through the Alchemy read provider — mobile wallets
+      // over WalletConnect are unreliable for eth_call and return empty data,
+      // which makes ethers throw a cryptic CALL_EXCEPTION / "missing revert
+      // data". For the approve WRITE, bind to a real signer only for injected
+      // wallets; over WalletConnect sendContractTx() publishes the tx directly
+      // and never calls prov.getSigner() (which would throw if the relay slept).
+      const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, wcProvider ? (readProv||prov) : await prov.getSigner());
       const erc20Read=new ethers.Contract(selectedToken.address, ERC20_ABI, readProv||prov);
       const amtWei=ethers.parseUnits(amt.toString(), selectedToken.decimals);
       const minAmt=getTokenMinimum(selectedToken.decimals);
@@ -608,10 +605,10 @@ async function doLock(){
         setApprovalStep(1);
         if(btn) btn.innerHTML='<span class="spin"></span> Approving…';
         if(allowance > 0n){
-          const resetTx=await erc20.approve(CONTRACT_ADDRESS, 0n);
+          const resetTx=await sendContractTx(erc20, 'approve', [CONTRACT_ADDRESS, 0n]);
           await waitForTx(resetTx);
         }
-        const approveTx=await erc20.approve(CONTRACT_ADDRESS, amtWei);
+        const approveTx=await sendContractTx(erc20, 'approve', [CONTRACT_ADDRESS, amtWei]);
         await waitForTx(approveTx);
         setApprovalStep(2);
       } else {
@@ -620,7 +617,7 @@ async function doLock(){
 
       showLockAnim('locking');
       if(btn) btn.innerHTML='<span class="spin"></span> Locking…';
-      tx=await cont.lockToken(selectedToken.address, amtWei, unlockTime);
+      tx=await sendContractTx(cont, 'lockToken', [selectedToken.address, amtWei, unlockTime]);
     }
 
     showLockAnim('confirming');
@@ -659,8 +656,7 @@ async function doWithdraw(id){
   if(btn){ btn.disabled=true; btn.innerHTML='<span class="spin"></span> Please wait…'; }
   showLockAnim('withdrawing');
   try{
-    if(wcProvider) await ensureWcReady();
-    const tx=await cont.withdraw(id);
+    const tx=await sendContractTx(cont, 'withdraw', [id]);
     showLockAnim('withdraw-confirming');
     if(btn) btn.innerHTML='<span class="spin"></span> Confirming…';
     await waitForTx(tx);

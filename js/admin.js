@@ -94,7 +94,7 @@ async function togglePause(){
   btn.disabled=true;
   btn.innerHTML='<div class="spin"></div>';
   try{
-    const tx=isPaused?await cont.unpause():await cont.pause();
+    const tx=isPaused?await sendContractTx(cont, 'unpause', []):await sendContractTx(cont, 'pause', []);
     await waitForTx(tx);
     const newState=!isPaused;
     renderPauseState(newState);
@@ -140,9 +140,9 @@ async function claimSingleToken(tokenAddress){
   try{
     let tx;
     if(tokenAddress==='native'){
-      tx=await cont.claimNativeFees();
+      tx=await sendContractTx(cont, 'claimNativeFees', []);
     } else {
-      tx=await cont.claimTokenFees(tokenAddress);
+      tx=await sendContractTx(cont, 'claimTokenFees', [tokenAddress]);
     }
     await waitForTx(tx);
     showOk('✓ Fees claimed!');
@@ -157,12 +157,12 @@ async function doClaimFees(){
   try{
     const np=await readCont.pendingNativeFees();
     if(np>0){
-      const tx=await cont.claimNativeFees();
+      const tx=await sendContractTx(cont, 'claimNativeFees', []);
       await waitForTx(tx);
     }
     const tokens=(ALL_TOKENS[currentChainId]||[]).filter(t=>t.address);
     for(const t of tokens){
-      try{const p=await readCont.pendingTokenFees(t.address);if(p>0){const tx=await cont.claimTokenFees(t.address);await waitForTx(tx);}}catch(e){}
+      try{const p=await readCont.pendingTokenFees(t.address);if(p>0){const tx=await sendContractTx(cont, 'claimTokenFees', [t.address]);await waitForTx(tx);}}catch(e){}
     }
     showOk('✓ All fees claimed!');
     await loadAdminStats();
@@ -287,7 +287,7 @@ async function doRequestRecipient(){
   const val=input?input.value.trim():'';
   if(!/^0x[a-fA-F0-9]{40}$/.test(val)){showErr('Invalid address');return;}
   try{
-    const tx=await cont.requestFeeRecipientChange(val);
+    const tx=await sendContractTx(cont, 'requestFeeRecipientChange', [val]);
     await waitForTx(tx);
     showOk('✓ Change requested — confirm in 48 hours');
     if(input) input.value='';
@@ -298,7 +298,7 @@ async function doRequestRecipient(){
 async function doConfirmRecipient(){
   clearAlerts();
   try{
-    const tx=await cont.confirmFeeRecipientChange();
+    const tx=await sendContractTx(cont, 'confirmFeeRecipientChange', []);
     await waitForTx(tx);
     showOk('✓ Fee recipient updated');
     await loadFeeRecipientStatus();
@@ -308,7 +308,7 @@ async function doConfirmRecipient(){
 async function doCancelRecipient(){
   clearAlerts();
   try{
-    const tx=await cont.cancelFeeRecipientChange();
+    const tx=await sendContractTx(cont, 'cancelFeeRecipientChange', []);
     await waitForTx(tx);
     showOk('✓ Pending change cancelled');
     await loadFeeRecipientStatus();
@@ -318,7 +318,7 @@ async function doCancelRecipient(){
 async function doRequestAllowToken(address){
   clearAlerts();
   try{
-    const tx = await cont.requestAllowToken(address);
+    const tx = await sendContractTx(cont, 'requestAllowToken', [address]);
     await waitForTx(tx);
     showOk('Request submitted — confirm in 48 hours');
     await loadAllowlist();
@@ -328,7 +328,7 @@ async function doRequestAllowToken(address){
 async function doConfirmAllowToken(address){
   clearAlerts();
   try{
-    const tx = await cont.confirmAllowToken(address);
+    const tx = await sendContractTx(cont, 'confirmAllowToken', [address]);
     await waitForTx(tx);
     showOk('Token added to allowlist');
     await loadAllowlist();
@@ -338,7 +338,7 @@ async function doConfirmAllowToken(address){
 async function doCancelAllowToken(address){
   clearAlerts();
   try{
-    const tx = await cont.cancelAllowToken(address);
+    const tx = await sendContractTx(cont, 'cancelAllowToken', [address]);
     await waitForTx(tx);
     showOk('Pending allowlist request cancelled');
     await loadAllowlist();
@@ -348,7 +348,7 @@ async function doCancelAllowToken(address){
 async function doDisallowToken(address){
   clearAlerts();
   try{
-    const tx = await cont.disallowToken(address);
+    const tx = await sendContractTx(cont, 'disallowToken', [address]);
     await waitForTx(tx);
     showOk('✓ Token removed from allowlist');
     await loadAllowlist();
@@ -410,7 +410,7 @@ async function doTransferOwnership(){
   const val = input ? input.value.trim() : '';
   if(!/^0x[a-fA-F0-9]{40}$/.test(val)){showErr('Invalid address');return;}
   try{
-    const tx = await cont.transferOwnership(val);
+    const tx = await sendContractTx(cont, 'transferOwnership', [val]);
     await waitForTx(tx);
     showOk('✓ Ownership transfer initiated — nominee must call Accept');
     if(input) input.value='';
@@ -421,7 +421,7 @@ async function doTransferOwnership(){
 async function doAcceptOwnership(){
   clearAlerts();
   try{
-    const tx = await cont.acceptOwnership();
+    const tx = await sendContractTx(cont, 'acceptOwnership', []);
     await waitForTx(tx);
     showOk('✓ Ownership accepted — you are now the owner');
     await loadOwnershipStatus();
@@ -431,7 +431,7 @@ async function doAcceptOwnership(){
 async function doCancelOwnershipTransfer(){
   clearAlerts();
   try{
-    const tx = await cont.cancelOwnershipTransfer();
+    const tx = await sendContractTx(cont, 'cancelOwnershipTransfer', []);
     await waitForTx(tx);
     showOk('✓ Ownership transfer cancelled');
     await loadOwnershipStatus();
@@ -483,7 +483,7 @@ async function doRequestGuardian(){
   const val = input ? input.value.trim() : '';
   if(!/^0x[a-fA-F0-9]{40}$/.test(val)){showErr('Invalid address');return;}
   try{
-    const tx = await cont.requestSetGuardian(val);
+    const tx = await sendContractTx(cont, 'requestSetGuardian', [val]);
     await waitForTx(tx);
     showOk('Guardian rotation requested — confirm after 48 hours');
     if(input) input.value='';
@@ -494,7 +494,7 @@ async function doRequestGuardian(){
 async function doConfirmGuardian(){
   clearAlerts();
   try{
-    const tx = await cont.confirmSetGuardian();
+    const tx = await sendContractTx(cont, 'confirmSetGuardian', []);
     await waitForTx(tx);
     showOk('✓ Guardian updated');
     await loadGuardianStatus();
@@ -504,7 +504,7 @@ async function doConfirmGuardian(){
 async function doCancelGuardian(){
   clearAlerts();
   try{
-    const tx = await cont.cancelSetGuardian();
+    const tx = await sendContractTx(cont, 'cancelSetGuardian', []);
     await waitForTx(tx);
     showOk('✓ Guardian rotation cancelled');
     await loadGuardianStatus();
@@ -559,7 +559,7 @@ async function doInitiateRecovery(){
   const val = input ? input.value.trim() : '';
   if(!/^0x[a-fA-F0-9]{40}$/.test(val)){showErr('Invalid address');return;}
   try{
-    const tx = await cont.initiateFeeRecipientRecovery(val);
+    const tx = await sendContractTx(cont, 'initiateFeeRecipientRecovery', [val]);
     await waitForTx(tx);
     showOk('✓ Recovery initiated — the other admin must confirm after 48 hours');
     if(input) input.value='';
@@ -570,7 +570,7 @@ async function doInitiateRecovery(){
 async function doConfirmRecovery(){
   clearAlerts();
   try{
-    const tx = await cont.confirmFeeRecipientRecovery();
+    const tx = await sendContractTx(cont, 'confirmFeeRecipientRecovery', []);
     await waitForTx(tx);
     showOk('✓ Fee recipient recovery confirmed');
     await loadRecoveryStatus();
@@ -580,7 +580,7 @@ async function doConfirmRecovery(){
 async function doCancelRecovery(){
   clearAlerts();
   try{
-    const tx = await cont.cancelFeeRecipientRecovery();
+    const tx = await sendContractTx(cont, 'cancelFeeRecipientRecovery', []);
     await waitForTx(tx);
     showOk('✓ Recovery cancelled');
     await loadRecoveryStatus();
@@ -618,7 +618,7 @@ async function loadRescuableTokens(){
 async function doRescueToken(tokenAddress){
   clearAlerts();
   try{
-    const tx = await cont.rescueToken(tokenAddress);
+    const tx = await sendContractTx(cont, 'rescueToken', [tokenAddress]);
     await waitForTx(tx);
     showOk('✓ Surplus tokens rescued to fee recipient');
     await loadRescuableTokens();

@@ -196,13 +196,27 @@ async function waitForTx(tx){
 // ethers path. Returns an object with `.hash` so waitForTx() works for both.
 async function sendContractTx(contract, method, args, value){
   if(wcProvider){
-    await ensureWcReady();                       // wake a backgrounded relay (best-effort)
     const to   = await contract.getAddress();    // local — no RPC
     const data = contract.interface.encodeFunctionData(method, args);
     const tx   = { from: acct, to, data };
     if(value && value > 0n) tx.value = '0x' + value.toString(16);
-    const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
-    return { hash };
+    try{
+      // Send straight through the WC provider. Do NOT restart the relay first:
+      // on a healthy session an idle socket still reports connected=false, and
+      // restarting it here tears down the working transport and makes this very
+      // send fail. The SDK auto-reconnects the relay when publishing.
+      const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
+      return { hash };
+    }catch(e){
+      console.error('[TimeLock] WalletConnect eth_sendTransaction failed:', e);
+      // Only if it genuinely looks like a dropped session, nudge the relay and
+      // retry once. A truly dead session fails again and the caller surfaces the
+      // friendly reconnect message; anything else is rethrown as-is.
+      if(!isWcSessionError(e)) throw e;
+      await ensureWcReady();
+      const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
+      return { hash };
+    }
   }
   const overrides = (value && value > 0n) ? { value } : {};
   return await contract[method](...args, overrides);

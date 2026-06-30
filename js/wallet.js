@@ -170,7 +170,7 @@ function isWcSessionError(e){
   const m = ((e && (e.reason || e.message)) || '').toLowerCase();
   return m.includes('call connect') || m.includes('before request') ||
          m.includes('session topic') || m.includes('no matching key') ||
-         m.includes('session expired') || m.includes('missing or invalid');
+         m.includes('session expired') || m.includes('no session');
 }
 
 function wcReconnectMsg(){

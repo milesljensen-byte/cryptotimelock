@@ -147,6 +147,22 @@ window.addEventListener('load', preloadWcSdk);
 let wcProvider = null;
 let wcReloadTimer = null;
 
+// WalletConnect's EthereumProvider doesn't reliably expose a top-level
+// `.session`; the live session actually lives on the underlying universal
+// provider (wcProvider.signer.session), and `.connected` reflects the relay/
+// session state. Gating transactions on `wcProvider.session` alone wrongly
+// reports "session ended" even when the wallet is connected and open. Check
+// all of them.
+function wcHasSession(){
+  if(!wcProvider) return false;
+  try{
+    if(wcProvider.session) return true;
+    if(wcProvider.signer && wcProvider.signer.session) return true;
+    if(wcProvider.connected) return true;
+  }catch(e){}
+  return false;
+}
+
 // Ensure the WalletConnect relay socket is actually live before we publish a
 // transaction request. An idle browser tab can leave the socket closed; if we
 // publish onto a dead socket the request is "interrupted" and never reaches the
@@ -226,7 +242,7 @@ async function connectWalletConnect(){
     // and read the account straight off the WC provider instead of provoking an
     // eth_chainId request through ethers.
     await ensureWcReady();
-    if(!wcProvider.session || !(wcProvider.accounts && wcProvider.accounts.length)){
+    if(!wcHasSession() || !(wcProvider.accounts && wcProvider.accounts.length)){
       throw new Error('Wallet connected but no session was established. Tap Connect and approve again.');
     }
     prov = new ethers.BrowserProvider(wcProvider);

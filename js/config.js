@@ -21,33 +21,6 @@ const NETWORKS = {
   1: { name: 'Ethereum', symbol: 'ETH', explorer: 'https://etherscan.io' },
 };
 
-// Human-readable list of the chains we actually have a contract on (e.g. "Ethereum").
-// Stays correct automatically if more chains are added to CONTRACTS later.
-function supportedNetworksLabel(){
-  return Object.keys(CONTRACTS)
-    .filter(id => CONTRACTS[id])
-    .map(id => NETWORKS[id]?.name || id)
-    .join(', ');
-}
-
-// Shown when a wallet is connected on a chain we don't support (wrong EVM network).
-function wrongNetworkMsg(){
-  const s = supportedNetworksLabel();
-  return 'CryptoTimeLock runs on ' + s + '. Please switch your wallet to ' + s + ' Mainnet, then reconnect.';
-}
-
-// Shown when a non-EVM wallet (e.g. a Solana-only wallet) tries to connect — it
-// can't approve the Ethereum session, so be explicit about what's needed.
-function nonEvmWalletMsg(){
-  return 'CryptoTimeLock is an Ethereum app and can’t use Solana or other non-Ethereum wallets. Please connect an Ethereum wallet (MetaMask, Rabby, Coinbase Wallet, …) on ' + supportedNetworksLabel() + ' Mainnet.';
-}
-
-// True while a deposit/withdraw is awaiting the user's signature. WalletConnect can
-// emit a transient `disconnect` when a phone wallet is closed mid-request; we use
-// this flag to suppress the auto-reload so the user stays connected and can open
-// their wallet to confirm (or retry) instead of being kicked out.
-let txInFlight = false;
-
 // All known tokens to check per chain — only shown if user has balance > 0
 const ALL_TOKENS = {
   // Ordered by popularity/likelihood of user holding — most popular checked first
@@ -211,31 +184,6 @@ async function waitForTx(tx){
     try{ receipt = await rp.getTransactionReceipt(tx.hash); }catch(e){}
   }
   return receipt;
-}
-
-// sendContractTx — submit a contract call as ONE eth_sendTransaction.
-// Over WalletConnect, letting ethers run its usual flow (getBlockNumber +
-// estimateGas + send + receipt polling, all through the relay) makes the WC
-// provider mis-correlate the rapid calls and reject with "Invalid Id". So for
-// WalletConnect we encode the call ourselves and send a single signing request,
-// doing any reads through Alchemy. Injected wallets keep the normal ethers path.
-// Returns an object with `.hash`, so waitForTx() works for both.
-async function sendContractTx(contract, method, args, value){
-  if(wcProvider){
-    // If the WalletConnect session has died, fail with a clear, recoverable
-    // message instead of a cryptic deep-SDK "Please call connect()" error.
-    if(!wcProvider.session){
-      throw new Error('Your wallet session ended. Please reconnect your wallet and try again.');
-    }
-    const to   = await contract.getAddress();
-    const data = contract.interface.encodeFunctionData(method, args);
-    const tx   = { from: acct, to, data };
-    if(value && value > 0n) tx.value = '0x' + value.toString(16);
-    const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
-    return { hash };
-  }
-  const overrides = (value && value > 0n) ? { value } : {};
-  return await contract[method](...args, overrides);
 }
 // Max *active* (un-withdrawn) locks per user — must match the contract constant (50).
 const MAX_ACTIVE_LOCKS = 50;

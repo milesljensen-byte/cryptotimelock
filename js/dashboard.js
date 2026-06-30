@@ -26,7 +26,11 @@ async function onConnected(){
     const net = getNetwork(currentChainId);
 
     if(!CONTRACTS[currentChainId]){
-      showErr(wrongNetworkMsg());
+      const supported = Object.keys(CONTRACTS)
+        .filter(id => CONTRACTS[id])
+        .map(id => NETWORKS[id]?.name || id)
+        .join(', ');
+      showErr('Network not supported yet. Please switch to: '+supported);
       return;
     }
 
@@ -569,39 +573,30 @@ async function doLock(){
 
   if(btn){ btn.innerHTML='<span class="spin"></span> Sending…'; }
   showLockAnim('start');
-  txInFlight = true;
   try{
-    if(wcProvider && !wcProvider.connected){
-      const sl=document.getElementById('laSubLabel'); if(sl) sl.textContent='Reconnecting to your wallet…';
-      await ensureWcReady();
-    }
-    // Over WalletConnect we send via sendContractTx (single eth_sendTransaction) and
-    // never need an ethers signer — calling getSigner() would fire eth_accounts and
-    // fail if the session dropped. Only resolve a signer for injected wallets.
-    const signer = wcProvider ? null : await prov.getSigner();
+    const signer=await prov.getSigner();
     let tx;
 
     if(!selectedToken){
       if(amt < 0.001){ showErr('Minimum 0.001 for native coin'); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }
       showLockAnim('locking');
-      tx=await sendContractTx(cont, 'lockNative', [unlockTime], ethers.parseEther(amt.toString()));
+      tx=await cont.lockNative(unlockTime,{value:ethers.parseEther(amt.toString())});
     } else {
-      const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, wcProvider ? readProv : signer);
+      const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, signer);
       const amtWei=ethers.parseUnits(amt.toString(), selectedToken.decimals);
       const minAmt=getTokenMinimum(selectedToken.decimals);
       if(amtWei < minAmt){ showErr('Amount too low — minimum is '+formatMinimum(minAmt, selectedToken.decimals)+' '+selectedToken.symbol); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }
-      // Read allowance via Alchemy (never the relay) to avoid extra WC round-trips.
-      const allowance=await new ethers.Contract(selectedToken.address, ERC20_ABI, readProv).allowance(acct, CONTRACT_ADDRESS);
+      const allowance=await erc20.allowance(acct, CONTRACT_ADDRESS);
 
       if(allowance < amtWei){
         showLockAnim('approving');
         setApprovalStep(1);
         if(btn) btn.innerHTML='<span class="spin"></span> Approving…';
         if(allowance > 0n){
-          const resetTx=await sendContractTx(erc20, 'approve', [CONTRACT_ADDRESS, 0n]);
+          const resetTx=await erc20.approve(CONTRACT_ADDRESS, 0n);
           await waitForTx(resetTx);
         }
-        const approveTx=await sendContractTx(erc20, 'approve', [CONTRACT_ADDRESS, amtWei]);
+        const approveTx=await erc20.approve(CONTRACT_ADDRESS, amtWei);
         await waitForTx(approveTx);
         setApprovalStep(2);
       } else {
@@ -610,7 +605,7 @@ async function doLock(){
 
       showLockAnim('locking');
       if(btn) btn.innerHTML='<span class="spin"></span> Locking…';
-      tx=await sendContractTx(cont, 'lockToken', [selectedToken.address, amtWei, unlockTime]);
+      tx=await cont.lockToken(selectedToken.address, amtWei, unlockTime);
     }
 
     showLockAnim('confirming');
@@ -626,9 +621,8 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ console.error('[CTL] lock failed:', e); const msg=friendlyTxError(e); if(msg) showErr(msg + txErrorDetail(e)); showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){ showErr(e.reason||e.message); showLockAnim('hide'); setApprovalStep(0); }
   finally{
-    txInFlight = false;
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
     updateLockLimitUI();
   }
@@ -649,13 +643,8 @@ async function doWithdraw(id){
   const btn=document.querySelector('#vlist .withdraw[data-id="'+id+'"]');
   if(btn){ btn.disabled=true; btn.innerHTML='<span class="spin"></span> Please wait…'; }
   showLockAnim('withdrawing');
-  txInFlight = true;
   try{
-    if(wcProvider && !wcProvider.connected){
-      const sl=document.getElementById('laSubLabel'); if(sl) sl.textContent='Reconnecting to your wallet…';
-      await ensureWcReady();
-    }
-    const tx=await sendContractTx(cont, 'withdraw', [id]);
+    const tx=await cont.withdraw(id);
     showLockAnim('withdraw-confirming');
     if(btn) btn.innerHTML='<span class="spin"></span> Confirming…';
     await waitForTx(tx);
@@ -665,13 +654,10 @@ async function doWithdraw(id){
     await loadLocks();
     syncTokenLabels();
   }catch(e){
-    console.error('[CTL] withdraw failed:', e);
-    const msg=friendlyTxError(e);
-    if(msg) showErr(msg + txErrorDetail(e));
+    showErr(e.reason||e.message);
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }
-  finally{ txInFlight = false; }
 }
 
 // ─── DATE / TIME FORMAT HELPERS (new UI) ─────────────

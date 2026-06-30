@@ -89,9 +89,7 @@ async function switchToEthereum(provider){
   try{
     await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x1'}]});
   }catch(e){
-    // Auto-switch failed (chain not added, user declined, or wallet can't switch
-    // over WalletConnect). Don't message here — onConnected() runs next and shows
-    // the single, clear wrongNetworkMsg() once it sees the unsupported chain.
+    showErr('Please switch to Ethereum Mainnet in your wallet');
   }
   await new Promise(r=>setTimeout(r,500));
 }
@@ -135,7 +133,7 @@ async function connectByName(name){
   finally{ isConnecting = false; }
 }
 
-// Pre-load WalletConnect SDK in background so the button feels instant.
+// Pre-load WalletConnect SDK in background so button feels instant
 let wcSdkPromise = null;
 function preloadWcSdk(){
   if(wcSdkPromise) return;
@@ -145,38 +143,6 @@ function preloadWcSdk(){
 window.addEventListener('load', preloadWcSdk);
 
 let wcProvider = null;
-let wcReloadTimer = null;
-
-// Ensure the WalletConnect relay socket is actually live before we publish a
-// transaction request. An idle browser tab can leave the socket closed; if we
-// publish onto a dead socket the request is "interrupted" and never reaches the
-// wallet — the user opens their phone, sees no approval, and gets an error.
-// Waiting for the relay to reconnect first lets the request land so the wallet
-// can show the prompt. No-op for injected (browser-extension) wallets.
-async function ensureWcReady(timeoutMs = 12000){
-  if(!wcProvider || wcProvider.connected) return true;
-  try{ wcProvider.client?.core?.relayer?.restartTransport?.(); }catch(e){}
-  const start = Date.now();
-  while(Date.now() - start < timeoutMs){
-    if(wcProvider.connected) return true;
-    await new Promise(r => setTimeout(r, 400));
-  }
-  return !!wcProvider.connected;
-}
-
-// A phone wallet that's closed/reopened can briefly drop the session. Don't hard
-// reload — that kicks the user out mid-flow. Never reload during a pending
-// transaction; otherwise wait a moment and only reset if the relay didn't recover.
-function handleWcDisconnect(){
-  if(txInFlight) return;
-  if(wcReloadTimer) return;
-  wcReloadTimer = setTimeout(()=>{
-    wcReloadTimer = null;
-    // Reset only if the SESSION is actually gone (not just a relay-socket blip that
-    // recovered). A dead session can't sign, so a clean reconnect is required.
-    if(!wcProvider || !wcProvider.session) location.reload();
-  }, 2500);
-}
 
 async function connectWalletConnect(){
   closeWalletModal();
@@ -190,14 +156,9 @@ async function connectWalletConnect(){
 
   try{
     preloadWcSdk(); // no-op if already started
-    let mod = await wcSdkPromise;
+    const mod = await wcSdkPromise;
     if(!mod || !mod.EthereumProvider){
-      // Don't let a transient failure stick — drop the cached result and retry once.
-      wcSdkPromise = null; preloadWcSdk();
-      mod = await wcSdkPromise;
-    }
-    if(!mod || !mod.EthereumProvider){
-      throw new Error('Could not load WalletConnect SDK. Check your connection (or any ad blocker), then tap Connect again.');
+      throw new Error('Could not load WalletConnect SDK. Check your connection.');
     }
     const { EthereumProvider } = mod;
 
@@ -215,7 +176,7 @@ async function connectWalletConnect(){
         name: 'CryptoTimeLock',
         description: 'Self-custody time-locked vault on Ethereum',
         url: location.origin,
-        icons: [location.origin + '/icon.svg']
+        icons: [location.origin + '/favicon.ico']
       }
     });
     await wcProvider.connect();
@@ -224,34 +185,13 @@ async function connectWalletConnect(){
     acct = await signer.getAddress();
     await switchToEthereum(wcProvider);
     await onConnected();
-    // Don't tear the page down while a transaction is awaiting signature — a phone
-    // wallet that's closed can emit a transient disconnect/chain blip, and reloading
-    // here would kick the user out before they can open their wallet and confirm.
-    // When a phone wallet reopens it re-emits accountsChanged/chainChanged with the
-    // SAME account/chain. Reloading on those echoes is what was logging the user out
-    // and bouncing them to the homepage. Only reload on a REAL switch.
-    wcProvider.on('accountsChanged', (accts)=>{
-      if(txInFlight) return;
-      const next = ((accts && accts[0]) || '').toLowerCase();
-      if(next && acct && next !== acct.toLowerCase()) location.reload();
-    });
-    wcProvider.on('chainChanged', (cid)=>{
-      if(txInFlight) return;
-      const n = Number(cid);
-      if(n && currentChainId && n !== currentChainId) location.reload();
-    });
-    wcProvider.on('disconnect',      handleWcDisconnect);
+    wcProvider.on('accountsChanged', ()=>location.reload());
+    wcProvider.on('chainChanged',    ()=>location.reload());
+    wcProvider.on('disconnect',      ()=>location.reload());
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';
-    const m = (e && e.message || '').toLowerCase();
-    if(m.includes('user rejected') || m.includes('modal closed')){ return; }
-    // A non-EVM wallet (e.g. Solana-only) can't approve the Ethereum (eip155)
-    // session, so the pairing fails on a namespace/chain mismatch. Detect that
-    // and tell the user plainly that this is an Ethereum app.
-    if(m.includes('namespace') || m.includes('chains') || m.includes('unsupported') || m.includes('approve()')){
-      showErr(nonEvmWalletMsg()); return;
-    }
+    if(e.message && (e.message.includes('User rejected') || e.message.includes('user rejected') || e.message.includes('Modal closed'))){ return; }
     showErr(e.message || 'WalletConnect failed');
   }
 }

@@ -621,7 +621,7 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ showErr(e.reason||e.message); showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){ const msg=friendlyTxError(e); if(msg) showErr(msg); showLockAnim('hide'); setApprovalStep(0); }
   finally{
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
     updateLockLimitUI();
@@ -654,7 +654,8 @@ async function doWithdraw(id){
     await loadLocks();
     syncTokenLabels();
   }catch(e){
-    showErr(e.reason||e.message);
+    const msg=friendlyTxError(e);
+    if(msg) showErr(msg);
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }

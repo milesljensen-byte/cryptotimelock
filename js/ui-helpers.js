@@ -61,6 +61,41 @@ function formatMinimum(minWei, decimals) {
   return whole.toString() + '.' + frac;
 }
 
+// Guidance shown while we wait for the user to approve in their wallet.
+// With WalletConnect the wallet app may be closed or backgrounded, so make clear
+// they can open it and still confirm — the request stays open for a few minutes.
+function confirmSub(action){
+  const base = 'Confirm the ' + action + ' in your wallet';
+  return wcProvider ? base + ' — open your wallet app if it didn’t pop up' : base;
+}
+
+// Decide whether a thrown error is just the user declining the request, vs. a real
+// failure. Used so a cancel / "wallet not open yet" never shows a scary crash.
+function isUserRejection(e){
+  const code = e && (e.code || (e.info && e.info.error && e.info.error.code));
+  if(code === 4001 || code === 'ACTION_REJECTED') return true;
+  const m = ((e && (e.reason || e.message)) || '').toLowerCase();
+  return m.includes('user rejected') || m.includes('user denied') ||
+         m.includes('rejected the request') || m.includes('denied transaction') ||
+         m.includes('request rejected');
+}
+
+// Turn a transaction error into a friendly, recoverable message. Returns null when
+// it was a plain user cancel (caller should just close the overlay silently).
+function friendlyTxError(e){
+  if(isUserRejection(e)) return null;
+  const m = ((e && (e.reason || e.message)) || '').toLowerCase();
+  // WalletConnect: wallet was closed / request timed out / session went stale.
+  // Reassure the user and point them to retry — nothing was lost.
+  if(wcProvider && (m === '' || m.includes('expired') || m.includes('timeout') ||
+     m.includes('timed out') || m.includes('no matching key') || m.includes('session') ||
+     m.includes('disconnected') || m.includes('relayer') || m.includes('proposal') ||
+     m.includes('request reset') || m.includes('jsonrpc'))){
+    return 'Your wallet didn’t confirm in time. Open your wallet app and tap the button again to retry — your funds are safe.';
+  }
+  return (e && (e.reason || e.message)) || 'Transaction failed';
+}
+
 function showLockAnim(state){
   const overlay = document.getElementById('lockAnimOverlay');
   const shackle = document.getElementById('laShackle');
@@ -108,13 +143,13 @@ function showLockAnim(state){
 
   if(state === 'approving'){
     label.textContent = 'Step 1 of 2 — Approve';
-    sub.textContent = wcProvider ? 'Check your phone — can take up to 15 seconds' : 'Confirm in your wallet';
+    sub.textContent = confirmSub('approval');
     setStep(1);
   }
 
   if(state === 'locking'){
     label.textContent = selectedToken ? 'Step 2 of 2 — Lock' : 'Locking your funds';
-    sub.textContent = wcProvider ? 'Check your phone — can take up to 15 seconds' : 'Confirm in your wallet';
+    sub.textContent = confirmSub('transaction');
     if(selectedToken) setStep(2); else setStep(null);
   }
 
@@ -147,8 +182,8 @@ function showLockAnim(state){
     overlay.classList.add('show');
     // Shackle starts closed (vault is locked), opens slightly to hint at withdrawal
     setTimeout(()=>{
-      label.textContent = wcProvider ? 'Confirm withdraw on your phone' : 'Confirm in wallet';
-      sub.textContent   = wcProvider ? 'Check your phone — can take up to 15 seconds' : 'Approve the transaction in your wallet';
+      label.textContent = 'Confirm in your wallet';
+      sub.textContent   = confirmSub('withdrawal');
       label.classList.add('show');
       sub.classList.add('show');
     }, 200);

@@ -622,7 +622,7 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ console.error('[CTL] lock failed:', e); const msg=friendlyTxError(e); if(msg) showErr(msg); showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){ console.error('[CTL] lock failed:', e); let msg=friendlyTxError(e); if(msg){ const raw=(e&&(e.reason||e.message))||''; if(wcProvider && raw) msg+='  ·  ['+String(raw).slice(0,110)+']'; showErr(msg); } showLockAnim('hide'); setApprovalStep(0); }
   finally{
     txInFlight = false;
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
@@ -662,8 +662,12 @@ async function doWithdraw(id){
     syncTokenLabels();
   }catch(e){
     console.error('[CTL] withdraw failed:', e);
-    const msg=friendlyTxError(e);
-    if(msg) showErr(msg);
+    let msg=friendlyTxError(e);
+    if(msg){
+      const raw=(e&&(e.reason||e.message))||'';
+      if(wcProvider && raw) msg += '  ·  ['+String(raw).slice(0,110)+']';
+      showErr(msg);
+    }
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }

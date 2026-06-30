@@ -220,8 +220,19 @@ async function connectWalletConnect(){
     // Don't tear the page down while a transaction is awaiting signature — a phone
     // wallet that's closed can emit a transient disconnect/chain blip, and reloading
     // here would kick the user out before they can open their wallet and confirm.
-    wcProvider.on('accountsChanged', ()=>{ if(!txInFlight) location.reload(); });
-    wcProvider.on('chainChanged',    ()=>{ if(!txInFlight) location.reload(); });
+    // When a phone wallet reopens it re-emits accountsChanged/chainChanged with the
+    // SAME account/chain. Reloading on those echoes is what was logging the user out
+    // and bouncing them to the homepage. Only reload on a REAL switch.
+    wcProvider.on('accountsChanged', (accts)=>{
+      if(txInFlight) return;
+      const next = ((accts && accts[0]) || '').toLowerCase();
+      if(next && acct && next !== acct.toLowerCase()) location.reload();
+    });
+    wcProvider.on('chainChanged', (cid)=>{
+      if(txInFlight) return;
+      const n = Number(cid);
+      if(n && currentChainId && n !== currentChainId) location.reload();
+    });
     wcProvider.on('disconnect',      handleWcDisconnect);
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';

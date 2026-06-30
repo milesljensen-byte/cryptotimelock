@@ -176,7 +176,7 @@ async function connectWalletConnect(){
         name: 'CryptoTimeLock',
         description: 'Self-custody time-locked vault on Ethereum',
         url: location.origin,
-        icons: [location.origin + '/favicon.ico']
+        icons: [location.origin + '/icon.svg']
       }
     });
     await wcProvider.connect();
@@ -185,9 +185,23 @@ async function connectWalletConnect(){
     acct = await signer.getAddress();
     await switchToEthereum(wcProvider);
     await onConnected();
-    wcProvider.on('accountsChanged', ()=>location.reload());
-    wcProvider.on('chainChanged',    ()=>location.reload());
-    wcProvider.on('disconnect',      ()=>location.reload());
+    // A phone wallet that's closed during a transaction and then reopened
+    // re-emits accountsChanged/chainChanged with the SAME account/chain. The
+    // old handlers reloaded on those echoes, which kicked the user out and
+    // bounced them back to the homepage mid-transaction. Only reload on a REAL
+    // switch to a different account or chain.
+    wcProvider.on('accountsChanged', (accts)=>{
+      const next = ((accts && accts[0]) || '').toLowerCase();
+      if(next && acct && next !== acct.toLowerCase()) location.reload();
+    });
+    wcProvider.on('chainChanged', (cid)=>{
+      const n = Number(cid);
+      if(n && currentChainId && n !== currentChainId) location.reload();
+    });
+    // Don't hard-reload on a transient disconnect — a closed phone wallet emits
+    // one and the session reconnects when the wallet is reopened. Reloading here
+    // logs the user out mid-flow, which is exactly what we're preventing.
+    wcProvider.on('disconnect', ()=>{});
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';

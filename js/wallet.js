@@ -89,7 +89,9 @@ async function switchToEthereum(provider){
   try{
     await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x1'}]});
   }catch(e){
-    showErr('Please switch to Ethereum Mainnet in your wallet');
+    // Auto-switch failed (chain not added, user declined, or wallet can't switch
+    // over WalletConnect). Don't message here — onConnected() runs next and shows
+    // the single, clear wrongNetworkMsg() once it sees the unsupported chain.
   }
   await new Promise(r=>setTimeout(r,500));
 }
@@ -185,13 +187,23 @@ async function connectWalletConnect(){
     acct = await signer.getAddress();
     await switchToEthereum(wcProvider);
     await onConnected();
-    wcProvider.on('accountsChanged', ()=>location.reload());
-    wcProvider.on('chainChanged',    ()=>location.reload());
-    wcProvider.on('disconnect',      ()=>location.reload());
+    // Don't tear the page down while a transaction is awaiting signature — a phone
+    // wallet that's closed can emit a transient disconnect/chain blip, and reloading
+    // here would kick the user out before they can open their wallet and confirm.
+    wcProvider.on('accountsChanged', ()=>{ if(!txInFlight) location.reload(); });
+    wcProvider.on('chainChanged',    ()=>{ if(!txInFlight) location.reload(); });
+    wcProvider.on('disconnect',      ()=>{ if(!txInFlight) location.reload(); });
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';
-    if(e.message && (e.message.includes('User rejected') || e.message.includes('user rejected') || e.message.includes('Modal closed'))){ return; }
+    const m = (e && e.message || '').toLowerCase();
+    if(m.includes('user rejected') || m.includes('modal closed')){ return; }
+    // A non-EVM wallet (e.g. Solana-only) can't approve the Ethereum (eip155)
+    // session, so the pairing fails on a namespace/chain mismatch. Detect that
+    // and tell the user plainly that this is an Ethereum app.
+    if(m.includes('namespace') || m.includes('chains') || m.includes('unsupported') || m.includes('approve()')){
+      showErr(nonEvmWalletMsg()); return;
+    }
     showErr(e.message || 'WalletConnect failed');
   }
 }

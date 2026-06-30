@@ -21,6 +21,33 @@ const NETWORKS = {
   1: { name: 'Ethereum', symbol: 'ETH', explorer: 'https://etherscan.io' },
 };
 
+// Human-readable list of the chains we actually have a contract on (e.g. "Ethereum").
+// Stays correct automatically if more chains are added to CONTRACTS later.
+function supportedNetworksLabel(){
+  return Object.keys(CONTRACTS)
+    .filter(id => CONTRACTS[id])
+    .map(id => NETWORKS[id]?.name || id)
+    .join(', ');
+}
+
+// Shown when a wallet is connected on a chain we don't support (wrong EVM network).
+function wrongNetworkMsg(){
+  const s = supportedNetworksLabel();
+  return 'CryptoTimeLock runs on ' + s + '. Please switch your wallet to ' + s + ' Mainnet, then reconnect.';
+}
+
+// Shown when a non-EVM wallet (e.g. a Solana-only wallet) tries to connect — it
+// can't approve the Ethereum session, so be explicit about what's needed.
+function nonEvmWalletMsg(){
+  return 'CryptoTimeLock is an Ethereum app and can’t use Solana or other non-Ethereum wallets. Please connect an Ethereum wallet (MetaMask, Rabby, Coinbase Wallet, …) on ' + supportedNetworksLabel() + ' Mainnet.';
+}
+
+// True while a deposit/withdraw is awaiting the user's signature. WalletConnect can
+// emit a transient `disconnect` when a phone wallet is closed mid-request; we use
+// this flag to suppress the auto-reload so the user stays connected and can open
+// their wallet to confirm (or retry) instead of being kicked out.
+let txInFlight = false;
+
 // All known tokens to check per chain — only shown if user has balance > 0
 const ALL_TOKENS = {
   // Ordered by popularity/likelihood of user holding — most popular checked first

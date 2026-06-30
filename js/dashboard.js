@@ -26,11 +26,7 @@ async function onConnected(){
     const net = getNetwork(currentChainId);
 
     if(!CONTRACTS[currentChainId]){
-      const supported = Object.keys(CONTRACTS)
-        .filter(id => CONTRACTS[id])
-        .map(id => NETWORKS[id]?.name || id)
-        .join(', ');
-      showErr('Network not supported yet. Please switch to: '+supported);
+      showErr(wrongNetworkMsg());
       return;
     }
 
@@ -573,6 +569,7 @@ async function doLock(){
 
   if(btn){ btn.innerHTML='<span class="spin"></span> Sending…'; }
   showLockAnim('start');
+  txInFlight = true;
   try{
     const signer=await prov.getSigner();
     let tx;
@@ -623,6 +620,7 @@ async function doLock(){
     updateSummary();
   }catch(e){ const msg=friendlyTxError(e); if(msg) showErr(msg); showLockAnim('hide'); setApprovalStep(0); }
   finally{
+    txInFlight = false;
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
     updateLockLimitUI();
   }
@@ -643,6 +641,7 @@ async function doWithdraw(id){
   const btn=document.querySelector('#vlist .withdraw[data-id="'+id+'"]');
   if(btn){ btn.disabled=true; btn.innerHTML='<span class="spin"></span> Please wait…'; }
   showLockAnim('withdrawing');
+  txInFlight = true;
   try{
     const tx=await cont.withdraw(id);
     showLockAnim('withdraw-confirming');
@@ -659,6 +658,7 @@ async function doWithdraw(id){
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }
+  finally{ txInFlight = false; }
 }
 
 // ─── DATE / TIME FORMAT HELPERS (new UI) ─────────────

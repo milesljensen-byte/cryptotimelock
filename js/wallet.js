@@ -208,7 +208,7 @@ async function connectWalletConnect(){
         name: 'CryptoTimeLock',
         description: 'Self-custody time-locked vault on Ethereum',
         url: location.origin,
-        icons: [location.origin + '/favicon.ico']
+        icons: [location.origin + '/icon.svg']
       }
     });
     await wcProvider.connect();

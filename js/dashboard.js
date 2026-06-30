@@ -583,10 +583,22 @@ async function doLock(){
       tx=await cont.lockNative(unlockTime,{value:ethers.parseEther(amt.toString())});
     } else {
       const erc20=new ethers.Contract(selectedToken.address, ERC20_ABI, signer);
+      // Reads (allowance) MUST go through the Alchemy read provider, not the
+      // wallet signer. Mobile wallets over WalletConnect are unreliable for
+      // eth_call and often return empty data, which makes ethers throw a
+      // cryptic CALL_EXCEPTION / "missing revert data". Writes (approve) still
+      // go through the signer below.
+      const erc20Read=new ethers.Contract(selectedToken.address, ERC20_ABI, readProv||prov);
       const amtWei=ethers.parseUnits(amt.toString(), selectedToken.decimals);
       const minAmt=getTokenMinimum(selectedToken.decimals);
       if(amtWei < minAmt){ showErr('Amount too low — minimum is '+formatMinimum(minAmt, selectedToken.decimals)+' '+selectedToken.symbol); showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return; }
-      const allowance=await erc20.allowance(acct, CONTRACT_ADDRESS);
+      let allowance;
+      try{
+        allowance=await erc20Read.allowance(acct, CONTRACT_ADDRESS);
+      }catch(err){
+        showErr('Couldn’t check your '+selectedToken.symbol+' allowance — the network read failed. Please make sure your wallet is open and on Ethereum Mainnet, then try again.');
+        showLockAnim('hide'); if(btn){btn.disabled=false;btn.textContent='Lock';} return;
+      }
 
       if(allowance < amtWei){
         showLockAnim('approving');

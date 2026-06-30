@@ -145,6 +145,36 @@ function preloadWcSdk(){
 window.addEventListener('load', preloadWcSdk);
 
 let wcProvider = null;
+let wcReloadTimer = null;
+
+// Ensure the WalletConnect relay socket is actually live before we publish a
+// transaction request. An idle browser tab can leave the socket closed; if we
+// publish onto a dead socket the request is "interrupted" and never reaches the
+// wallet — the user opens their phone, sees no approval, and gets an error.
+// Waiting for the relay to reconnect first lets the request land so the wallet
+// can show the prompt. No-op for injected (browser-extension) wallets.
+async function ensureWcReady(timeoutMs = 12000){
+  if(!wcProvider || wcProvider.connected) return true;
+  try{ wcProvider.client?.core?.relayer?.restartTransport?.(); }catch(e){}
+  const start = Date.now();
+  while(Date.now() - start < timeoutMs){
+    if(wcProvider.connected) return true;
+    await new Promise(r => setTimeout(r, 400));
+  }
+  return !!wcProvider.connected;
+}
+
+// A phone wallet that's closed/reopened can briefly drop the session. Don't hard
+// reload — that kicks the user out mid-flow. Never reload during a pending
+// transaction; otherwise wait a moment and only reset if the relay didn't recover.
+function handleWcDisconnect(){
+  if(txInFlight) return;
+  if(wcReloadTimer) return;
+  wcReloadTimer = setTimeout(()=>{
+    wcReloadTimer = null;
+    if(!wcProvider || !wcProvider.connected) location.reload();
+  }, 2500);
+}
 
 async function connectWalletConnect(){
   closeWalletModal();
@@ -192,7 +222,7 @@ async function connectWalletConnect(){
     // here would kick the user out before they can open their wallet and confirm.
     wcProvider.on('accountsChanged', ()=>{ if(!txInFlight) location.reload(); });
     wcProvider.on('chainChanged',    ()=>{ if(!txInFlight) location.reload(); });
-    wcProvider.on('disconnect',      ()=>{ if(!txInFlight) location.reload(); });
+    wcProvider.on('disconnect',      handleWcDisconnect);
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';

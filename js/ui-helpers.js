@@ -90,8 +90,12 @@ function friendlyTxError(e){
   if(wcProvider && (m === '' || m.includes('expired') || m.includes('timeout') ||
      m.includes('timed out') || m.includes('no matching key') || m.includes('session') ||
      m.includes('disconnected') || m.includes('relayer') || m.includes('proposal') ||
-     m.includes('request reset') || m.includes('jsonrpc'))){
-    return 'Your wallet didn’t confirm in time. Open your wallet app and tap the button again to retry — your funds are safe.';
+     m.includes('request reset') || m.includes('jsonrpc') ||
+     // relay/transport failures: request never reached the wallet
+     m.includes('interrupted') || m.includes('publish') || m.includes('subscribe') ||
+     m.includes('connection') || m.includes('transport') || m.includes('websocket') ||
+     m.includes('network') || m.includes('offline'))){
+    return 'Couldn’t reach your wallet. Open your wallet app and tap the button again to retry — your funds are safe.';
   }
   return (e && (e.reason || e.message)) || 'Transaction failed';
 }

@@ -571,6 +571,10 @@ async function doLock(){
   showLockAnim('start');
   txInFlight = true;
   try{
+    if(wcProvider && !wcProvider.connected){
+      const sl=document.getElementById('laSubLabel'); if(sl) sl.textContent='Reconnecting to your wallet…';
+      await ensureWcReady();
+    }
     const signer=await prov.getSigner();
     let tx;
 
@@ -618,7 +622,7 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ const msg=friendlyTxError(e); if(msg) showErr(msg); showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){ console.error('[CTL] lock failed:', e); const msg=friendlyTxError(e); if(msg) showErr(msg); showLockAnim('hide'); setApprovalStep(0); }
   finally{
     txInFlight = false;
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
@@ -643,6 +647,10 @@ async function doWithdraw(id){
   showLockAnim('withdrawing');
   txInFlight = true;
   try{
+    if(wcProvider && !wcProvider.connected){
+      const sl=document.getElementById('laSubLabel'); if(sl) sl.textContent='Reconnecting to your wallet…';
+      await ensureWcReady();
+    }
     const tx=await cont.withdraw(id);
     showLockAnim('withdraw-confirming');
     if(btn) btn.innerHTML='<span class="spin"></span> Confirming…';
@@ -653,6 +661,7 @@ async function doWithdraw(id){
     await loadLocks();
     syncTokenLabels();
   }catch(e){
+    console.error('[CTL] withdraw failed:', e);
     const msg=friendlyTxError(e);
     if(msg) showErr(msg);
     showLockAnim('hide');

@@ -151,18 +151,36 @@ function pickEthereumProvider(mod){
   if(mod.default && mod.default.EthereumProvider) return mod.default.EthereumProvider;
   return null;
 }
+// Import a module URL but give up after `ms` so one stalled CDN (a request that
+// neither completes nor errors — common with blockers/flaky networks) can't hang
+// us forever. The underlying import keeps going but we stop waiting on it.
+function importWithTimeout(url, ms){
+  return Promise.race([
+    import(url),
+    new Promise((_, rej)=> setTimeout(()=> rej(new Error('SDK load timeout: '+url)), ms))
+  ]);
+}
 function loadWcSdk(){
   if(wcSdkEP) return Promise.resolve(wcSdkEP);
   if(wcSdkInflight) return wcSdkInflight;
+  // Try all CDNs in PARALLEL — first one that yields EthereumProvider wins. This
+  // way a slow/blocked esm.sh doesn't block the fast jsdelivr fallback.
   wcSdkInflight = (async ()=>{
-    for(const url of WC_SDK_URLS){
-      try{
-        const mod = await import(url);
+    const attempts = WC_SDK_URLS.map(url =>
+      importWithTimeout(url, 12000).then(mod => {
         const EP = pickEthereumProvider(mod);
-        if(EP){ wcSdkEP = EP; return EP; }
-      }catch(e){ console.error('[CTL] WC SDK load failed from', url, e); }
+        if(!EP) throw new Error('no EthereumProvider export from '+url);
+        return EP;
+      })
+    );
+    try{
+      const EP = await Promise.any(attempts);
+      wcSdkEP = EP;
+      return EP;
+    }catch(e){
+      console.error('[CTL] all WC SDK CDNs failed:', e && e.errors ? e.errors : e);
+      return null;
     }
-    return null;
   })().finally(()=>{ wcSdkInflight = null; }); // clear so a failed load can retry next click
   return wcSdkInflight;
 }

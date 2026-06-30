@@ -574,6 +574,9 @@ async function doLock(){
   if(btn){ btn.innerHTML='<span class="spin"></span> Sending…'; }
   showLockAnim('start');
   try{
+    // Wake the WalletConnect relay if the wallet was backgrounded, so the
+    // getSigner()/eth_accounts call below doesn't hit a not-ready provider.
+    if(wcProvider) await ensureWcReady();
     const signer=await prov.getSigner();
     let tx;
 
@@ -633,7 +636,7 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ showErr(e.reason||e.message); showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){ showErr(isWcSessionError(e) ? wcReconnectMsg() : (e.reason||e.message)); showLockAnim('hide'); setApprovalStep(0); }
   finally{
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
     updateLockLimitUI();
@@ -656,6 +659,7 @@ async function doWithdraw(id){
   if(btn){ btn.disabled=true; btn.innerHTML='<span class="spin"></span> Please wait…'; }
   showLockAnim('withdrawing');
   try{
+    if(wcProvider) await ensureWcReady();
     const tx=await cont.withdraw(id);
     showLockAnim('withdraw-confirming');
     if(btn) btn.innerHTML='<span class="spin"></span> Confirming…';
@@ -666,7 +670,7 @@ async function doWithdraw(id){
     await loadLocks();
     syncTokenLabels();
   }catch(e){
-    showErr(e.reason||e.message);
+    showErr(isWcSessionError(e) ? wcReconnectMsg() : (e.reason||e.message));
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }

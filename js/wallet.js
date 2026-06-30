@@ -144,6 +144,39 @@ window.addEventListener('load', preloadWcSdk);
 
 let wcProvider = null;
 
+// A phone wallet that's been backgrounded or closed for a while leaves the
+// WalletConnect relay socket idle, and the session can briefly fall out of the
+// provider. The next request (eth_accounts, eth_sendTransaction, …) then hits a
+// not-ready provider and throws "Please call connect() before request()". Nudge
+// the relay back to life and wait briefly for it to reconnect before we
+// transact. Best-effort: never throws — callers proceed regardless, and surface
+// a clean reconnect message if the request still fails. No-op for injected
+// (browser-extension) wallets.
+async function ensureWcReady(timeoutMs = 8000){
+  if(!wcProvider) return true;
+  try{ if(wcProvider.connected) return true; }catch(e){}
+  try{ wcProvider.client?.core?.relayer?.restartTransport?.(); }catch(e){}
+  const start = Date.now();
+  while(Date.now() - start < timeoutMs){
+    try{ if(wcProvider.connected) return true; }catch(e){}
+    await new Promise(r => setTimeout(r, 300));
+  }
+  try{ return !!wcProvider.connected; }catch(e){ return false; }
+}
+
+// True for the WalletConnect "session is gone / not connected" family of errors,
+// where the only real recovery is for the user to reconnect their wallet.
+function isWcSessionError(e){
+  const m = ((e && (e.reason || e.message)) || '').toLowerCase();
+  return m.includes('call connect') || m.includes('before request') ||
+         m.includes('session topic') || m.includes('no matching key') ||
+         m.includes('session expired') || m.includes('missing or invalid');
+}
+
+function wcReconnectMsg(){
+  return 'Your wallet session dropped (this can happen when your wallet app has been closed for a while). Open your wallet, then tap the wallet button at the top to reconnect and try again.';
+}
+
 async function connectWalletConnect(){
   closeWalletModal();
   clearAlerts();

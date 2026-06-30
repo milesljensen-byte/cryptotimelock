@@ -633,7 +633,12 @@ async function doLock(){
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
-  }catch(e){ showErr(isWcSessionError(e) ? wcReconnectMsg() : (e.reason||e.message)); showLockAnim('hide'); setApprovalStep(0); }
+  }catch(e){
+    const raw = (e&&(e.reason||e.message))||String(e);
+    const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
+    showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+    showLockAnim('hide'); setApprovalStep(0);
+  }
   finally{
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
     updateLockLimitUI();
@@ -666,7 +671,9 @@ async function doWithdraw(id){
     await loadLocks();
     syncTokenLabels();
   }catch(e){
-    showErr(isWcSessionError(e) ? wcReconnectMsg() : (e.reason||e.message));
+    const raw = (e&&(e.reason||e.message))||String(e);
+    const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
+    showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
     showLockAnim('hide');
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }

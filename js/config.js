@@ -224,14 +224,7 @@ async function sendContractTx(contract, method, args, value){
   if(wcProvider){
     // If the WalletConnect session has died, fail with a clear, recoverable
     // message instead of a cryptic deep-SDK "Please call connect()" error.
-    // Don't gate on wcProvider.session alone — EthereumProvider doesn't reliably
-    // expose it, so a live, open wallet would falsely report "session ended".
-    // wcHasSession() checks the signer/relay state too; try to wake a sleeping
-    // relay first before giving up.
-    if(!wcHasSession()){
-      await ensureWcReady();
-    }
-    if(!wcHasSession()){
+    if(!wcProvider.session){
       throw new Error('Your wallet session ended. Please reconnect your wallet and try again.');
     }
     const to   = await contract.getAddress();

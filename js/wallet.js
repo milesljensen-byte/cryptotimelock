@@ -135,56 +135,12 @@ async function connectByName(name){
   finally{ isConnecting = false; }
 }
 
-// Load the WalletConnect SDK. Tries multiple CDNs and — crucially — does NOT cache
-// a failure, so a transient blip or one blocked/slow CDN doesn't permanently break
-// the Connect button (the old code cached the first failed import forever).
-const WC_SDK_URLS = [
-  'https://esm.sh/@walletconnect/ethereum-provider@2.17.0?bundle-deps',
-  'https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.17.0/+esm',
-  'https://esm.run/@walletconnect/ethereum-provider@2.17.0'
-];
-let wcSdkEP = null;        // the EthereumProvider class — cached ONLY on success
-let wcSdkInflight = null;  // de-dupe concurrent loads
-function pickEthereumProvider(mod){
-  if(!mod) return null;
-  if(mod.EthereumProvider) return mod.EthereumProvider;
-  if(mod.default && mod.default.EthereumProvider) return mod.default.EthereumProvider;
-  return null;
+// Pre-load WalletConnect SDK in background so the button feels instant.
+let wcSdkPromise = null;
+function preloadWcSdk(){
+  if(wcSdkPromise) return;
+  wcSdkPromise = import('https://esm.sh/@walletconnect/ethereum-provider@2.17.0?bundle-deps').catch(()=>null);
 }
-// Import a module URL but give up after `ms` so one stalled CDN (a request that
-// neither completes nor errors — common with blockers/flaky networks) can't hang
-// us forever. The underlying import keeps going but we stop waiting on it.
-function importWithTimeout(url, ms){
-  return Promise.race([
-    import(url),
-    new Promise((_, rej)=> setTimeout(()=> rej(new Error('SDK load timeout: '+url)), ms))
-  ]);
-}
-function loadWcSdk(){
-  if(wcSdkEP) return Promise.resolve(wcSdkEP);
-  if(wcSdkInflight) return wcSdkInflight;
-  // Try all CDNs in PARALLEL — first one that yields EthereumProvider wins. This
-  // way a slow/blocked esm.sh doesn't block the fast jsdelivr fallback.
-  wcSdkInflight = (async ()=>{
-    const attempts = WC_SDK_URLS.map(url =>
-      importWithTimeout(url, 12000).then(mod => {
-        const EP = pickEthereumProvider(mod);
-        if(!EP) throw new Error('no EthereumProvider export from '+url);
-        return EP;
-      })
-    );
-    try{
-      const EP = await Promise.any(attempts);
-      wcSdkEP = EP;
-      return EP;
-    }catch(e){
-      console.error('[CTL] all WC SDK CDNs failed:', e && e.errors ? e.errors : e);
-      return null;
-    }
-  })().finally(()=>{ wcSdkInflight = null; }); // clear so a failed load can retry next click
-  return wcSdkInflight;
-}
-function preloadWcSdk(){ loadWcSdk(); } // fire-and-forget warm-up
 // Start loading as soon as page is ready
 window.addEventListener('load', preloadWcSdk);
 
@@ -233,10 +189,17 @@ async function connectWalletConnect(){
   if(wcBtn) wcBtn.style.opacity = '0.7';
 
   try{
-    const EthereumProvider = await loadWcSdk();
-    if(!EthereumProvider){
-      throw new Error('Could not load WalletConnect. A browser extension, ad blocker, or privacy shield may be blocking it — disable shields/ad blockers for this site (or try another browser), then tap Connect again.');
+    preloadWcSdk(); // no-op if already started
+    let mod = await wcSdkPromise;
+    if(!mod || !mod.EthereumProvider){
+      // Don't let a transient failure stick — drop the cached result and retry once.
+      wcSdkPromise = null; preloadWcSdk();
+      mod = await wcSdkPromise;
     }
+    if(!mod || !mod.EthereumProvider){
+      throw new Error('Could not load WalletConnect SDK. Check your connection (or any ad blocker), then tap Connect again.');
+    }
+    const { EthereumProvider } = mod;
 
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';

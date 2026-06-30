@@ -135,12 +135,38 @@ async function connectByName(name){
   finally{ isConnecting = false; }
 }
 
-// Pre-load WalletConnect SDK in background so button feels instant
-let wcSdkPromise = null;
-function preloadWcSdk(){
-  if(wcSdkPromise) return;
-  wcSdkPromise = import('https://esm.sh/@walletconnect/ethereum-provider@2.17.0?bundle-deps').catch(()=>null);
+// Load the WalletConnect SDK. Tries multiple CDNs and — crucially — does NOT cache
+// a failure, so a transient blip or one blocked/slow CDN doesn't permanently break
+// the Connect button (the old code cached the first failed import forever).
+const WC_SDK_URLS = [
+  'https://esm.sh/@walletconnect/ethereum-provider@2.17.0?bundle-deps',
+  'https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.17.0/+esm',
+  'https://esm.run/@walletconnect/ethereum-provider@2.17.0'
+];
+let wcSdkEP = null;        // the EthereumProvider class — cached ONLY on success
+let wcSdkInflight = null;  // de-dupe concurrent loads
+function pickEthereumProvider(mod){
+  if(!mod) return null;
+  if(mod.EthereumProvider) return mod.EthereumProvider;
+  if(mod.default && mod.default.EthereumProvider) return mod.default.EthereumProvider;
+  return null;
 }
+function loadWcSdk(){
+  if(wcSdkEP) return Promise.resolve(wcSdkEP);
+  if(wcSdkInflight) return wcSdkInflight;
+  wcSdkInflight = (async ()=>{
+    for(const url of WC_SDK_URLS){
+      try{
+        const mod = await import(url);
+        const EP = pickEthereumProvider(mod);
+        if(EP){ wcSdkEP = EP; return EP; }
+      }catch(e){ console.error('[CTL] WC SDK load failed from', url, e); }
+    }
+    return null;
+  })().finally(()=>{ wcSdkInflight = null; }); // clear so a failed load can retry next click
+  return wcSdkInflight;
+}
+function preloadWcSdk(){ loadWcSdk(); } // fire-and-forget warm-up
 // Start loading as soon as page is ready
 window.addEventListener('load', preloadWcSdk);
 
@@ -189,12 +215,10 @@ async function connectWalletConnect(){
   if(wcBtn) wcBtn.style.opacity = '0.7';
 
   try{
-    preloadWcSdk(); // no-op if already started
-    const mod = await wcSdkPromise;
-    if(!mod || !mod.EthereumProvider){
-      throw new Error('Could not load WalletConnect SDK. Check your connection.');
+    const EthereumProvider = await loadWcSdk();
+    if(!EthereumProvider){
+      throw new Error('Could not load WalletConnect. A browser extension, ad blocker, or privacy shield may be blocking it — disable shields/ad blockers for this site (or try another browser), then tap Connect again.');
     }
-    const { EthereumProvider } = mod;
 
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';

@@ -219,9 +219,18 @@ async function connectWalletConnect(){
       }
     });
     await wcProvider.connect();
+    // connect() can resolve a beat before the session is fully wired onto the
+    // provider instance. If we immediately route through ethers, getSigner()
+    // fires eth_chainId at a not-yet-ready provider and it throws the cryptic
+    // "Please call connect() before request()". Wait for the session to settle
+    // and read the account straight off the WC provider instead of provoking an
+    // eth_chainId request through ethers.
+    await ensureWcReady();
+    if(!wcProvider.session || !(wcProvider.accounts && wcProvider.accounts.length)){
+      throw new Error('Wallet connected but no session was established. Tap Connect and approve again.');
+    }
     prov = new ethers.BrowserProvider(wcProvider);
-    const signer = await prov.getSigner();
-    acct = await signer.getAddress();
+    acct = ethers.getAddress(wcProvider.accounts[0]);
     await switchToEthereum(wcProvider);
     await onConnected();
     // Don't tear the page down while a transaction is awaiting signature — a phone

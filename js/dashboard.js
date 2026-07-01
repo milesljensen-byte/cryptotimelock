@@ -100,6 +100,13 @@ function copyAddress(){
 
 function disconnectWallet(){
   try{ if(wcProvider && wcProvider.disconnect) wcProvider.disconnect(); }catch(e){}
+  // Fully wipe WalletConnect state so the next connect is truly fresh (a fresh
+  // QR / new session) instead of reusing a now-orphaned session from storage.
+  try{
+    Object.keys(localStorage)
+      .filter(k => k.indexOf('wc@2') === 0 || k.toLowerCase().indexOf('walletconnect') !== -1)
+      .forEach(k => localStorage.removeItem(k));
+  }catch(e){}
   acct=null; prov=null; cont=null; readCont=null; locks=[]; selectedToken=null;
   tokenBalances={}; availableTokens=[]; currentActiveCount=0; wcProvider=null;
   if(lockTick){ clearInterval(lockTick); lockTick=null; }

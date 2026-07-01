@@ -188,6 +188,17 @@ async function ensureWcReady(timeoutMs = 8000){
   try{ return !!wcProvider.connected; }catch(e){ return false; }
 }
 
+// User tapped Reject/Cancel in their wallet — not an error; the flow should just
+// reset quietly instead of showing a scary red message.
+function isUserRejection(e){
+  const m = ((e && (e.reason || e.message)) || '').toLowerCase();
+  const code = e && (e.code || (e.info && e.info.error && e.info.error.code));
+  return code === 4001 || code === 'ACTION_REJECTED' ||
+         m.includes('user denied') || m.includes('user rejected') ||
+         m.includes('rejected the request') || m.includes('denied transaction') ||
+         m.includes('request rejected');
+}
+
 // True for the WalletConnect "session is gone / not connected" family of errors,
 // where the only real recovery is for the user to reconnect their wallet.
 function isWcSessionError(e){
@@ -228,7 +239,7 @@ function wipeWcSession(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630y';
+const APP_BUILD = '20260630z';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).
@@ -347,8 +358,9 @@ async function connectWalletConnect(){
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';
-    if(e.message && (e.message.includes('User rejected') || e.message.includes('user rejected') || e.message.includes('Modal closed'))){ return; }
-    showErr((e.message || 'WalletConnect failed') + '  ⟦diag ' + wcDiag() + '⟧');
+    if(isUserRejection(e) || (e.message && e.message.includes('Modal closed'))){ return; }
+    console.error('[TimeLock] WalletConnect connect failed:', e && e.message, wcDiag());
+    showErr(e.message || 'WalletConnect failed');
   }
 }
 

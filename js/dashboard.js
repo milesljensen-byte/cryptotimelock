@@ -651,7 +651,11 @@ async function doLock(){
     updateSummary();
   }catch(e){
     const raw = (e&&(e.reason||e.message))||String(e);
-    if(isWcPendingError(e)){
+    if(isUserRejection(e)){
+      // User cancelled in their wallet — not an error, just reset quietly.
+      clearAlerts();
+      showLockAnim('hide'); setApprovalStep(0);
+    }else if(isWcPendingError(e)){
       // The tx reached the wallet despite a relay id hiccup — don't alarm the
       // user; tell them to approve it and auto-refresh until the vault shows up.
       showOk(wcPendingMsg());
@@ -660,13 +664,14 @@ async function doLock(){
     }else if(isWcSessionError(e)){
       // Dead/orphaned session — clear it so the next Connect gives a fresh QR
       // instead of silently reusing the dead one (which would just fail again).
-      const d = wcDiag();
+      console.error('[TimeLock] WC session error:', raw, wcDiag());
       wipeWcSession();
       setConnectedUI(false);
-      showErr(wcReconnectMsg() + '  ⟦diag ' + d + ' | err: ' + raw + '⟧');
+      showErr(wcReconnectMsg());
       showLockAnim('hide'); setApprovalStep(0);
     }else{
-      showErr(raw + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+      console.error('[TimeLock] tx error:', raw, wcProvider ? wcDiag() : '');
+      showErr(raw);
       showLockAnim('hide'); setApprovalStep(0);
     }
   }
@@ -712,18 +717,22 @@ async function doWithdraw(id){
     syncTokenLabels();
   }catch(e){
     const raw = (e&&(e.reason||e.message))||String(e);
-    if(isWcPendingError(e)){
+    if(isUserRejection(e)){
+      clearAlerts();
+      showLockAnim('hide');
+    }else if(isWcPendingError(e)){
       showOk(wcPendingMsg());
       showLockAnim('hide');
       pollForNewVault();
     }else if(isWcSessionError(e)){
-      const d = wcDiag();
+      console.error('[TimeLock] WC session error:', raw, wcDiag());
       wipeWcSession();
       setConnectedUI(false);
-      showErr(wcReconnectMsg() + '  ⟦diag ' + d + ' | err: ' + raw + '⟧');
+      showErr(wcReconnectMsg());
       showLockAnim('hide');
     }else{
-      showErr(raw + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+      console.error('[TimeLock] tx error:', raw, wcProvider ? wcDiag() : '');
+      showErr(raw);
       showLockAnim('hide');
     }
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }

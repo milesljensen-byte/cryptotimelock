@@ -108,13 +108,13 @@ function showLockAnim(state){
 
   if(state === 'approving'){
     label.textContent = 'Step 1 of 2 — Approve';
-    sub.textContent = wcProvider ? 'Check your phone — can take up to 15 seconds' : 'Confirm in your wallet';
+    sub.textContent = wcProvider ? 'Check your phone — can take up to 30 seconds' : 'Confirm in your wallet — can take up to 30 seconds';
     setStep(1);
   }
 
   if(state === 'locking'){
     label.textContent = selectedToken ? 'Step 2 of 2 — Lock' : 'Locking your funds';
-    sub.textContent = wcProvider ? 'Check your phone — can take up to 15 seconds' : 'Confirm in your wallet';
+    sub.textContent = wcProvider ? 'Check your phone — can take up to 30 seconds' : 'Confirm in your wallet — can take up to 30 seconds';
     if(selectedToken) setStep(2); else setStep(null);
   }
 
@@ -148,7 +148,7 @@ function showLockAnim(state){
     // Shackle starts closed (vault is locked), opens slightly to hint at withdrawal
     setTimeout(()=>{
       label.textContent = wcProvider ? 'Confirm withdraw on your phone' : 'Confirm in wallet';
-      sub.textContent   = wcProvider ? 'Check your phone — can take up to 15 seconds' : 'Approve the transaction in your wallet';
+      sub.textContent   = wcProvider ? 'Check your phone — can take up to 30 seconds' : 'Approve the transaction in your wallet — can take up to 30 seconds';
       label.classList.add('show');
       sub.classList.add('show');
     }, 200);

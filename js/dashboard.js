@@ -644,14 +644,31 @@ async function doLock(){
     updateSummary();
   }catch(e){
     const raw = (e&&(e.reason||e.message))||String(e);
-    const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
-    showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
-    showLockAnim('hide'); setApprovalStep(0);
+    if(isWcPendingError(e)){
+      // The tx reached the wallet despite a relay id hiccup — don't alarm the
+      // user; tell them to approve it and auto-refresh until the vault shows up.
+      showOk(wcPendingMsg());
+      showLockAnim('hide'); setApprovalStep(0);
+      pollForNewVault();
+    }else{
+      const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
+      showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+      showLockAnim('hide'); setApprovalStep(0);
+    }
   }
   finally{
     if(btn){ btn.disabled=false; btn.dataset.limit=''; btn.textContent='Lock'; }
     updateLockLimitUI();
   }
+}
+
+// After a "pending" send (wallet was closed), the tx confirms once the user
+// reopens and approves. Poll Alchemy a few times so the new vault + balances
+// appear without the user needing to refresh.
+function pollForNewVault(){
+  [6000, 14000, 24000, 38000, 55000].forEach(ms => setTimeout(()=>{
+    try{ loadLocks(); loadTokenBalances(); updateSummary(); }catch(e){}
+  }, ms));
 }
 
 // ─── WITHDRAW ────────────────────────────────────────
@@ -681,9 +698,15 @@ async function doWithdraw(id){
     syncTokenLabels();
   }catch(e){
     const raw = (e&&(e.reason||e.message))||String(e);
-    const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
-    showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
-    showLockAnim('hide');
+    if(isWcPendingError(e)){
+      showOk(wcPendingMsg());
+      showLockAnim('hide');
+      pollForNewVault();
+    }else{
+      const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
+      showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+      showLockAnim('hide');
+    }
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }
   }
 }

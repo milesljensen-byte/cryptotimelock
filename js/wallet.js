@@ -160,7 +160,10 @@ function wcAge(){ return wcConnectedAt ? Math.round((Date.now()-wcConnectedAt)/1
 // Reconnect the relay whenever the page becomes visible again — standard WC
 // keepalive so the session/relay is live when the user returns.
 document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState === 'visible' && wcProvider){
+  // Never restart the relay while a transaction is awaiting approval — doing so
+  // invalidates the pending request id ("Invalid Id") even though the tx already
+  // reached the wallet.
+  if(document.visibilityState === 'visible' && wcProvider && !txInFlight){
     try{ wcProvider.signer?.client?.core?.relayer?.restartTransport?.(); }catch(e){}
   }
 });
@@ -198,9 +201,22 @@ function wcReconnectMsg(){
   return 'Your wallet session dropped (this can happen when your wallet app has been closed for a while). Open your wallet, then tap the wallet button at the top to reconnect and try again.';
 }
 
+// Errors where the request very likely still reached the wallet — a relay id/
+// tracking hiccup that happens when the wallet was closed while sending. The tx
+// can still be approved, so we treat these as "pending", not a hard failure.
+function isWcPendingError(e){
+  const m = ((e && (e.reason || e.message)) || '').toLowerCase();
+  return m.includes('invalid id') || m.includes('no matching key') ||
+         m.includes('record was recently deleted');
+}
+
+function wcPendingMsg(){
+  return 'Transaction sent to your wallet — open MetaMask and approve it. Your vault will appear here automatically once it confirms.';
+}
+
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630s';
+const APP_BUILD = '20260630t';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).

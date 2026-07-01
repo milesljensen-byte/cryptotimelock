@@ -194,17 +194,26 @@ async function waitForTx(tx){
 // WC provider; the wallet does its own gas estimation, and waitForTx() polls the
 // receipt via Alchemy. Injected (browser-extension) wallets keep the normal
 // ethers path. Returns an object with `.hash` so waitForTx() works for both.
+// True while a WalletConnect eth_sendTransaction is awaiting the user's approval.
+// While set, the visibilitychange relay-restart is suppressed — restarting the
+// relay socket mid-request invalidates the pending request id and throws
+// "Invalid Id" even though the tx reached the wallet.
+let txInFlight = false;
+
 async function sendContractTx(contract, method, args, value){
   if(wcProvider){
     const to   = await contract.getAddress();    // local — no RPC
     const data = contract.interface.encodeFunctionData(method, args);
     const tx   = { from: acct, to, data };
     if(value && value > 0n) tx.value = '0x' + value.toString(16);
+    txInFlight = true;
     try{
       // Send straight through the WC provider. Do NOT restart the relay first:
       // on a healthy session an idle socket still reports connected=false, and
       // restarting it here tears down the working transport and makes this very
-      // send fail. The SDK auto-reconnects the relay when publishing.
+      // send fail. The SDK auto-reconnects the relay when publishing. If the
+      // wallet is closed, the request stays pending and resolves when the user
+      // reopens and approves — as long as nothing disrupts the socket meanwhile.
       const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
       return { hash };
     }catch(e){
@@ -216,6 +225,8 @@ async function sendContractTx(contract, method, args, value){
       await ensureWcReady();
       const hash = await wcProvider.request({ method: 'eth_sendTransaction', params: [tx] });
       return { hash };
+    }finally{
+      txInFlight = false;
     }
   }
   const overrides = (value && value > 0n) ? { value } : {};

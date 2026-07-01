@@ -657,9 +657,16 @@ async function doLock(){
       showOk(wcPendingMsg());
       showLockAnim('hide'); setApprovalStep(0);
       pollForNewVault();
+    }else if(isWcSessionError(e)){
+      // Dead/orphaned session — clear it so the next Connect gives a fresh QR
+      // instead of silently reusing the dead one (which would just fail again).
+      const d = wcDiag();
+      wipeWcSession();
+      setConnectedUI(false);
+      showErr(wcReconnectMsg() + '  ⟦diag ' + d + ' | err: ' + raw + '⟧');
+      showLockAnim('hide'); setApprovalStep(0);
     }else{
-      const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
-      showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+      showErr(raw + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
       showLockAnim('hide'); setApprovalStep(0);
     }
   }
@@ -709,9 +716,14 @@ async function doWithdraw(id){
       showOk(wcPendingMsg());
       showLockAnim('hide');
       pollForNewVault();
+    }else if(isWcSessionError(e)){
+      const d = wcDiag();
+      wipeWcSession();
+      setConnectedUI(false);
+      showErr(wcReconnectMsg() + '  ⟦diag ' + d + ' | err: ' + raw + '⟧');
+      showLockAnim('hide');
     }else{
-      const base = isWcSessionError(e) ? wcReconnectMsg() : raw;
-      showErr(base + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
+      showErr(raw + (wcProvider ? ('  ⟦diag ' + wcDiag() + ' | err: ' + raw + '⟧') : ''));
       showLockAnim('hide');
     }
     if(btn){ btn.disabled=false; btn.textContent='Withdraw'; }

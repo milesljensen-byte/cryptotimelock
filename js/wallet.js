@@ -214,9 +214,21 @@ function wcPendingMsg(){
   return 'Transaction sent to your wallet — open MetaMask and approve it. Your vault will appear here automatically once it confirms.';
 }
 
+// Fully clear WalletConnect state after a dead/orphaned session so the NEXT
+// connect starts fresh with a new QR instead of silently reusing the dead one.
+function wipeWcSession(){
+  try{ if(wcProvider && wcProvider.disconnect) wcProvider.disconnect(); }catch(e){}
+  try{
+    Object.keys(localStorage)
+      .filter(k => k.indexOf('wc@2') === 0 || k.toLowerCase().indexOf('walletconnect') !== -1)
+      .forEach(k => localStorage.removeItem(k));
+  }catch(e){}
+  wcProvider = null;
+}
+
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630v';
+const APP_BUILD = '20260630w';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).

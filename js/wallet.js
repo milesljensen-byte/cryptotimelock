@@ -149,6 +149,22 @@ window.addEventListener('load', preloadWcSdk);
 
 let wcProvider = null;
 
+// Session lifecycle capture for diagnosis: which event kills the session and
+// how long after connect, plus a snapshot of state right after connect.
+let wcLastEvent = 'none';
+let wcConnSnap  = 'n/a';
+let wcConnectedAt = 0;
+function wcAge(){ return wcConnectedAt ? Math.round((Date.now()-wcConnectedAt)/1000)+'s' : 'n/a'; }
+
+// Mobile Safari suspends the tab (and its WebSocket) during the wallet round-trip.
+// Reconnect the relay whenever the page becomes visible again — standard WC
+// keepalive so the session/relay is live when the user returns.
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible' && wcProvider){
+    try{ wcProvider.signer?.client?.core?.relayer?.restartTransport?.(); }catch(e){}
+  }
+});
+
 // A phone wallet that's been backgrounded or closed for a while leaves the
 // WalletConnect relay socket idle, and the session can briefly fall out of the
 // provider. The next request (eth_accounts, eth_sendTransaction, …) then hits a
@@ -184,7 +200,7 @@ function wcReconnectMsg(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630q';
+const APP_BUILD = '20260630r';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).
@@ -201,7 +217,10 @@ function wcDiag(){
     'accts='       + g(()=>JSON.stringify(wcProvider.accounts||[])),
     'chainId='     + g(()=>String(wcProvider.chainId)),
     'acct='        + g(()=>String(acct)),
-    'curChain='    + g(()=>String(currentChainId))
+    'curChain='    + g(()=>String(currentChainId)),
+    'connSnap=['   + wcConnSnap + ']',
+    'lastEvt='     + wcLastEvent,
+    'age='         + wcAge()
   ].join(' ');
 }
 
@@ -260,6 +279,18 @@ async function connectWalletConnect(){
     const wcAcct = (wcProvider.accounts && wcProvider.accounts[0]) || '';
     if(!wcAcct) throw new Error('Wallet connected but returned no account. Please reconnect and approve access.');
     acct = ethers.getAddress(wcAcct);
+
+    // Snapshot state right after connect (before anything can kill it) and start
+    // capturing which lifecycle event nulls the session.
+    wcConnectedAt = Date.now();
+    wcConnSnap = 'signerSess=' + (!!(wcProvider.signer && wcProvider.signer.session)) +
+                 ' accts=' + ((wcProvider.accounts||[]).length);
+    const stamp = (name)=>()=>{ wcLastEvent = name + '@' + wcAge(); };
+    try{ wcProvider.on('session_delete', stamp('session_delete')); }catch(e){}
+    try{ wcProvider.on('session_expire', stamp('session_expire')); }catch(e){}
+    try{ wcProvider.signer?.client?.on?.('session_delete', stamp('cli_delete')); }catch(e){}
+    try{ wcProvider.signer?.client?.on?.('session_expire', stamp('cli_expire')); }catch(e){}
+
     await switchToEthereum(wcProvider);
     await onConnected();
     // A phone wallet that's closed during a transaction and then reopened
@@ -278,7 +309,7 @@ async function connectWalletConnect(){
     // Don't hard-reload on a transient disconnect — a closed phone wallet emits
     // one and the session reconnects when the wallet is reopened. Reloading here
     // logs the user out mid-flow, which is exactly what we're preventing.
-    wcProvider.on('disconnect', ()=>{});
+    wcProvider.on('disconnect', ()=>{ wcLastEvent = 'disconnect@' + wcAge(); });
   }catch(e){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';

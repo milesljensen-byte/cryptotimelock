@@ -223,9 +223,19 @@ async function connectWalletConnect(){
 
     wcProvider = await EthereumProvider.init({
       projectId: WC_PROJECT_ID,
-      optionalChains: [1],
-      optionalMethods: ['eth_sendTransaction','eth_signTransaction','personal_sign','eth_sign','eth_signTypedData','eth_signTypedData_v4','wallet_switchEthereumChain','wallet_addEthereumChain'],
-      optionalEvents: ['chainChanged','accountsChanged'],
+      // REQUIRED namespace — the way robust apps (Uniswap etc.) configure it.
+      // An optional-only namespace produces a fragile session whose active
+      // reference (signer.session) drops out, so requests throw "Please call
+      // connect() before request()" even though a session exists in the store.
+      // Requiring chain 1 + the signing methods/events gives a durable session.
+      chains: [1],
+      methods: ['eth_sendTransaction','personal_sign','eth_signTypedData','eth_signTypedData_v4'],
+      events: ['chainChanged','accountsChanged'],
+      optionalMethods: ['eth_signTransaction','eth_sign','wallet_switchEthereumChain','wallet_addEthereumChain'],
+      // Give the provider its own RPC so read methods (eth_chainId, eth_call,
+      // gas estimation) resolve via Alchemy and NEVER go over the WC session —
+      // only signing does. This is what keeps the session unstressed.
+      rpcMap: { 1: ALCHEMY_RPC },
       showQrModal: true,
       qrModalOptions: { themeMode: 'dark' },
       metadata: {

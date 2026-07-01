@@ -200,7 +200,7 @@ function wcReconnectMsg(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630r';
+const APP_BUILD = '20260630s';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).
@@ -242,20 +242,28 @@ async function connectWalletConnect(){
     }
     const { EthereumProvider } = mod;
 
+    // Wipe any stale WalletConnect state from previous connects before starting
+    // a fresh one. Diagnostics showed MetaMask sending session_delete ~1s after
+    // connect; leftover sessions/pairings from earlier attempts make MetaMask
+    // delete-on-conflict. A clean slate each time avoids that.
+    try{
+      Object.keys(localStorage)
+        .filter(k => k.indexOf('wc@2') === 0 || k.toLowerCase().indexOf('walletconnect') !== -1)
+        .forEach(k => localStorage.removeItem(k));
+    }catch(e){}
+
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';
 
     wcProvider = await EthereumProvider.init({
       projectId: WC_PROJECT_ID,
-      // REQUIRED namespace — the way robust apps (Uniswap etc.) configure it.
-      // An optional-only namespace produces a fragile session whose active
-      // reference (signer.session) drops out, so requests throw "Please call
-      // connect() before request()" even though a session exists in the store.
-      // Requiring chain 1 + the signing methods/events gives a durable session.
-      chains: [1],
-      methods: ['eth_sendTransaction','personal_sign','eth_signTypedData','eth_signTypedData_v4'],
-      events: ['chainChanged','accountsChanged'],
-      optionalMethods: ['eth_signTransaction','eth_sign','wallet_switchEthereumChain','wallet_addEthereumChain'],
+      // OPTIONAL-only namespace — the modern WalletConnect v2 standard. Required
+      // namespaces (chains/methods/events) are effectively deprecated in WC v2
+      // and MetaMask was deleting the session ~1s after approving one. Optional
+      // namespaces are what wallets expect today.
+      optionalChains: [1],
+      optionalMethods: ['eth_sendTransaction','eth_signTransaction','personal_sign','eth_sign','eth_signTypedData','eth_signTypedData_v4','wallet_switchEthereumChain','wallet_addEthereumChain'],
+      optionalEvents: ['chainChanged','accountsChanged'],
       // Give the provider its own RPC so read methods (eth_chainId, eth_call,
       // gas estimation) resolve via Alchemy and NEVER go over the WC session —
       // only signing does. This is what keeps the session unstressed.

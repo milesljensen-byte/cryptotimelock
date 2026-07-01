@@ -656,11 +656,12 @@ async function doLock(){
       clearAlerts();
       showLockAnim('hide'); setApprovalStep(0);
     }else if(isWcPendingError(e)){
-      // The tx reached the wallet despite a relay id hiccup — don't alarm the
-      // user; tell them to approve it and auto-refresh until the vault shows up.
-      showOk(wcPendingMsg());
-      showLockAnim('hide'); setApprovalStep(0);
-      pollForNewVault();
+      // The tx reached the wallet despite a relay id hiccup (wallet was closed).
+      // Keep the overlay up in a "waiting" state and poll the chain until the new
+      // vault appears — then show success (or hide quietly if the user cancels).
+      const before = locks.length;
+      showLockAnim('waiting');
+      waitForPendingSettle(()=> locks.length > before, 'done');
     }else if(isWcSessionError(e)){
       // Dead/orphaned session — clear it so the next Connect gives a fresh QR
       // instead of silently reusing the dead one (which would just fail again).
@@ -681,13 +682,22 @@ async function doLock(){
   }
 }
 
-// After a "pending" send (wallet was closed), the tx confirms once the user
-// reopens and approves. Poll Alchemy a few times so the new vault + balances
-// appear without the user needing to refresh.
-function pollForNewVault(){
-  [6000, 14000, 24000, 38000, 55000].forEach(ms => setTimeout(()=>{
-    try{ loadLocks(); loadTokenBalances(); updateSummary(); }catch(e){}
-  }, ms));
+// After a "pending" send (wallet was closed and the relay dropped the request
+// id), the original promise is gone but the tx still reaches the wallet. Keep the
+// overlay in its "waiting" state and poll the chain until `checkDone()` is true —
+// then play the success animation. If nothing confirms within the window (e.g.
+// the user cancelled), hide quietly with a neutral note.
+async function waitForPendingSettle(checkDone, doneState){
+  const MAX_MS = 120000;   // 2 minutes
+  const start = Date.now();
+  while(Date.now() - start < MAX_MS){
+    await new Promise(r => setTimeout(r, 5000));
+    try{ await loadLocks(); await loadTokenBalances(); updateSummary(); }catch(e){}
+    let done = false; try{ done = checkDone(); }catch(e){}
+    if(done){ showLockAnim(doneState); return; }
+  }
+  showLockAnim('hide');
+  showOk('If you approved the transaction, your vault will update shortly. If you cancelled, just try again.');
 }
 
 // ─── WITHDRAW ────────────────────────────────────────
@@ -721,9 +731,13 @@ async function doWithdraw(id){
       clearAlerts();
       showLockAnim('hide');
     }else if(isWcPendingError(e)){
-      showOk(wcPendingMsg());
-      showLockAnim('hide');
-      pollForNewVault();
+      // Wallet was closed during send; keep the overlay up and wait for the
+      // withdrawal to be reflected on-chain (lock becomes withdrawn).
+      showLockAnim('waiting');
+      waitForPendingSettle(()=>{
+        const lk = locks.find(x=>String(x.id)===String(id));
+        return !!(lk && (lk.withdrawn===true || lk.withdrawn==='true'));
+      }, 'withdraw-done');
     }else if(isWcSessionError(e)){
       console.error('[TimeLock] WC session error:', raw, wcDiag());
       wipeWcSession();

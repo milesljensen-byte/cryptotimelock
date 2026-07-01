@@ -221,10 +221,6 @@ function isWcPendingError(e){
          m.includes('record was recently deleted');
 }
 
-function wcPendingMsg(){
-  return 'Transaction sent to your wallet — open MetaMask and approve it. Your vault will appear here automatically once it confirms.';
-}
-
 // Fully clear WalletConnect state after a dead/orphaned session so the NEXT
 // connect starts fresh with a new QR instead of silently reusing the dead one.
 function wipeWcSession(){

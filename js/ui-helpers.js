@@ -123,6 +123,18 @@ function showLockAnim(state){
     sub.textContent = 'Almost there…';
   }
 
+  // Shown when the wallet was closed during send: the request reached the wallet
+  // but the dapp lost the promise, so we keep the overlay up and wait for the
+  // user to confirm while polling the chain for the result.
+  if(state === 'waiting'){
+    overlay.classList.add('show');
+    label.classList.add('show');
+    sub.classList.add('show');
+    if(stepInd) stepInd.style.display='none';
+    label.textContent = 'Waiting for your confirmation';
+    sub.textContent   = 'Confirm the transaction in your wallet — it can take up to a minute and completes on its own.';
+  }
+
   if(state === 'done'){
     label.textContent = 'Funds locked!';
     sub.textContent = 'Your vault is now sealed';

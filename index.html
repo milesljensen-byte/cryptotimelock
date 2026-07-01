@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<!-- Don't let the browser cache the HTML — otherwise a stale index.html keeps
+     pointing at old ?v= JS and deploys never reach the device. -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TimeLock: Lock Your Crypto on Ethereum, Safely</title>
 <meta name="description" content="TimeLock is a self-custody smart contract vault on Ethereum. Lock ETH or 34+ supported tokens from 10 minutes to 10 years. No admin keys, no company control, no early withdrawal." />
@@ -746,12 +751,12 @@ if (typeof ethers === 'undefined') {
 <!-- flatpickr — custom date/time picker for the lock duration -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 
-<script src="js/config.js?v=20260630p"></script>
-<script src="js/wallet.js?v=20260630p"></script>
-<script src="js/ui-helpers.js?v=20260630p"></script>
-<script src="js/admin.js?v=20260630p"></script>
-<script src="js/dashboard.js?v=20260630p"></script>
-<script src="js/landing.js?v=20260630p"></script>
+<script src="js/config.js?v=20260630q"></script>
+<script src="js/wallet.js?v=20260630q"></script>
+<script src="js/ui-helpers.js?v=20260630q"></script>
+<script src="js/admin.js?v=20260630q"></script>
+<script src="js/dashboard.js?v=20260630q"></script>
+<script src="js/landing.js?v=20260630q"></script>
 </body>
 </html>
 

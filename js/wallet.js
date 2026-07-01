@@ -182,13 +182,18 @@ function wcReconnectMsg(){
   return 'Your wallet session dropped (this can happen when your wallet app has been closed for a while). Open your wallet, then tap the wallet button at the top to reconnect and try again.';
 }
 
+// Build tag — surfaced in the diagnostic so we can confirm the device is
+// actually running the latest deploy and not a stale cached copy.
+const APP_BUILD = '20260630q';
+
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).
 // Remove once the root cause is fixed.
 function wcDiag(){
   const g = (fn)=>{ try{ return fn(); }catch(e){ return 'err'; } };
-  if(!wcProvider) return 'no-wcProvider';
+  if(!wcProvider) return 'build=' + APP_BUILD + ' no-wcProvider';
   return [
+    'build=' + APP_BUILD,
     'connected='   + g(()=>String(wcProvider.connected)),
     'session='     + g(()=>!!wcProvider.session),
     'signer='      + g(()=>!!wcProvider.signer),

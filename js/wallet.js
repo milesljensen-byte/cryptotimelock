@@ -216,7 +216,7 @@ function wcPendingMsg(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630t';
+const APP_BUILD = '20260630u';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).
@@ -258,16 +258,6 @@ async function connectWalletConnect(){
     }
     const { EthereumProvider } = mod;
 
-    // Wipe any stale WalletConnect state from previous connects before starting
-    // a fresh one. Diagnostics showed MetaMask sending session_delete ~1s after
-    // connect; leftover sessions/pairings from earlier attempts make MetaMask
-    // delete-on-conflict. A clean slate each time avoids that.
-    try{
-      Object.keys(localStorage)
-        .filter(k => k.indexOf('wc@2') === 0 || k.toLowerCase().indexOf('walletconnect') !== -1)
-        .forEach(k => localStorage.removeItem(k));
-    }catch(e){}
-
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';
 
@@ -293,7 +283,15 @@ async function connectWalletConnect(){
         icons: [location.origin + '/icon.svg']
       }
     });
-    await wcProvider.connect();
+    // Reuse an existing session if EthereumProvider.init restored one — DON'T
+    // call connect() again on top of it. Calling connect() when a session already
+    // exists mints a duplicate session on the wallet side; MetaMask then
+    // delete-on-conflicts and kills the session ~0s after connect. Only open the
+    // QR / connect when there is no live session to reuse.
+    const alreadyLive = !!(wcProvider.session && wcProvider.accounts && wcProvider.accounts.length);
+    if(!alreadyLive){
+      await wcProvider.connect();
+    }
     prov = new ethers.BrowserProvider(wcProvider);
     // Read the account straight off the WC provider. Routing getSigner()/
     // eth_accounts (and getNetwork()/eth_chainId) through ethers over

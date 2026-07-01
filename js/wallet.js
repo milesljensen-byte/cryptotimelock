@@ -228,7 +228,7 @@ function wipeWcSession(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630x';
+const APP_BUILD = '20260630y';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).
@@ -295,11 +295,14 @@ async function connectWalletConnect(){
         icons: [location.origin + '/icon.svg']
       }
     });
-    // Always call connect(): it sets up the eip155 namespace that request
-    // routing needs (skipping it left this.namespace undefined -> "this.namespace
-    // .methods is undefined" on send), and it internally REUSES a session that
-    // init() restored rather than minting a duplicate — so a returning user still
-    // isn't re-prompted with a QR.
+    // init() may have restored a previous session. We must NOT reuse it (its
+    // request namespace isn't wired -> "namespace.methods undefined") and must NOT
+    // call connect() on top of it (that mints a DUPLICATE session -> MetaMask
+    // session_delete's ~1s later). So cleanly end any restored session first —
+    // disconnect() removes it from BOTH the dapp and the wallet, leaving no
+    // orphan — then establish exactly ONE fresh, fully-initialized session.
+    // connect() sets the namespace and shows the QR.
+    try{ if(wcProvider.session) await wcProvider.disconnect(); }catch(e){}
     await wcProvider.connect();
     prov = new ethers.BrowserProvider(wcProvider);
     // Read the account straight off the WC provider. Routing getSigner()/

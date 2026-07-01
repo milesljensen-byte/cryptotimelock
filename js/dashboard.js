@@ -21,8 +21,15 @@ let datePicker = null;                  // flatpickr instance for the custom dat
 // ─── CONNECT LIFECYCLE ───────────────────────────────
 async function onConnected(){
   try{
-    const network = await prov.getNetwork();
-    currentChainId = Number(network.chainId);
+    // For WalletConnect read the chain from the provider property — routing
+    // getNetwork()/eth_chainId through ethers over WC throws "Please call
+    // connect() before request()". Injected wallets keep the ethers path.
+    if(wcProvider){
+      currentChainId = Number(wcProvider.chainId);
+    }else{
+      const network = await prov.getNetwork();
+      currentChainId = Number(network.chainId);
+    }
     const net = getNetwork(currentChainId);
 
     if(!CONTRACTS[currentChainId]){
@@ -37,7 +44,9 @@ async function onConnected(){
     CONTRACT_ADDRESS = CONTRACTS[currentChainId];
     readProv = new ethers.JsonRpcProvider(ALCHEMY_RPC);
     readCont = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProv);
-    cont     = new ethers.Contract(CONTRACT_ADDRESS, ABI, await prov.getSigner());
+    // WC: sendContractTx publishes via wcProvider.request (no ethers signer
+    // needed), so bind to the read provider and never call getSigner() over WC.
+    cont     = new ethers.Contract(CONTRACT_ADDRESS, ABI, wcProvider ? readProv : await prov.getSigner());
 
     updateSymbols(net.symbol);
     setConnectedUI(true, net.name);

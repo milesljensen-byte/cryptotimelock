@@ -84,7 +84,12 @@ function closeWalletModal(){
 let isConnecting = false;
 
 async function switchToEthereum(provider){
-  const chainId = await provider.request({method:'eth_chainId'});
+  // Prefer the provider's own chainId property (WalletConnect exposes it as a
+  // number) over an eth_chainId request, which can throw over a flaky WC
+  // session. Injected wallets fall through to the request as before.
+  let chainId;
+  try{ chainId = await provider.request({method:'eth_chainId'}); }
+  catch(e){ if(provider.chainId!=null) chainId = '0x'+Number(provider.chainId).toString(16); }
   if(chainId === '0x1') return;
   try{
     await provider.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x1'}]});
@@ -232,8 +237,14 @@ async function connectWalletConnect(){
     });
     await wcProvider.connect();
     prov = new ethers.BrowserProvider(wcProvider);
-    const signer = await prov.getSigner();
-    acct = await signer.getAddress();
+    // Read the account straight off the WC provider. Routing getSigner()/
+    // eth_accounts (and getNetwork()/eth_chainId) through ethers over
+    // WalletConnect is unreliable and throws "Please call connect() before
+    // request()". sendContractTx() publishes via wcProvider.request directly, so
+    // we never need an ethers signer on the WC path.
+    const wcAcct = (wcProvider.accounts && wcProvider.accounts[0]) || '';
+    if(!wcAcct) throw new Error('Wallet connected but returned no account. Please reconnect and approve access.');
+    acct = ethers.getAddress(wcAcct);
     await switchToEthereum(wcProvider);
     await onConnected();
     // A phone wallet that's closed during a transaction and then reopened
@@ -257,7 +268,7 @@ async function connectWalletConnect(){
     if(wcLabel) wcLabel.textContent = 'Scan QR · Any mobile wallet';
     if(wcBtn) wcBtn.style.opacity = '1';
     if(e.message && (e.message.includes('User rejected') || e.message.includes('user rejected') || e.message.includes('Modal closed'))){ return; }
-    showErr(e.message || 'WalletConnect failed');
+    showErr((e.message || 'WalletConnect failed') + '  ⟦diag ' + wcDiag() + '⟧');
   }
 }
 

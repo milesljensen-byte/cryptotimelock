@@ -44,7 +44,12 @@ function renderWalletModal(){
     detectedEl.innerHTML = '';
   }
 
-  popularEl.innerHTML = POPULAR_WALLETS.map((w,i) => `
+  // Don't list a wallet under "Popular" if it already showed up under
+  // "Installed" (detected via EIP-6963) — same wallet, no need to show it twice.
+  const detectedNames = new Set(detected.map(({info}) => info.name.toLowerCase()));
+  const popularToShow = POPULAR_WALLETS.filter(w => !detectedNames.has(w.name.toLowerCase()));
+
+  popularEl.innerHTML = popularToShow.map((w,i) => `
     <button data-wallet-index="${i}" data-name="${esc(w.name).toLowerCase()}"
       style="width:100%;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:.75rem 1rem;cursor:pointer;box-sizing:border-box"
       onmouseover="this.style.background='rgba(255,255,255,.07)'"
@@ -55,7 +60,7 @@ function renderWalletModal(){
     </button>
   `).join('');
   popularEl.querySelectorAll('button[data-wallet-index]').forEach(btn=>{
-    const w=POPULAR_WALLETS[parseInt(btn.dataset.walletIndex)];
+    const w=popularToShow[parseInt(btn.dataset.walletIndex)];
     btn.addEventListener('click',()=>{
       if(isMobile && w.mobile){ window.location.href=w.mobile; }
       else if(isMobile && !w.mobile && w.name === 'Exodus'){

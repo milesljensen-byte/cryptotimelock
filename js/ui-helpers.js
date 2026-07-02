@@ -10,7 +10,7 @@ function esc(str){
 // (never throws, e.g. if the pixel is blocked or not yet configured).
 const TWQ_EVENT_IDS = {
   // wallet_modal_opened: 'tw-XXXXX-XXXXX',
-  // wallet_connected:    'tw-XXXXX-XXXXX',
+  wallet_connected:       'tw-rda5s-rdbn4',
   // deposit_completed:   'tw-XXXXX-XXXXX',
   // withdraw_completed:  'tw-XXXXX-XXXXX',
 };

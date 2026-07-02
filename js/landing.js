@@ -188,6 +188,37 @@ else { wireViewNav(); }
     });
   });
 
+  // Welcome modal — first-visit trust primer, shown ONCE per device.
+  // Any dismissal (✕, backdrop, ESC, "Look around first", or the Connect CTA)
+  // sets the localStorage flag so it never appears again. If the visitor has
+  // already jumped into the app view before the delay fires, we skip showing it
+  // WITHOUT setting the flag — they never saw it, so they get it next visit.
+  (function(){
+    const m=document.getElementById('welcome-modal');
+    if(!m) return;
+    const KEY='tl_welcome_seen';
+    let seen=null;
+    try{ seen=localStorage.getItem(KEY); }catch(e){}
+    if(seen) return;
+    const markSeen=()=>{ try{ localStorage.setItem(KEY,'1'); }catch(e){} };
+    const close=()=>{ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow=''; markSeen(); };
+    m.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',close));
+    // The Connect CTA is also wired by wireViewNav (data-launch → app view +
+    // wallet modal); here we only mark it seen and release the scroll lock.
+    m.querySelectorAll('[data-launch]').forEach(el=>el.addEventListener('click',()=>{
+      markSeen(); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+    }));
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&m.classList.contains('open')) close(); });
+    setTimeout(()=>{
+      const landing=document.getElementById('landingView');
+      if(!landing || landing.style.display==='none') return; // already in the app — don't interrupt
+      m.classList.add('open');
+      m.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      trackEvent('welcome_modal_shown');
+    },1600);
+  })();
+
   // Terms modal
   (function(){
     const m=document.getElementById('terms-modal');

@@ -252,7 +252,7 @@ function wipeWcSession(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260702a';
+const APP_BUILD = '20260703a';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).

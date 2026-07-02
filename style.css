@@ -340,10 +340,10 @@
     background:linear-gradient(165deg,var(--bg-elev),var(--bg));border:1px solid var(--line);
     box-shadow:0 40px 100px -30px rgba(0,0,0,.9);animation:pop .35s cubic-bezier(.2,.8,.2,1)}
   @keyframes pop{from{opacity:0;transform:translateY(24px) scale(.97)}}
-  #terms-modal .modal-x{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:11px;
+  #terms-modal .modal-x,#welcome-modal .modal-x{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:11px;
     background:rgba(242,237,227,.05);border:1px solid var(--line-soft);color:var(--ink);
     font-size:.95rem;cursor:pointer;transition:background .25s,color .25s,transform .35s;z-index:3}
-  #terms-modal .modal-x:hover{background:rgba(201,168,76,.14);color:var(--gold-bright);transform:rotate(90deg)}
+  #terms-modal .modal-x:hover,#welcome-modal .modal-x:hover{background:rgba(201,168,76,.14);color:var(--gold-bright);transform:rotate(90deg)}
   .modal-head{padding:34px 38px 20px;border-bottom:1px solid var(--line-soft)}
   .modal-title{font-family:'Syne';font-weight:700;font-size:1.7rem}
   .modal-body{padding:26px 38px;overflow-y:auto}
@@ -358,6 +358,31 @@
   .modal-body::-webkit-scrollbar{width:8px}
   .modal-body::-webkit-scrollbar-thumb{background:rgba(201,168,76,.28);border-radius:8px}
   @media(max-width:560px){.modal-head,.modal-body,.modal-foot{padding-left:24px;padding-right:24px}}
+
+  /* ---------- welcome modal (first visit, shown once) ---------- */
+  .welcome-card{width:min(560px,100%);padding:44px 42px 36px;overflow-y:auto}
+  .welcome-title{font-family:'Syne';font-weight:700;font-size:1.8rem;line-height:1.15;margin:10px 0 24px}
+  .welcome-points{list-style:none;margin:0 0 28px;padding:0;display:flex;flex-direction:column;gap:18px}
+  .welcome-points li{display:flex;gap:14px;align-items:flex-start}
+  .wp-ico{flex-shrink:0;width:38px;height:38px;border-radius:11px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);display:flex;align-items:center;justify-content:center;color:var(--gold-bright)}
+  .wp-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .welcome-points p{color:var(--muted);font-size:.92rem;line-height:1.55;margin:0}
+  .welcome-points b{color:var(--ink);display:block;margin-bottom:3px;font-weight:600}
+  .welcome-points a{color:var(--gold-bright);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.4);transition:border-color .25s}
+  .welcome-points a:hover{border-color:var(--gold-bright)}
+  .welcome-cta{display:flex;gap:12px;flex-wrap:wrap}
+  .welcome-note{margin-top:18px;font-family:'Space Mono';font-size:.68rem;color:var(--muted);letter-spacing:.04em}
+  @media(max-width:560px){
+    .welcome-card{padding:30px 22px 24px}
+    .welcome-title{font-size:1.4rem;margin-bottom:18px}
+    .welcome-points{gap:14px;margin-bottom:22px}
+    .welcome-points p{font-size:.88rem}
+    .wp-ico{width:34px;height:34px}
+    /* Stack the CTAs full-width so neither label wraps to two lines */
+    .welcome-cta{flex-direction:column}
+    .welcome-cta .btn{width:100%;text-align:center;justify-content:center;box-sizing:border-box}
+    .welcome-note{margin-top:14px}
+  }
 
   /* ---------- reveal ---------- */
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}

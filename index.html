@@ -45,7 +45,7 @@
 <!-- ?v= cache-bust is MANDATORY here, same as the JS includes below — without
      it browsers hold a stale stylesheet for days (this is how the footer social
      icons shipped unstyled to devices that had an older cached style.css). -->
-<link rel="stylesheet" href="style.css?v=20260702b" />
+<link rel="stylesheet" href="style.css?v=20260703a" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
      via trackEvent(), using the event IDs in TWQ_EVENT_IDS. -->
@@ -308,6 +308,38 @@ twq('config','tw-rda5s');
     </nav>
   </div>
 </footer>
+
+<!-- WELCOME MODAL — first-visit trust primer. Shown ONCE per device
+     (localStorage 'tl_welcome_seen', wired in js/landing.js) after a short
+     delay so the hero paints first. Every claim in it is verifiable on-chain;
+     keep it that way — no invented stats or social proof. -->
+<div class="modal" id="welcome-modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card welcome-card" role="dialog" aria-modal="true" aria-label="Welcome to TimeLock">
+    <button class="modal-x" data-close aria-label="Close">&#10005;</button>
+    <div class="sec-eyebrow">First time here?</div>
+    <h3 class="welcome-title">Your crypto stays yours.<br>Even from us.</h3>
+    <ul class="welcome-points">
+      <li>
+        <span class="wp-ico"><svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <p><b>Your funds go to a contract, not to us.</b>Locked crypto is held by an immutable smart contract on Ethereum. It never touches our hands.</p>
+      </li>
+      <li>
+        <span class="wp-ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+        <p><b>Withdrawals can never be blocked.</b>Only your wallet can withdraw once your lock expires. There is no override, pause, or backdoor on withdrawals.</p>
+      </li>
+      <li>
+        <span class="wp-ico"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <p><b>Don't trust us — verify.</b>The full contract code is public and <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">verified on Etherscan&nbsp;&#8599;</a>.</p>
+      </li>
+    </ul>
+    <div class="welcome-cta">
+      <a href="#" data-launch="1" class="btn lg">Connect Wallet</a>
+      <button class="btn ghost lg" data-close type="button">Look around first</button>
+    </div>
+    <div class="welcome-note">Shown once — we won't ask again.</div>
+  </div>
+</div>
 
 <!-- TERMS MODAL -->
 <div class="modal" id="terms-modal" aria-hidden="true">
@@ -807,12 +839,12 @@ if (typeof ethers === 'undefined') {
 <!-- flatpickr — custom date/time picker for the lock duration -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js" integrity="sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6" crossorigin="anonymous"></script>
 
-<script src="js/config.js?v=20260702a"></script>
-<script src="js/wallet.js?v=20260702a"></script>
-<script src="js/ui-helpers.js?v=20260702a"></script>
-<script src="js/admin.js?v=20260702a"></script>
-<script src="js/dashboard.js?v=20260702a"></script>
-<script src="js/landing.js?v=20260702a"></script>
+<script src="js/config.js?v=20260703a"></script>
+<script src="js/wallet.js?v=20260703a"></script>
+<script src="js/ui-helpers.js?v=20260703a"></script>
+<script src="js/admin.js?v=20260703a"></script>
+<script src="js/dashboard.js?v=20260703a"></script>
+<script src="js/landing.js?v=20260703a"></script>
 </body>
 </html>
 

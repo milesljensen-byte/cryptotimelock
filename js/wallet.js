@@ -79,6 +79,7 @@ function openWalletModal(){
   window.dispatchEvent(new Event('eip6963:requestProvider'));
   renderWalletModal();
   document.getElementById('walletModal').style.display='flex';
+  trackEvent('wallet_modal_opened');
 }
 
 function closeWalletModal(){
@@ -117,6 +118,7 @@ async function connectEIP6963(uuid){
     const signer = await prov.getSigner();
     acct = await signer.getAddress();
     await onConnected();
+    trackEvent('wallet_connected', {method:'injected_eip6963'});
     // Only attach listeners AFTER connection is complete
     provider.on('accountsChanged', ()=>location.reload());
     provider.on('chainChanged', ()=>{ if(!isConnecting) location.reload(); });
@@ -136,6 +138,7 @@ async function connectByName(name){
     const signer = await prov.getSigner();
     acct = await signer.getAddress();
     await onConnected();
+    trackEvent('wallet_connected', {method:'injected_named'});
     // Only attach listeners AFTER connection is complete
     window.ethereum.on('accountsChanged', ()=>location.reload());
     window.ethereum.on('chainChanged', ()=>{ if(!isConnecting) location.reload(); });
@@ -339,6 +342,7 @@ async function connectWalletConnect(){
 
     await switchToEthereum(wcProvider);
     await onConnected();
+    trackEvent('wallet_connected', {method:'walletconnect'});
     // A phone wallet that's closed during a transaction and then reopened
     // re-emits accountsChanged/chainChanged with the SAME account/chain. The
     // old handlers reloaded on those echoes, which kicked the user out and

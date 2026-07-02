@@ -646,6 +646,7 @@ async function doLock(){
     showLockAnim('done');
     setApprovalStep(0);
     showOk('✓ '+currentSymbol+' locked successfully!');
+    trackEvent('deposit_completed', {symbol:currentSymbol});
     await loadTokenBalances();
     await loadLocks();
     updateSummary();
@@ -662,7 +663,7 @@ async function doLock(){
       // screen — the user sees the same thing whether or not their wallet was
       // closed. Quietly poll the chain until the new vault appears.
       const before = locks.length;
-      waitForPendingSettle(()=> locks.length > before, 'done');
+      waitForPendingSettle(()=> locks.length > before, 'done', 'deposit_completed', {symbol:currentSymbol, viaPendingRecover:true});
     }else if(isWcSessionError(e)){
       // Dead/orphaned session — clear it so the next Connect gives a fresh QR
       // instead of silently reusing the dead one (which would just fail again).
@@ -692,7 +693,7 @@ async function doLock(){
 // to detect a wallet-side rejection directly (a rejected tx leaves no on-chain
 // trace), so a manual cancel is the only way for the user to end the wait early.
 let txWaitCancelled = false;
-async function waitForPendingSettle(checkDone, doneState){
+async function waitForPendingSettle(checkDone, doneState, eventName, eventParams){
   txWaitCancelled = false;
   const MAX_MS = 120000;   // 2 minutes
   const start = Date.now();
@@ -702,7 +703,11 @@ async function waitForPendingSettle(checkDone, doneState){
     try{ await loadLocks(); await loadTokenBalances(); updateSummary(); }catch(e){}
     if(txWaitCancelled) return;
     let done = false; try{ done = checkDone(); }catch(e){}
-    if(done){ showLockAnim(doneState); return; }
+    if(done){
+      showLockAnim(doneState);
+      if(eventName) trackEvent(eventName, eventParams);
+      return;
+    }
   }
   if(txWaitCancelled) return;
   showLockAnim('hide');
@@ -742,6 +747,7 @@ async function doWithdraw(id){
     await waitForTx(tx);
     showLockAnim('withdraw-done');
     showOk('✓ Withdrawal successful!');
+    trackEvent('withdraw_completed');
     await loadTokenBalances();
     await loadLocks();
     syncTokenLabels();
@@ -757,7 +763,7 @@ async function doWithdraw(id){
       waitForPendingSettle(()=>{
         const lk = locks.find(x=>String(x.id)===String(id));
         return !!(lk && (lk.withdrawn===true || lk.withdrawn==='true'));
-      }, 'withdraw-done');
+      }, 'withdraw-done', 'withdraw_completed', {viaPendingRecover:true});
     }else if(isWcSessionError(e)){
       console.error('[TimeLock] WC session error:', raw, wcDiag());
       wipeWcSession();

@@ -2,6 +2,27 @@ function esc(str){
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+// ─── FUNNEL TRACKING ────────────────────────────────
+// Lightweight event log for the ad → connect → deposit funnel. Always logs to
+// the console so drop-off is visible while testing. Also forwards to the X
+// (Twitter) pixel once TWQ_EVENT_IDS below is filled in with real event IDs
+// from X Ads → Tools → Events Manager — until then this is a harmless no-op
+// (never throws, e.g. if the pixel is blocked or not yet configured).
+const TWQ_EVENT_IDS = {
+  // wallet_modal_opened: 'tw-XXXXX-XXXXX',
+  // wallet_connected:    'tw-XXXXX-XXXXX',
+  // deposit_completed:   'tw-XXXXX-XXXXX',
+  // withdraw_completed:  'tw-XXXXX-XXXXX',
+};
+function trackEvent(name, params){
+  try{ console.log('[TimeLock] event:', name, params||''); }catch(e){}
+  try{
+    if(window.twq && TWQ_EVENT_IDS[name]){
+      window.twq('event', TWQ_EVENT_IDS[name], params||{});
+    }
+  }catch(e){}
+}
+
 function calcPct(l){
   const total=l.unlockTime-l.createdAt;
   if(total<=0)return 100;

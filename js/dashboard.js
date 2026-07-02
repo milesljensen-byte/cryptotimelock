@@ -661,9 +661,11 @@ async function doLock(){
       // Leave the overlay exactly as it already is ("Locking your funds — Confirm
       // the transaction in your wallet…") instead of switching to a different
       // screen — the user sees the same thing whether or not their wallet was
-      // closed. Quietly poll the chain until the new vault appears.
+      // closed. Quietly poll the chain until the new vault appears — using a
+      // lightweight count read (not a full loadLocks) so the list behind the
+      // overlay doesn't flicker while we wait.
       const before = locks.length;
-      waitForPendingSettle(()=> locks.length > before, 'done', 'deposit_completed', {symbol:currentSymbol, viaPendingRecover:true});
+      waitForPendingSettle(async()=> Number(await readCont.getUserLockCount(acct)) > before, 'done', 'deposit_completed', {symbol:currentSymbol, viaPendingRecover:true});
     }else if(isWcSessionError(e)){
       // Dead/orphaned session — clear it so the next Connect gives a fresh QR
       // instead of silently reusing the dead one (which would just fail again).
@@ -686,12 +688,14 @@ async function doLock(){
 
 // After a "pending" send (wallet was closed and the relay dropped the request
 // id), the original promise is gone but the tx still reaches the wallet. The
-// overlay is left showing whatever it already displayed; we just poll the chain
-// in the background until `checkDone()` is true, then play the success
-// animation. The user can bail out early with the Cancel button (cancelTxWait,
-// which flips txWaitCancelled) rather than being stuck waiting — we have no way
-// to detect a wallet-side rejection directly (a rejected tx leaves no on-chain
-// trace), so a manual cancel is the only way for the user to end the wait early.
+// overlay is left showing whatever it already displayed; we poll the chain with
+// a LIGHTWEIGHT read (`checkDone` — a single count/flag call, NOT a full
+// loadLocks) so the vault list behind the overlay doesn't flicker while we wait.
+// Only when it's actually done do we run the full UI refresh, once. The user can
+// bail out early with the Cancel button (cancelTxWait, which flips
+// txWaitCancelled) — we can't detect a wallet-side rejection directly (a
+// rejected tx leaves no on-chain trace), so a manual cancel is the only way to
+// end the wait early.
 let txWaitCancelled = false;
 async function waitForPendingSettle(checkDone, doneState, eventName, eventParams){
   txWaitCancelled = false;
@@ -700,10 +704,11 @@ async function waitForPendingSettle(checkDone, doneState, eventName, eventParams
   while(Date.now() - start < MAX_MS){
     await new Promise(r => setTimeout(r, 5000));
     if(txWaitCancelled) return;
-    try{ await loadLocks(); await loadTokenBalances(); updateSummary(); }catch(e){}
+    let done = false; try{ done = await checkDone(); }catch(e){}
     if(txWaitCancelled) return;
-    let done = false; try{ done = checkDone(); }catch(e){}
     if(done){
+      // Confirmed — now do the full (flickery) refresh once, then celebrate.
+      try{ await loadLocks(); await loadTokenBalances(); updateSummary(); }catch(e){}
       showLockAnim(doneState);
       if(eventName) trackEvent(eventName, eventParams);
       return;
@@ -759,10 +764,11 @@ async function doWithdraw(id){
     }else if(isWcPendingError(e)){
       // Wallet was closed during send; leave the overlay exactly as it already
       // is ("Withdrawing your funds — Confirm the transaction in your wallet…")
-      // and quietly wait for the withdrawal to be reflected on-chain.
-      waitForPendingSettle(()=>{
-        const lk = locks.find(x=>String(x.id)===String(id));
-        return !!(lk && (lk.withdrawn===true || lk.withdrawn==='true'));
+      // and quietly wait for the withdrawal to be reflected on-chain. Lightweight
+      // getLock read (not a full loadLocks) so the list behind doesn't flicker.
+      waitForPendingSettle(async()=>{
+        const l = await readCont.getLock(id);
+        return l.withdrawn === true;
       }, 'withdraw-done', 'withdraw_completed', {viaPendingRecover:true});
     }else if(isWcSessionError(e)){
       console.error('[TimeLock] WC session error:', raw, wcDiag());

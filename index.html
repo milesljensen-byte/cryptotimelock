@@ -18,7 +18,15 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="TimeLock: Lock Your Crypto on Ethereum, Safely" />
 <meta name="twitter:description" content="A self-custody smart contract vault on Ethereum. Lock ETH or supported tokens from 10 minutes to 10 years." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230C0A08'/%3E%3Cg fill='none' stroke='%23C9A84C' stroke-width='7' stroke-linecap='round'%3E%3Ccircle cx='50' cy='50' r='30'/%3E%3Cline x1='50' y1='50' x2='50' y2='30'/%3E%3Cline x1='50' y1='50' x2='64' y2='57'/%3E%3C/g%3E%3C/svg%3E" />
+<!-- Real, crawlable favicon files (not a data: URI) — Google's crawler needs an
+     actual fetchable URL to index a site icon for search results. -->
+<link rel="icon" type="image/svg+xml" href="/icon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta property="og:image" content="https://cryptotimelock.xyz/icon-192.png" />
+<meta name="twitter:image" content="https://cryptotimelock.xyz/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,6 +38,8 @@
   "@type": "WebApplication",
   "name": "TimeLock",
   "url": "https://cryptotimelock.xyz/",
+  "logo": "https://cryptotimelock.xyz/icon-192.png",
+  "image": "https://cryptotimelock.xyz/icon-192.png",
   "description": "A self-custody smart contract vault on Ethereum. Lock ETH or supported tokens from 10 minutes to 10 years. No admin keys, no company control, no early withdrawal.",
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "Any",
@@ -731,6 +741,7 @@
           <span id="laStep2Text" style="font-size:12px;color:var(--t3);font-family:'Inter'">Lock</span>
         </div>
       </div>
+      <button type="button" id="laCancelBtn" class="btn ghost sm" style="display:none;margin-top:1.25rem" onclick="cancelTxWait()">Cancel</button>
     </div>
   </div>
 </div>
@@ -751,12 +762,12 @@ if (typeof ethers === 'undefined') {
 <!-- flatpickr — custom date/time picker for the lock duration -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 
-<script src="js/config.js?v=20260701c"></script>
-<script src="js/wallet.js?v=20260701c"></script>
-<script src="js/ui-helpers.js?v=20260701c"></script>
-<script src="js/admin.js?v=20260701c"></script>
-<script src="js/dashboard.js?v=20260701c"></script>
-<script src="js/landing.js?v=20260701c"></script>
+<script src="js/config.js?v=20260701e"></script>
+<script src="js/wallet.js?v=20260701e"></script>
+<script src="js/ui-helpers.js?v=20260701e"></script>
+<script src="js/admin.js?v=20260701e"></script>
+<script src="js/dashboard.js?v=20260701e"></script>
+<script src="js/landing.js?v=20260701e"></script>
 </body>
 </html>
 

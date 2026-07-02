@@ -657,10 +657,11 @@ async function doLock(){
       showLockAnim('hide'); setApprovalStep(0);
     }else if(isWcPendingError(e)){
       // The tx reached the wallet despite a relay id hiccup (wallet was closed).
-      // Keep the overlay up in a "waiting" state and poll the chain until the new
-      // vault appears — then show success (or hide quietly if the user cancels).
+      // Leave the overlay exactly as it already is ("Locking your funds — Confirm
+      // the transaction in your wallet…") instead of switching to a different
+      // screen — the user sees the same thing whether or not their wallet was
+      // closed. Quietly poll the chain until the new vault appears.
       const before = locks.length;
-      showLockAnim('waiting');
       waitForPendingSettle(()=> locks.length > before, 'done');
     }else if(isWcSessionError(e)){
       // Dead/orphaned session — clear it so the next Connect gives a fresh QR
@@ -683,21 +684,40 @@ async function doLock(){
 }
 
 // After a "pending" send (wallet was closed and the relay dropped the request
-// id), the original promise is gone but the tx still reaches the wallet. Keep the
-// overlay in its "waiting" state and poll the chain until `checkDone()` is true —
-// then play the success animation. If nothing confirms within the window (e.g.
-// the user cancelled), hide quietly with a neutral note.
+// id), the original promise is gone but the tx still reaches the wallet. The
+// overlay is left showing whatever it already displayed; we just poll the chain
+// in the background until `checkDone()` is true, then play the success
+// animation. The user can bail out early with the Cancel button (cancelTxWait,
+// which flips txWaitCancelled) rather than being stuck waiting — we have no way
+// to detect a wallet-side rejection directly (a rejected tx leaves no on-chain
+// trace), so a manual cancel is the only way for the user to end the wait early.
+let txWaitCancelled = false;
 async function waitForPendingSettle(checkDone, doneState){
+  txWaitCancelled = false;
   const MAX_MS = 120000;   // 2 minutes
   const start = Date.now();
   while(Date.now() - start < MAX_MS){
     await new Promise(r => setTimeout(r, 5000));
+    if(txWaitCancelled) return;
     try{ await loadLocks(); await loadTokenBalances(); updateSummary(); }catch(e){}
+    if(txWaitCancelled) return;
     let done = false; try{ done = checkDone(); }catch(e){}
     if(done){ showLockAnim(doneState); return; }
   }
+  if(txWaitCancelled) return;
   showLockAnim('hide');
-  showOk('If you approved the transaction, your vault will update shortly. If you cancelled, just try again.');
+  showOk('Still no confirmation from your wallet. If you approved it, your vault will update shortly — otherwise nothing happened and you can try again.');
+}
+
+// Wired to the overlay's Cancel button. We can't know whether the user actually
+// rejected in their wallet (no on-chain trace for a rejection) — this just stops
+// the app from waiting on it any longer.
+function cancelTxWait(){
+  txWaitCancelled = true;
+  showLockAnim('hide');
+  setApprovalStep(0);
+  clearAlerts();
+  showOk('Stopped waiting. If you already approved in your wallet, it will still go through — otherwise nothing happened.');
 }
 
 // ─── WITHDRAW ────────────────────────────────────────
@@ -731,9 +751,9 @@ async function doWithdraw(id){
       clearAlerts();
       showLockAnim('hide');
     }else if(isWcPendingError(e)){
-      // Wallet was closed during send; keep the overlay up and wait for the
-      // withdrawal to be reflected on-chain (lock becomes withdrawn).
-      showLockAnim('waiting');
+      // Wallet was closed during send; leave the overlay exactly as it already
+      // is ("Withdrawing your funds — Confirm the transaction in your wallet…")
+      // and quietly wait for the withdrawal to be reflected on-chain.
       waitForPendingSettle(()=>{
         const lk = locks.find(x=>String(x.id)===String(id));
         return !!(lk && (lk.withdrawn===true || lk.withdrawn==='true'));

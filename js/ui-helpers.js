@@ -73,6 +73,15 @@ function showLockAnim(state){
   const step2Dot = document.getElementById('laStep2Dot');
   const step1Text = document.getElementById('laStep1Text');
   const step2Text = document.getElementById('laStep2Text');
+  const cancelBtn = document.getElementById('laCancelBtn');
+
+  // "Cancel" is only useful while we're still waiting on the wallet — once a tx
+  // hash exists (confirming/done states) the transaction is already on its way
+  // and can't be un-sent, so hide it there.
+  if(cancelBtn){
+    const waitingStates = ['start','approving','locking','withdrawing'];
+    cancelBtn.style.display = waitingStates.includes(state) ? 'inline-flex' : 'none';
+  }
 
   function setStep(active){
     if(!stepInd) return;
@@ -121,18 +130,6 @@ function showLockAnim(state){
   if(state === 'confirming'){
     label.textContent = 'Confirming on chain';
     sub.textContent = 'Almost there…';
-  }
-
-  // Shown when the wallet was closed during send: the request reached the wallet
-  // but the dapp lost the promise, so we keep the overlay up and wait for the
-  // user to confirm while polling the chain for the result.
-  if(state === 'waiting'){
-    overlay.classList.add('show');
-    label.classList.add('show');
-    sub.classList.add('show');
-    if(stepInd) stepInd.style.display='none';
-    label.textContent = 'Waiting for your confirmation';
-    sub.textContent   = 'Confirm the transaction in your wallet — it can take up to a minute and completes on its own.';
   }
 
   if(state === 'done'){

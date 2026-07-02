@@ -316,6 +316,10 @@
   .foot-link:hover{color:var(--gold-bright)}
   .foot-tm{font-family:'Space Mono';font-size:.8rem;letter-spacing:.03em;color:rgba(140,133,122,.7)}
   .foot-c{font-family:'Space Mono';font-size:.8rem;color:var(--muted)}
+  .foot-social{display:flex;align-items:center;gap:16px;padding-left:24px;margin-left:4px;border-left:1px solid var(--line-soft)}
+  .foot-social-link{display:inline-flex;color:var(--muted);transition:color .25s}
+  .foot-social-link:hover{color:var(--gold-bright)}
+  .foot-social-link svg{width:17px;height:17px}
 
   /* ---------- modal ---------- */
   .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:24px}

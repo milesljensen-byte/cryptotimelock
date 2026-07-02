@@ -146,11 +146,20 @@ async function connectByName(name){
   finally{ isConnecting = false; }
 }
 
-// Pre-load WalletConnect SDK in background so button feels instant
+// Pre-load WalletConnect SDK in background so button feels instant.
+// SECURITY: self-hosted vendor bundle (js/vendor/walletconnect/), NOT esm.sh.
+// esm.sh rebuilds artifacts server-side, so the code behind that URL can change
+// at any time with no way to pin or integrity-check it — a compromised build
+// there could rewrite transaction recipients. The vendored file is the esm.sh
+// build of @walletconnect/ethereum-provider@2.17.0 (bundle-deps) with its
+// /node/*.mjs polyfill imports rewritten to relative paths, committed to this
+// repo so it can only change via a reviewed commit. To upgrade: re-download the
+// new version + polyfills, rewrite imports the same way, and rename the file
+// (new filename = cache bust; GitHub Pages caches aggressively).
 let wcSdkPromise = null;
 function preloadWcSdk(){
   if(wcSdkPromise) return;
-  wcSdkPromise = import('https://esm.sh/@walletconnect/ethereum-provider@2.17.0?bundle-deps').catch(()=>null);
+  wcSdkPromise = import('/js/vendor/walletconnect/ethereum-provider-2.17.0.mjs').catch(()=>null);
 }
 // Start loading as soon as page is ready
 window.addEventListener('load', preloadWcSdk);
@@ -243,7 +252,7 @@ function wipeWcSession(){
 
 // Build tag — surfaced in the diagnostic so we can confirm the device is
 // actually running the latest deploy and not a stale cached copy.
-const APP_BUILD = '20260630z';
+const APP_BUILD = '20260702a';
 
 // TEMP DIAGNOSTIC: compact snapshot of the WalletConnect provider's live state,
 // surfaced on screen so we can see WHY a send fails on a phone (no dev console).

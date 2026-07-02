@@ -7,6 +7,17 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
+<!-- CSP: GitHub Pages can't set response headers, but a meta CSP still lets us
+     lock down which origins may run SCRIPT on this page — the directive that
+     matters for a dapp (a rogue script could rewrite transaction recipients).
+     'unsafe-inline' is required by the inline bootstrap scripts and onclick
+     handlers below; external script origins are the real supply-chain surface
+     and are restricted to exactly the two CDNs we pin with SRI hashes plus the
+     X pixel. worker-src covers any blob: workers a bundled lib might spawn.
+     style/img/font/connect are deliberately left open (no default-src): they
+     can't sign transactions, and restricting them risks breaking WalletConnect
+     relays and wallet icons. -->
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://static.ads-twitter.com https://analytics.twitter.com; object-src 'none'; base-uri 'self'; worker-src 'self' blob:" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TimeLock: Lock Your Crypto on Ethereum, Safely</title>
 <meta name="description" content="TimeLock is a self-custody smart contract vault on Ethereum. Lock ETH or 34+ supported tokens from 10 minutes to 10 years. No admin keys, no company control, no early withdrawal." />
@@ -30,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css" integrity="sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt" crossorigin="anonymous" />
 <link rel="stylesheet" href="style.css" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
@@ -775,8 +786,10 @@ twq('config','tw-rda5s');
   </div>
 </div>
 
-<!-- ethers.js v6 (UMD) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.1/ethers.umd.min.js"></script>
+<!-- ethers.js v6 (UMD). SRI hash pins the exact file contents — if the CDN is
+     ever compromised or the file changes, the browser refuses to run it and the
+     fallback banner below shows instead of a tampered library signing txs. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.1/ethers.umd.min.js" integrity="sha384-eoEZatO/ymJi+LdBilp3xt/M9N9Lla2JlMVPZuk48Fg1YGl2Mc+vmsky+nkOtlSi" crossorigin="anonymous"></script>
 <script>
 if (typeof ethers === 'undefined') {
   document.addEventListener('DOMContentLoaded', function(){
@@ -789,14 +802,14 @@ if (typeof ethers === 'undefined') {
 </script>
 
 <!-- flatpickr — custom date/time picker for the lock duration -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js" integrity="sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6" crossorigin="anonymous"></script>
 
-<script src="js/config.js?v=20260701n"></script>
-<script src="js/wallet.js?v=20260701n"></script>
-<script src="js/ui-helpers.js?v=20260701n"></script>
-<script src="js/admin.js?v=20260701n"></script>
-<script src="js/dashboard.js?v=20260701n"></script>
-<script src="js/landing.js?v=20260701n"></script>
+<script src="js/config.js?v=20260702a"></script>
+<script src="js/wallet.js?v=20260702a"></script>
+<script src="js/ui-helpers.js?v=20260702a"></script>
+<script src="js/admin.js?v=20260702a"></script>
+<script src="js/dashboard.js?v=20260702a"></script>
+<script src="js/landing.js?v=20260702a"></script>
 </body>
 </html>
 

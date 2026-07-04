@@ -8,16 +8,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://static.ads-twitter.com https://analytics.twitter.com; object-src 'none'; base-uri 'self'" />
 <title>How to Lock Your Crypto So You Can't Sell It (Step by Step)</title>
-<meta name="description" content="The real ways to lock your crypto so you can't panic sell. Hardware wallets, staking and time-lock vaults compared, plus a plain step by step guide to locking ETH and tokens on Ethereum until a date you choose." />
+<meta name="description" content="How to lock your crypto so you can't panic sell it: hardware wallets, staking lockups and time-lock vaults compared, plus a step-by-step guide to locking ETH, stablecoins or wrapped Bitcoin until a date you choose." />
 <link rel="canonical" href="https://cryptotimelock.xyz/how-to-lock-your-crypto/" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="How to Lock Your Crypto So You Can't Sell It" />
-<meta property="og:description" content="Willpower breaks first when the market drops. Here's how to remove the sell button entirely: the real ways to lock your crypto compared, with a step by step for the one that actually works." />
+<meta property="og:description" content="Willpower is not a strategy. The real ways to lock your crypto compared, plus a step-by-step walkthrough of the one that genuinely can't be undone early." />
 <meta property="og:url" content="https://cryptotimelock.xyz/how-to-lock-your-crypto/" />
 <meta property="og:image" content="https://cryptotimelock.xyz/icon-192.png" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="How to Lock Your Crypto So You Can't Sell It" />
-<meta name="twitter:description" content="The real ways to lock your crypto so you can't panic sell, compared, plus a step by step time-lock guide." />
+<meta name="twitter:description" content="The real ways to lock your crypto so you can't panic sell, compared, plus a step-by-step time-lock guide." />
 <meta name="twitter:image" content="https://cryptotimelock.xyz/icon-192.png" />
 <link rel="icon" type="image/svg+xml" href="/icon.svg" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css?v=20260703a" />
+<link rel="stylesheet" href="/style.css?v=20260704a" />
 <!-- X (Twitter) retargeting base pixel, same as the homepage. -->
 <script>
 !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
@@ -39,7 +39,7 @@ twq('config','tw-rda5s');
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "How to Lock Your Crypto So You Can't Sell It",
-  "description": "The real ways to lock your crypto so you can't panic sell. Hardware wallets, staking and time-lock vaults compared, plus a step by step guide to locking ETH and tokens on Ethereum.",
+  "description": "How to lock your crypto so you can't panic sell it: hardware wallets, staking lockups and time-lock vaults compared, plus a step-by-step guide to locking ETH, stablecoins or wrapped Bitcoin until a date you choose.",
   "image": "https://cryptotimelock.xyz/icon-192.png",
   "author": { "@type": "Organization", "name": "TimeLock" },
   "publisher": {
@@ -49,7 +49,7 @@ twq('config','tw-rda5s');
   },
   "mainEntityOfPage": "https://cryptotimelock.xyz/how-to-lock-your-crypto/",
   "datePublished": "2026-07-03",
-  "dateModified": "2026-07-03"
+  "dateModified": "2026-07-04"
 }
 </script>
 <script type="application/ld+json">
@@ -59,26 +59,26 @@ twq('config','tw-rda5s');
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How do I lock my crypto so I can't sell it?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Deposit it into a time-lock vault: a smart contract where you set an unlock date. Until that date passes there is no way to withdraw, so panic selling is off the table."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "Can I unlock my crypto early?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. The contract has no function to withdraw before your unlock date. Not you, not the developer, not anyone. That is the entire point."
+        "text": "No. The contract simply has no function to release funds before the unlock date. Not you, not the developer, not anyone can trigger an early withdrawal. That is the entire point of a time-lock."
       }
     },
     {
       "@type": "Question",
-      "name": "Is time-locking my crypto safe?",
+      "name": "Is it safe to lock my crypto?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It is self-custody. Your crypto sits in a public contract on Ethereum, not with a company. Only your wallet can withdraw it, and only after the unlock date."
+        "text": "A time-lock vault is self-custody. Your crypto sits in a public, verified smart contract on Ethereum, not with a company. Only your wallet address can withdraw it, and only after the unlock date you set."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I lock Bitcoin for years?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Native BTC lives on its own chain, but you can lock wrapped Bitcoin (WBTC) on Ethereum. WBTC tracks the Bitcoin price 1:1, so locking it for years gives you the same exposure with the sell button removed."
       }
     },
     {
@@ -86,7 +86,7 @@ twq('config','tw-rda5s');
       "name": "How long can I lock my crypto for?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Anywhere from a few weeks to ten years. You set the date when you create the lock, and it cannot be shortened afterwards."
+        "text": "Anywhere from 10 minutes to 10 years. You choose the exact unlock date when you create the lock, and it can never be shortened afterwards."
       }
     },
     {
@@ -94,7 +94,23 @@ twq('config','tw-rda5s');
       "name": "What does it cost to lock crypto?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A one-time 0.5% fee when you lock. Withdrawing is free. You also pay standard Ethereum gas per transaction."
+        "text": "A one-time 0.5% fee when you lock. Withdrawing is free. The only other cost is standard Ethereum gas for each transaction."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if the website goes offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nothing happens to your funds. The vault lives on the Ethereum blockchain, not on a server. Even without the website you can view and withdraw your funds by interacting directly with the verified contract on Etherscan."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I lock more crypto later?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Each lock is independent with its own token, amount and unlock date, and one wallet can hold up to 50 active locks. Many people add a new lock every month, like a savings deposit."
       }
     }
   ]
@@ -115,147 +131,217 @@ twq('config','tw-rda5s');
   </div>
 </nav>
 
-<main class="guide">
-  <div class="guide-wrap">
+<main class="gd">
+  <div class="gd-wrap">
 
-    <!-- HERO -->
-    <header class="g-hero">
-      <div class="sec-eyebrow">Guide · Self-custody time-locks</div>
+    <!-- ============ HERO ============ -->
+    <header class="gd-hero">
+      <div class="gd-eyebrow">Guide &middot; Self-custody time-locks</div>
       <h1>How to lock your crypto so you can't sell it</h1>
-      <p class="dek">If you've sworn to hold for years and then sold the second the chart turned red, the problem isn't your strategy. It's that the sell button is always within reach.</p>
-      <div class="g-chips">
-        <span><i></i>Immutable contract</span>
-        <span><i></i>0 admin keys</span>
-        <span><i></i>0.5% one-time fee</span>
-      </div>
+      <p class="gd-dek">Every crash proves the same thing: willpower is not a strategy. This guide covers what locking your crypto actually means, the four ways people do it, and a step-by-step walkthrough of the only one that truly can't be undone early.</p>
     </header>
 
-    <p class="col lead-in">Most people don't lose money picking the wrong coin. They lose it in the ten seconds when fear takes over and they sell the bottom. Willpower is the first thing to break when the market drops, so the real fix isn't more discipline. It's removing the option.</p>
-
-    <div class="rule"><span class="rule-mark"><svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg></span></div>
-
-    <!-- COMPARE -->
-    <section class="col">
-      <div class="sec-head">
-        <span class="sec-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 21h14"/><path d="M7 7l-4 6a4 4 0 0 0 8 0z"/><path d="M17 7l-4 6a4 4 0 0 0 8 0z"/><path d="M7 7l10-2"/></svg></span>
-        <h2>The main ways to lock crypto</h2>
+    <!-- lock lifecycle diagram -->
+    <figure class="gd-diagram" aria-label="The life of a time-locked deposit: deposit, locked period, unlock date, free withdrawal">
+      <div class="gd-diagram-scroll">
+        <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <linearGradient id="goldTrack" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#8A6D2E"/>
+              <stop offset=".55" stop-color="#C9A84C"/>
+              <stop offset="1" stop-color="#E9D08A"/>
+            </linearGradient>
+          </defs>
+          <!-- track -->
+          <line x1="80" y1="88" x2="760" y2="88" stroke="rgba(242,237,227,.12)" stroke-width="4" stroke-linecap="round"/>
+          <line x1="80" y1="88" x2="545" y2="88" stroke="url(#goldTrack)" stroke-width="4" stroke-linecap="round"/>
+          <!-- node 1: deposit -->
+          <circle cx="80" cy="88" r="11" fill="#C9A84C"/>
+          <circle cx="80" cy="88" r="11" fill="none" stroke="rgba(201,168,76,.35)" stroke-width="7"/>
+          <text x="80" y="132" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Deposit</text>
+          <text x="80" y="154" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">one transaction</text>
+          <!-- node 2: locked (lock icon in a badge) -->
+          <g>
+            <circle cx="310" cy="88" r="26" fill="#181309" stroke="rgba(201,168,76,.45)" stroke-width="1.5"/>
+            <g transform="translate(298,76)" stroke="#E9D08A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="10" width="20" height="13" rx="3"/>
+              <path d="M6.5 10V7a5.5 5.5 0 0 1 11 0v3"/>
+            </g>
+            <text x="310" y="141" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Locked</text>
+            <text x="310" y="163" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">no sell button exists</text>
+          </g>
+          <!-- moving marker on the track -->
+          <circle cx="545" cy="88" r="9" fill="#E9D08A">
+            <animate attributeName="opacity" values="1;.45;1" dur="2.6s" repeatCount="indefinite"/>
+          </circle>
+          <text x="545" y="52" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#C9A84C" letter-spacing="2">TODAY</text>
+          <!-- node 3: unlock date -->
+          <circle cx="760" cy="88" r="11" fill="none" stroke="#C9A84C" stroke-width="3"/>
+          <text x="760" y="132" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Unlock date</text>
+          <text x="760" y="154" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">withdraw free, anytime after</text>
+        </svg>
       </div>
-      <p>Some methods only add friction. Only one makes selling genuinely impossible until a date you choose.</p>
+      <figcaption>The whole system in one picture: between deposit and your unlock date, no withdraw function exists.</figcaption>
+    </figure>
+
+    <p class="gd-prose gd-lead">Most people don't lose money because they picked the wrong coin. They lose it in the ten seconds when fear wins and they sell the bottom of a dip they swore they'd hold through. If you've ever searched for how to stop yourself from panic selling crypto, or how to force yourself to HODL, you already know the honest answer: you can't rely on discipline. You have to remove the option.</p>
+
+    <!-- ============ WHAT IT MEANS ============ -->
+    <section class="gd-prose">
+      <h2><span class="gd-h-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>What does "locking your crypto" mean?</h2>
+      <p>Locking your crypto means putting it somewhere you genuinely cannot sell it, trade it or move it until a condition is met &mdash; usually a future date. Not "hidden in a drawer" hard to sell. <em>Impossible</em> to sell, in the way that code makes things impossible.</p>
+      <div class="gd-callout">
+        <p><strong>The test is simple:</strong> if there is any sequence of steps that gets you your coins back tonight at 3am during a crash, they are not locked. They're just inconvenient.</p>
+      </div>
+      <p>That test is worth applying honestly, because most of the popular advice fails it.</p>
     </section>
 
-    <div class="feature table-scroll">
-      <table class="cmp">
-        <thead>
-          <tr><th>Method</th><th>How it locks</th><th>Break it early?</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Hardware wallet</td>
-            <td>Keys held offline on a device</td>
-            <td><span class="no">Yes.</span> Plug it in and sell anytime.</td>
-          </tr>
-          <tr>
-            <td>Staking lockup</td>
-            <td>Funds committed to a network for rewards</td>
-            <td><span class="no">Often.</span> Many have unbonding exits.</td>
-          </tr>
-          <tr>
-            <td>Give keys to a friend</td>
-            <td>Someone else holds your seed phrase</td>
-            <td><span class="no">Yes,</span> and now they can steal it.</td>
-          </tr>
-          <tr class="win">
-            <td>Time-lock vault</td>
-            <td>Smart contract with a fixed unlock date</td>
-            <td><span class="yes">No.</span> No early-exit function exists.</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- ============ THE WAYS ============ -->
+    <section class="gd-prose">
+      <h2><span class="gd-h-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 21h14"/><path d="M7 7l-4 6a4 4 0 0 0 8 0z"/><path d="M17 7l-4 6a4 4 0 0 0 8 0z"/><path d="M7 7l10-2"/></svg></span>The four ways to lock crypto, compared</h2>
+      <p>Every method people use to stop themselves from selling falls into one of four buckets. Only one passes the 3am test.</p>
+    </section>
+
+    <div class="gd-methods">
+      <article class="gd-method">
+        <span class="gd-m-ico"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><circle cx="16.5" cy="13" r="1.3"/></svg></span>
+        <h3>Hardware wallet</h3>
+        <p>Your keys live offline on a device in a drawer. Excellent against hackers &mdash; useless against you, because you own the device.</p>
+        <div class="gd-verdict"><span>Sell early?</span><b class="bad">Yes &mdash; plug it in, done in minutes</b></div>
+      </article>
+      <article class="gd-method">
+        <span class="gd-m-ico"><svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <h3>Staking lockups</h3>
+        <p>Committing coins to a network for rewards adds real friction, but most staking has an unbonding exit measured in days, and liquid staking can be sold instantly.</p>
+        <div class="gd-verdict"><span>Sell early?</span><b class="mid">Usually &mdash; wait out the unbonding</b></div>
+      </article>
+      <article class="gd-method">
+        <span class="gd-m-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.6-3.4 2.8-5.5 5.5-5.5s4.9 2.1 5.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M17.5 14.6c1.7.7 2.9 2.4 3.3 5.4"/></svg></span>
+        <h3>Give your keys to someone</h3>
+        <p>Handing your seed phrase to a friend or family member turns your savings into a trust exercise. They can give it back early &mdash; or spend it.</p>
+        <div class="gd-verdict"><span>Sell early?</span><b class="bad">Yes &mdash; and so can they</b></div>
+      </article>
+      <article class="gd-method gd-method-win">
+        <div class="gd-m-tag">The one that passes</div>
+        <span class="gd-m-ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+        <h3>Time-lock vault</h3>
+        <p>A smart contract holds your crypto until a date you set. The code contains no early-withdraw function, so there is nothing to override and no one to persuade. Still self-custody: only your wallet can withdraw, once the date passes.</p>
+        <div class="gd-verdict"><span>Sell early?</span><b class="good">No. The function doesn't exist</b></div>
+      </article>
     </div>
 
-    <p class="col">A hardware wallet guards against hackers, not yourself. Staking can usually be exited. Only a <strong>time-lock vault</strong> removes early selling for good, while keeping the crypto in your own control.</p>
-
-    <!-- WHY IT CAN'T BE BROKEN -->
-    <section class="col">
-      <div class="sec-head">
-        <span class="sec-ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
-        <h2>Why a time-lock can't be broken</h2>
-      </div>
-      <p>You deposit your crypto, pick an unlock date, and confirm. From that moment the funds are held by code that contains no function to release them early. No override, no emergency withdraw, no support line to call.</p>
-      <p>It stays <strong>self-custody</strong> throughout. Only your wallet can pull the funds, and only once the timer hits zero. When your date arrives, you withdraw. Not before.</p>
+    <!-- ============ PANIC SELLING ============ -->
+    <section class="gd-prose">
+      <h2><span class="gd-h-ico"><svg viewBox="0 0 24 24"><polyline points="3 7 10 14 14 10 21 17"/><polyline points="15 17 21 17 21 11"/></svg></span>How to stop yourself from panic selling crypto</h2>
+      <p>Panic selling isn't a knowledge problem &mdash; everyone who sells the bottom already knew they shouldn't. It's an access problem. At the exact moment your judgment is worst, the sell button is one thumb-tap away, and exchanges have spent years making that tap as smooth as possible.</p>
+      <p>A time-lock flips the situation. You make the decision once, on a calm day, with a clear head: <em>this is my long-term bag, and it unlocks in 2029.</em> From then on, the crashes still happen and the fear still shows up &mdash; but it has nothing to act on. The decision your best self made is the only one that counts, because it's the only one the contract will execute.</p>
     </section>
 
-    <div class="rule"><span class="rule-mark"><svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg></span></div>
-
-    <!-- STEPS -->
-    <section class="col">
-      <div class="sec-head">
-        <span class="sec-ico"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>
-        <h2>Lock it in five steps</h2>
-      </div>
+    <!-- ============ STEP BY STEP ============ -->
+    <section class="gd-prose">
+      <h2><span class="gd-h-ico"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>How to time-lock your crypto, step by step</h2>
+      <p>Here's the full walkthrough using <a class="gd-link" href="/">CryptoTimeLock</a>, a time-lock vault on Ethereum. No account, no sign-up &mdash; the whole thing is one wallet connection and one transaction.</p>
     </section>
-    <ol class="feature steps-grid">
-      <li><div class="s-num">1</div><div class="s-body"><h3>Decide what to lock</h3><p>Pick the long-term bag you keep fumbling in a panic. Keep your trading funds free and liquid.</p></div></li>
-      <li><div class="s-num">2</div><div class="s-body"><h3>Connect your wallet</h3><p>MetaMask, Rabby, or any WalletConnect wallet. You keep your keys throughout.</p></div></li>
-      <li><div class="s-num">3</div><div class="s-body"><h3>Set amount and date</h3><p>Choose how much to lock and when it unlocks, up to ten years out. The date can't be shortened later.</p></div></li>
-      <li><div class="s-num">4</div><div class="s-body"><h3>Confirm the lock</h3><p>Approve the transaction. The crypto moves in and the countdown starts.</p></div></li>
-      <li><div class="s-num">5</div><div class="s-body"><h3>Withdraw at unlock</h3><p>When the date passes, come back and withdraw for free. Until then, selling isn't possible.</p></div></li>
+
+    <ol class="gd-steps">
+      <li>
+        <div class="gd-s-rail"><span class="gd-s-num">1</span></div>
+        <div class="gd-s-body">
+          <h3>Connect your wallet</h3>
+          <p>Open <a class="gd-link" href="/">cryptotimelock.xyz</a> and connect MetaMask, Rabby, or any mobile wallet via WalletConnect. Your keys never leave your wallet at any point.</p>
+        </div>
+      </li>
+      <li>
+        <div class="gd-s-rail"><span class="gd-s-num">2</span></div>
+        <div class="gd-s-body">
+          <h3>Choose what to lock</h3>
+          <p>Native ETH or any of 34 supported ERC-20 tokens &mdash; stablecoins like USDC, USDT and DAI, blue chips like LINK, UNI and AAVE. Want to lock Bitcoin for years? Lock <strong>WBTC</strong>, which tracks BTC 1:1 on Ethereum.</p>
+        </div>
+      </li>
+      <li>
+        <div class="gd-s-rail"><span class="gd-s-num">3</span></div>
+        <div class="gd-s-body">
+          <h3>Set the amount and the unlock date</h3>
+          <p>Anything from 10 minutes to 10 years out. Pick a date that matches a real goal: past the next halving, your kid's 18th birthday, your house-deposit year. It can never be shortened afterwards, so start with an amount you're sure about.</p>
+        </div>
+      </li>
+      <li>
+        <div class="gd-s-rail"><span class="gd-s-num">4</span></div>
+        <div class="gd-s-body">
+          <h3>Confirm the transaction</h3>
+          <p>Approve it in your wallet. A one-time 0.5% fee is taken at deposit, the funds move into the contract, and the countdown starts. Your lock is now visible on-chain &mdash; you can verify it on Etherscan from any device.</p>
+        </div>
+      </li>
+      <li>
+        <div class="gd-s-rail"><span class="gd-s-num">5</span></div>
+        <div class="gd-s-body">
+          <h3>Withdraw when it unlocks</h3>
+          <p>Once the date passes, withdrawal is free and instant, and only your wallet address can do it. Until then, the crypto is simply out of reach &mdash; which was the whole idea.</p>
+        </div>
+      </li>
     </ol>
 
-    <!-- TOOL CARD -->
-    <aside class="feature tool-card">
-      <div class="tc-brand">
-        <svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
-        <span>CryptoTimeLock</span>
-      </div>
-      <p>A self-custody vault on Ethereum that locks your ETH and ERC-20 tokens until a date you choose. No early withdrawal exists, not even for the developer. A one-time <strong>0.5% fee</strong> to lock, free to withdraw.</p>
-      <div class="asset-strip">
-        <span class="asset"><svg viewBox="0 0 24 32" aria-hidden="true"><path d="M12 0 L23 16 L12 22 L1 16 Z" fill="#E9D08A" opacity="0.95"/><path d="M12 0 L23 16 L12 22 Z" fill="#C9A84C"/><path d="M12 24 L23 18 L12 32 L1 18 Z" fill="#C9A84C" opacity="0.9"/><path d="M12 24 L23 18 L12 32 Z" fill="#8A6D2E"/></svg></span>
-        <span class="asset"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path fill="#fff" d="M17.9 17.4c-.1 0-.7 0-1.9 0-1 0-1.7 0-2 0-3.9-.2-6.8-.9-6.8-1.7s2.9-1.5 6.8-1.6v2.6c.2 0 1 .1 2 .1 1.2 0 1.8 0 1.9-.1v-2.6c3.9.2 6.8.8 6.8 1.6s-2.9 1.5-6.8 1.7m0-3.6v-2.4h5.4V7.8H8.6v3.6H14v2.4c-4.4.2-7.7 1.1-7.7 2.1s3.3 1.9 7.7 2.1v7.6h3.9v-7.6c4.4-.2 7.7-1.1 7.7-2.1s-3.3-1.9-7.7-2.1"/></svg></span>
-        <span class="asset"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#F7931A"/><path fill="#fff" d="M23 14c.3-2.1-1.3-3.2-3.5-4l.7-2.8-1.7-.4-.7 2.7c-.4-.1-.9-.2-1.4-.3l.7-2.8-1.7-.4-.7 2.8-3.4-.8-.5 1.8s1.3.3 1.2.3c.7.2.8.6.8 1l-2 7.9c-.1.2-.3.5-.8.4 0 0-1.2-.3-1.2-.3l-.9 2 3.4.8-.7 2.9 1.7.4.7-2.8c.5.1.9.2 1.4.4l-.7 2.8 1.7.4.7-2.9c2.9.6 5.2.3 6.1-2.3.8-2.1 0-3.4-1.6-4.2 1.1-.3 2-1 2.2-2.5m-3.9 5.5c-.5 2.1-4.1 1-5.3.7l1-3.8c1.2.3 4.9.9 4.3 3.1m.5-5.6c-.5 2-3.5 1-4.5.7l.9-3.4c1 .2 4.1.7 3.6 2.7"/></svg></span>
-        <span class="asset-label">Lock ETH &amp; 30+ ERC-20 tokens</span>
-      </div>
-      <a href="/" class="btn lg">Lock your crypto now <span aria-hidden="true">&rarr;</span></a>
-    </aside>
+    <!-- ============ QUICK FACTS ============ -->
+    <div class="gd-facts">
+      <div class="gd-fact"><span>Network</span><b>Ethereum</b></div>
+      <div class="gd-fact"><span>Assets</span><b>ETH + 34 ERC-20s</b></div>
+      <div class="gd-fact"><span>Duration</span><b>10 min &ndash; 10 yrs</b></div>
+      <div class="gd-fact"><span>Lock fee</span><b>0.5% once</b></div>
+      <div class="gd-fact"><span>Withdrawal</span><b>Free</b></div>
+      <div class="gd-fact"><span>Locks per wallet</span><b>Up to 50</b></div>
+      <div class="gd-fact"><span>Admin keys</span><b>Zero</b></div>
+      <div class="gd-fact"><span>Contract</span><b><a class="gd-link" href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">Verified &nearr;</a></b></div>
+    </div>
 
-    <div class="rule"><span class="rule-mark"><svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg></span></div>
-
-    <!-- FAQ -->
-    <section class="col">
-      <div class="sec-head">
-        <span class="sec-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1 .9-1 1.6"/><path d="M12 16.6h.01"/></svg></span>
-        <h2>Questions, answered</h2>
-      </div>
+    <!-- ============ SAFETY ============ -->
+    <section class="gd-prose">
+      <h2><span class="gd-h-ico"><svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>Is it safe to lock crypto in a smart contract?</h2>
+      <p>Safer than the alternatives it replaces, for one structural reason: <strong>nobody holds your funds</strong>. There's no company account, no custodian, no admin with a master key. Your crypto sits in an immutable contract on Ethereum whose code is <a class="gd-link" href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">published and verified on Etherscan</a>, so anyone &mdash; including you &mdash; can read exactly what it does and confirm the early-withdraw function isn't there.</p>
+      <p>Even if this website disappeared tomorrow, your vault wouldn't notice. The contract lives on the blockchain, and you can withdraw at unlock time by calling it directly from Etherscan. The one rule of self-custody still applies: back up your seed phrase, because the wallet that locked the funds is the only one that can ever withdraw them.</p>
     </section>
-    <div class="faq-list" id="guideFaq">
-      <div class="faq">
-        <button>How do I lock my crypto so I can't sell it?<span class="plus"></span></button>
-        <div class="ans"><p>Deposit it into a time-lock vault: a smart contract where you set an unlock date. Until that date passes there's no way to withdraw, so panic selling is off the table.</p></div>
-      </div>
+
+    <!-- ============ FAQ ============ -->
+    <section class="gd-prose gd-faq-head">
+      <h2><span class="gd-h-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1 .9-1 1.6"/><path d="M12 16.6h.01"/></svg></span>Frequently asked questions</h2>
+    </section>
+    <div class="faq-list gd-faq" id="guideFaq">
       <div class="faq">
         <button>Can I unlock my crypto early?<span class="plus"></span></button>
-        <div class="ans"><p>No. The contract has no function to withdraw before your unlock date. Not you, not the developer, not anyone. That's the entire point.</p></div>
+        <div class="ans"><p>No. The contract simply has no function to release funds before the unlock date. Not you, not the developer, not anyone can trigger an early withdrawal. That's the entire point of a time-lock.</p></div>
       </div>
       <div class="faq">
-        <button>Is time-locking my crypto safe?<span class="plus"></span></button>
-        <div class="ans"><p>It's self-custody. Your crypto sits in a public contract on Ethereum, not with a company. Only your wallet can withdraw it, and only after the unlock date.</p></div>
+        <button>Is it safe to lock my crypto?<span class="plus"></span></button>
+        <div class="ans"><p>A time-lock vault is self-custody. Your crypto sits in a public, verified smart contract on Ethereum, not with a company. Only your wallet address can withdraw it, and only after the unlock date you set.</p></div>
+      </div>
+      <div class="faq">
+        <button>Can I lock Bitcoin for years?<span class="plus"></span></button>
+        <div class="ans"><p>Native BTC lives on its own chain, but you can lock wrapped Bitcoin (WBTC) on Ethereum. WBTC tracks the Bitcoin price 1:1, so locking it for years gives you the same exposure with the sell button removed.</p></div>
       </div>
       <div class="faq">
         <button>How long can I lock my crypto for?<span class="plus"></span></button>
-        <div class="ans"><p>Anywhere from a few weeks to ten years. You set the date when you create the lock, and it can't be shortened afterwards.</p></div>
+        <div class="ans"><p>Anywhere from 10 minutes to 10 years. You choose the exact unlock date when you create the lock, and it can never be shortened afterwards.</p></div>
       </div>
       <div class="faq">
-        <button>What does it cost?<span class="plus"></span></button>
-        <div class="ans"><p>A one-time 0.5% fee when you lock. Withdrawing is free. You also pay standard Ethereum gas per transaction.</p></div>
+        <button>What does it cost to lock crypto?<span class="plus"></span></button>
+        <div class="ans"><p>A one-time 0.5% fee when you lock. Withdrawing is free. The only other cost is standard Ethereum gas for each transaction.</p></div>
+      </div>
+      <div class="faq">
+        <button>What happens if the website goes offline?<span class="plus"></span></button>
+        <div class="ans"><p>Nothing happens to your funds. The vault lives on the Ethereum blockchain, not on a server. Even without the website you can view and withdraw your funds by interacting directly with the <a class="gd-link" href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#writeContract" target="_blank" rel="noopener">verified contract on Etherscan</a>.</p></div>
+      </div>
+      <div class="faq">
+        <button>Can I lock more crypto later?<span class="plus"></span></button>
+        <div class="ans"><p>Yes. Each lock is independent with its own token, amount and unlock date, and one wallet can hold up to 50 active locks. Many people add a new lock every month, like a savings deposit.</p></div>
       </div>
     </div>
 
-    <!-- FINAL CTA -->
-    <section class="feature guide-cta">
-      <div class="sec-eyebrow">Stop selling the bottom</div>
-      <h2>Remove the access.</h2>
-      <p>If you've sold the bottom and hated yourself for it, you don't have a knowledge problem. You have an access problem.</p>
-      <a href="/" class="btn lg">Open CryptoTimeLock <span aria-hidden="true">&rarr;</span></a>
+    <!-- ============ FINAL CTA ============ -->
+    <section class="gd-cta">
+      <svg class="gd-cta-mark brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
+      <h2>Make your best decision the only one that counts.</h2>
+      <p>Pick the bag, pick the date, lock it in one transaction. The next crash can't touch what you can't sell.</p>
+      <a href="/" class="btn lg">Lock your crypto now <span aria-hidden="true">&rarr;</span></a>
+      <div class="gd-cta-note">Self-custody &middot; No sign-up &middot; 0.5% once, free withdrawal</div>
     </section>
 
   </div>
@@ -285,132 +371,173 @@ twq('config','tw-rda5s');
 </footer>
 
 <style>
-  /* ---------- guide / article page ---------- */
-  .guide{padding:52px 0 40px}
-  /* Wider outer shell than the text column, so feature blocks (table, tool card,
-     CTA, dividers) can breathe to full width while paragraphs stay at a readable
-     measure. Left edges of text and features line up. */
-  .guide-wrap{max-width:900px;margin:0 auto;padding:0 28px}
-  /* Centered reading column; feature blocks below bleed wider for rhythm. */
-  .col{max-width:720px;margin-left:auto;margin-right:auto}
-  .feature{width:100%}
-  /* Vertical breathing room above each section, so an icon heading never jams
-     against the paragraph above it. Sections that already follow a divider keep
-     the divider's spacing instead of doubling up. */
-  main.guide section.col{margin-top:2.7rem}
-  main.guide .rule + section.col{margin-top:0}
+  /* ---------- guide page (gd-*) — page-local styles ---------- */
+  .gd{padding:56px 0 30px}
+  .gd-wrap{max-width:880px;margin:0 auto;padding:0 26px}
 
-  .sec-eyebrow{
+  .gd-eyebrow{
     font-family:'Space Mono';font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
     color:var(--gold);margin-bottom:18px;
   }
 
-  /* hero, centered for a fuller, editorial open */
-  .g-hero{text-align:center;max-width:740px;margin:0 auto 40px}
-  .g-hero h1{
+  /* hero */
+  .gd-hero{text-align:center;max-width:760px;margin:0 auto 34px}
+  .gd-hero h1{
     font-family:'Syne',sans-serif;font-weight:750;line-height:1.08;letter-spacing:-.015em;
-    font-size:clamp(2rem,5vw,2.85rem);margin-bottom:20px;
+    font-size:clamp(2rem,5vw,2.9rem);margin-bottom:20px;
   }
-  .g-hero .dek{font-size:1.18rem;line-height:1.6;color:var(--muted);max-width:32em;margin:0 auto}
-  .g-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:14px 24px;margin-top:26px}
-  .g-chips span{font-family:'Space Mono';font-size:.74rem;letter-spacing:.05em;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
-  .g-chips i{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+  .gd-dek{font-size:1.16rem;line-height:1.62;color:var(--muted);max-width:36em;margin:0 auto}
 
-  /* body text */
-  .guide{--read:#D8D2C7}
-  .col p, .lead-in{color:var(--read);font-size:1.1rem;line-height:1.72;margin:0 0 1.1em}
-  .lead-in{font-size:1.16rem}
-  .col strong{color:var(--ink);font-weight:600}
+  /* lifecycle diagram */
+  .gd-diagram{margin:0 0 40px}
+  .gd-diagram-scroll{
+    border:1px solid var(--line);border-radius:20px;overflow-x:auto;
+    background:linear-gradient(165deg,rgba(24,19,9,.75),rgba(12,10,8,.5));
+    box-shadow:0 26px 60px -38px rgba(0,0,0,.8),inset 0 1px 0 rgba(233,208,138,.1);
+  }
+  .gd-diagram svg{display:block;min-width:600px;width:100%;height:auto;padding:10px 0 2px}
+  .gd-diagram figcaption{
+    text-align:center;margin-top:12px;
+    font-family:'Space Mono';font-size:.76rem;letter-spacing:.04em;color:var(--muted);
+  }
 
-  /* section head with icon chip */
-  .sec-head{display:flex;align-items:center;gap:13px;margin:0 0 14px}
-  .sec-ico{
+  /* reading column + prose */
+  .gd-prose{max-width:720px;margin:0 auto}
+  .gd-prose + .gd-prose{margin-top:3rem}
+  .gd-prose p{color:#D8D2C7;font-size:1.1rem;line-height:1.72;margin:0 0 1.1em}
+  .gd-prose p:last-child{margin-bottom:0}
+  .gd-prose strong{color:var(--ink);font-weight:600}
+  .gd-prose em{color:var(--gold-bright);font-style:italic}
+  .gd-lead{font-size:1.16rem}
+  .gd-link{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.4);transition:color .2s,border-color .2s}
+  .gd-link:hover{color:var(--gold-bright);border-color:var(--gold-bright)}
+
+  .gd-prose h2{
+    display:flex;align-items:center;gap:13px;
+    font-family:'Syne';font-weight:700;font-size:1.52rem;letter-spacing:-.01em;
+    color:var(--ink);line-height:1.15;margin:0 0 16px;
+  }
+  .gd-h-ico{
     flex-shrink:0;width:40px;height:40px;border-radius:12px;
     background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);
     display:flex;align-items:center;justify-content:center;color:var(--gold-bright);
   }
-  .sec-ico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .sec-head h2{font-family:'Syne';font-weight:700;font-size:1.5rem;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
+  .gd-h-ico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
-  /* divider with brand mark */
-  .rule{display:flex;align-items:center;gap:20px;margin:46px 0}
-  .rule::before,.rule::after{content:"";flex:1;height:1px;background:var(--line-soft)}
-  .rule-mark{opacity:.6}
-  .rule-mark .brand-mark{width:22px;height:22px;display:block}
-  .rule-mark .brand-mark circle,.rule-mark .brand-mark line{stroke:var(--gold);stroke-width:7;fill:none;stroke-linecap:round}
-
-  /* comparison table */
-  .table-scroll{overflow-x:auto;margin:1.5rem 0 1.6rem;
-    border:1px solid var(--line-soft);border-radius:16px;background:rgba(21,17,12,.5)}
-  table.cmp{width:100%;border-collapse:collapse;min-width:560px;font-size:1rem}
-  table.cmp th{
-    font-family:'Space Mono';font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--gold);text-align:left;font-weight:700;
-    padding:16px 20px;border-bottom:1px solid var(--line);white-space:nowrap;
+  /* definition callout */
+  .gd-callout{
+    margin:1.4rem 0;padding:20px 24px;border-radius:0 16px 16px 0;
+    border-left:3px solid var(--gold);
+    background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(201,168,76,.02));
   }
-  table.cmp td{padding:16px 20px;color:var(--read);vertical-align:top;border-bottom:1px solid var(--line-soft);line-height:1.5}
-  table.cmp td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
-  table.cmp tbody tr:last-child td{border-bottom:none}
-  table.cmp tr.win{background:rgba(201,168,76,.06)}
-  table.cmp tr.win td:first-child{color:var(--gold-bright)}
-  .cmp .no{color:#C98A6A;font-weight:600}
-  .cmp .yes{color:#7BC49A;font-weight:600}
+  .gd-callout p{margin:0;font-size:1.06rem}
+  .gd-callout strong{color:var(--gold-bright)}
 
-  /* steps, 2-up grid on wide screens so they use the space */
-  .steps-grid{list-style:none;margin:1.4rem 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .steps-grid li{display:flex;gap:15px;align-items:flex-start;
-    background:rgba(21,17,12,.5);border:1px solid var(--line-soft);border-radius:14px;padding:18px 20px}
-  .s-num{
-    flex-shrink:0;width:34px;height:34px;border-radius:50%;
+  /* method cards */
+  .gd-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:1.6rem 0 3rem}
+  .gd-method{
+    position:relative;padding:24px 24px 20px;border-radius:18px;
+    background:rgba(21,17,12,.55);border:1px solid var(--line-soft);
+    display:flex;flex-direction:column;
+  }
+  .gd-m-ico{
+    width:42px;height:42px;border-radius:12px;margin-bottom:14px;
+    background:rgba(242,237,227,.05);border:1px solid var(--line-soft);
+    display:flex;align-items:center;justify-content:center;color:var(--muted);
+  }
+  .gd-m-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .gd-method h3{font-family:'Syne';font-weight:700;font-size:1.1rem;color:var(--ink);margin:0 0 8px}
+  .gd-method > p{color:#D8D2C7;font-size:.95rem;line-height:1.56;margin:0 0 16px;flex:1}
+  .gd-verdict{
+    display:flex;align-items:baseline;gap:10px;padding-top:13px;
+    border-top:1px solid var(--line-soft);
+    font-family:'Space Mono';font-size:.74rem;letter-spacing:.04em;
+  }
+  .gd-verdict{flex-wrap:wrap}
+  .gd-verdict span{color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-size:.66rem;white-space:nowrap}
+  .gd-verdict .bad{color:#C98A6A;font-weight:700}
+  .gd-verdict .mid{color:#D9BC7A;font-weight:700}
+  .gd-verdict .good{color:#7BC49A;font-weight:700}
+  .gd-method-win{
+    grid-column:1 / -1;
+    background:linear-gradient(165deg,rgba(30,24,11,.85),rgba(18,14,8,.7));
+    border:1px solid rgba(201,168,76,.4);
+    box-shadow:0 24px 60px -34px rgba(201,168,76,.35),inset 0 1px 0 rgba(233,208,138,.14);
+  }
+  .gd-method-win .gd-m-ico{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.3);color:var(--gold-bright)}
+  .gd-m-tag{
+    position:absolute;top:18px;right:20px;
+    font-family:'Space Mono';font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:#150F04;background:linear-gradient(135deg,var(--gold-bright),var(--gold));
+    padding:6px 11px;border-radius:99px;box-shadow:0 6px 18px -6px rgba(201,168,76,.6);
+  }
+
+  /* step timeline */
+  .gd-steps{list-style:none;max-width:720px;margin:1.5rem auto 0;padding:0}
+  .gd-steps li{display:flex;gap:20px}
+  .gd-s-rail{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+  .gd-s-num{
+    width:38px;height:38px;border-radius:50%;flex-shrink:0;
     background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#150F04;
-    font-family:'Space Mono';font-weight:700;font-size:.95rem;
+    font-family:'Space Mono';font-weight:700;font-size:1rem;
     display:flex;align-items:center;justify-content:center;
     box-shadow:0 6px 16px -6px rgba(201,168,76,.6);
   }
-  .s-body h3{margin:0 0 4px;font-family:'Syne';font-weight:700;font-size:1.04rem;color:var(--ink)}
-  .s-body p{margin:0;color:var(--read);font-size:.98rem;line-height:1.55}
+  .gd-s-rail::after{content:"";flex:1;width:2px;margin:6px 0;
+    background:linear-gradient(180deg,rgba(201,168,76,.45),rgba(201,168,76,.1))}
+  .gd-steps li:last-child .gd-s-rail::after{display:none}
+  .gd-s-body{padding-bottom:30px}
+  .gd-steps li:last-child .gd-s-body{padding-bottom:6px}
+  .gd-s-body h3{font-family:'Syne';font-weight:700;font-size:1.14rem;color:var(--ink);margin:7px 0 7px}
+  .gd-s-body p{color:#D8D2C7;font-size:1.02rem;line-height:1.65;margin:0}
+  .gd-s-body strong{color:var(--ink);font-weight:600}
 
-  /* tool callout */
-  .tool-card{
-    margin:1.8rem 0;padding:32px 32px 30px;border-radius:20px;
-    background:linear-gradient(165deg,rgba(24,19,9,.9),rgba(21,17,12,.7));
-    border:1px solid var(--line);box-shadow:0 30px 70px -40px rgba(0,0,0,.8);
+  /* quick facts */
+  .gd-facts{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:3rem 0;
   }
-  .tc-brand{display:flex;align-items:center;gap:11px;font-family:'Syne';font-weight:700;font-size:1.24rem;margin-bottom:14px}
-  .tc-brand .brand-mark{width:24px;height:24px}
-  .tc-brand .brand-mark circle,.tc-brand .brand-mark line{stroke:var(--gold);stroke-width:7;fill:none;stroke-linecap:round}
-  .tool-card > p{color:var(--read);font-size:1.05rem;line-height:1.62;margin:0 0 20px;max-width:44em}
-  .tool-card strong{color:var(--gold-bright);font-weight:700}
-  .asset-strip{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;
-    padding:14px 16px;border-radius:12px;background:rgba(12,10,8,.4);border:1px solid var(--line-soft)}
-  .asset{width:28px;height:28px;display:inline-flex}
-  .asset svg{width:100%;height:100%}
-  .asset:first-child svg{width:22px;margin:0 3px}
-  .asset-label{font-family:'Space Mono';font-size:.78rem;color:var(--muted);margin-left:4px}
+  .gd-fact{
+    padding:16px 18px;border-radius:14px;text-align:center;
+    background:rgba(21,17,12,.55);border:1px solid var(--line-soft);
+  }
+  .gd-fact span{
+    display:block;font-family:'Space Mono';font-size:.62rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:7px;white-space:nowrap;
+  }
+  .gd-fact b{font-family:'Syne';font-weight:700;font-size:1.02rem;color:var(--gold-bright);white-space:nowrap}
+  .gd-fact .gd-link{border-bottom-width:1px;color:var(--gold-bright)}
 
-  /* FAQ — reuses the homepage accordion styles from style.css (.faq-list, .faq,
-     .plus, .ans). Constrain to the reading column width so the questions line up
-     under the section heading, and give it a little top gap. */
-  #guideFaq{max-width:720px;margin-top:.6rem}
+  /* FAQ — accordion visuals come from style.css (.faq-list/.faq/.plus/.ans) */
+  .gd-faq-head{margin-top:3rem}
+  .gd-faq{max-width:720px;margin:.4rem auto 0}
+  .gd-faq .ans p{font-size:1rem}
 
   /* final CTA */
-  .guide-cta{
-    margin:46px 0 0;padding:52px 34px;border-radius:24px;text-align:center;
-    background:radial-gradient(120% 140% at 50% 0%,rgba(201,168,76,.1),transparent 60%),linear-gradient(180deg,rgba(24,19,9,.7),rgba(12,10,8,.4));
+  .gd-cta{
+    margin:56px 0 26px;padding:54px 34px 48px;border-radius:24px;text-align:center;
+    background:radial-gradient(120% 140% at 50% 0%,rgba(201,168,76,.12),transparent 60%),linear-gradient(180deg,rgba(24,19,9,.7),rgba(12,10,8,.4));
     border:1px solid var(--line);
   }
-  .guide-cta .sec-eyebrow{margin-bottom:14px}
-  .guide-cta h2{font-family:'Syne';font-weight:750;font-size:clamp(1.7rem,4vw,2.3rem);margin-bottom:14px;letter-spacing:-.01em}
-  .guide-cta p{color:var(--muted);font-size:1.1rem;line-height:1.6;max-width:28em;margin:0 auto 28px}
+  .gd-cta-mark{width:34px;height:34px;margin:0 auto 18px}
+  .gd-cta-mark circle,.gd-cta-mark line{stroke:var(--gold);stroke-width:7;fill:none;stroke-linecap:round}
+  .gd-cta h2{font-family:'Syne';font-weight:750;font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:-.01em;margin:0 0 14px;color:var(--ink)}
+  .gd-cta p{color:var(--muted);font-size:1.1rem;line-height:1.6;max-width:30em;margin:0 auto 28px}
+  .gd-cta-note{
+    margin-top:20px;font-family:'Space Mono';font-size:.72rem;letter-spacing:.08em;color:var(--muted);
+  }
 
+  @media(max-width:780px){
+    .gd-methods{grid-template-columns:1fr}
+  }
   @media(max-width:680px){
-    .guide{padding:38px 0 30px}
-    .steps-grid{grid-template-columns:1fr}
-    .g-hero .dek{font-size:1.08rem}
-    .sec-head h2{font-size:1.32rem}
-    .tool-card{padding:26px 22px}
-    .guide-cta{padding:40px 24px}
-    .rule{margin:36px 0}
+    .gd{padding:40px 0 22px}
+    .gd-dek{font-size:1.06rem}
+    .gd-prose h2{font-size:1.32rem}
+    .gd-methods{grid-template-columns:1fr}
+    .gd-facts{grid-template-columns:1fr 1fr;margin:2.4rem 0}
+    .gd-steps li{gap:15px}
+    .gd-cta{padding:42px 22px 38px}
+    .gd-m-tag{position:static;align-self:flex-start;margin-bottom:14px}
   }
 </style>
 <script>

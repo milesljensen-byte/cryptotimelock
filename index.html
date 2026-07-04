@@ -45,7 +45,7 @@
 <!-- ?v= cache-bust is MANDATORY here, same as the JS includes below — without
      it browsers hold a stale stylesheet for days (this is how the footer social
      icons shipped unstyled to devices that had an older cached style.css). -->
-<link rel="stylesheet" href="style.css?v=20260704b" />
+<link rel="stylesheet" href="style.css?v=20260704c" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
      via trackEvent(), using the event IDs in TWQ_EVENT_IDS. -->
@@ -438,6 +438,11 @@ twq('config','tw-rda5s');
   <div class="page-head">
     <span class="ph-eyebrow">Your vault</span>
     <h1>Locks &amp; balances</h1>
+    <div class="ph-chips">
+      <span><i class="chip-dot live"></i>Ethereum mainnet</span>
+      <span><i class="chip-dot"></i>Self-custody</span>
+      <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener"><i class="chip-dot"></i>Verified contract &nearr;</a>
+    </div>
   </div>
 
   <div id="pausedBanner" class="paused-banner" style="display:none">&#9888;&#65039; New deposits are currently paused for maintenance. Existing vaults are unaffected and can still be withdrawn.</div>
@@ -450,6 +455,7 @@ twq('config','tw-rda5s');
         <div class="lab">Active locks</div>
       </div>
       <div class="val" id="stat-active">0</div>
+      <div class="sub">on this wallet</div>
     </div>
     <div class="stat">
       <div class="stat-top">
@@ -457,6 +463,7 @@ twq('config','tw-rda5s');
         <div class="lab">Total locked</div>
       </div>
       <div class="val plain" id="stat-total">&mdash;</div>
+      <div class="sub">across all your tokens</div>
     </div>
     <div class="stat">
       <div class="stat-top">
@@ -464,6 +471,7 @@ twq('config','tw-rda5s');
         <div class="lab">Next unlock</div>
       </div>
       <div class="val plain" id="stat-next" style="font-size:1.5rem">&mdash;</div>
+      <div class="sub">your soonest unlock date</div>
     </div>
   </div>
 
@@ -634,60 +642,74 @@ twq('config','tw-rda5s');
   <!-- CREATE -->
   <div class="panel">
     <div class="panel-head">
-      <h2>Create new lock</h2>
+      <div class="panel-title">
+        <span class="pnl-ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></svg></span>
+        <h2>Create new lock</h2>
+      </div>
       <span class="fee-badge">0.5% FEE</span>
     </div>
 
     <div class="connect-note"><span class="pulse-dot"></span>Connect your wallet to load your balances and start locking.</div>
 
-    <div class="field">
-      <div class="field-lab">Select token</div>
-      <select class="control" id="token">
-        <option value="ETH">Connect wallet&hellip;</option>
-      </select>
-    </div>
+    <div class="panel-grid">
+      <div class="panel-col">
+        <div class="field">
+          <div class="field-lab">Select token</div>
+          <select class="control" id="token">
+            <option value="ETH">Connect wallet&hellip;</option>
+          </select>
+        </div>
 
-    <div class="field">
-      <div class="field-lab">
-        <span>Amount &middot; <span id="amt-token">ETH</span></span>
-        <span class="avail">Available: <span id="avail">&mdash;</span> <span id="avail-token">ETH</span></span>
+        <div class="field">
+          <div class="field-lab">
+            <span>Amount &middot; <span id="amt-token">ETH</span></span>
+            <span class="avail">Available: <span id="avail">&mdash;</span> <span id="avail-token">ETH</span></span>
+          </div>
+          <div class="amount-wrap">
+            <input class="control" id="amount" type="number" min="0" step="any" placeholder="0.00" inputmode="decimal"/>
+            <button class="max-btn" id="max" type="button">MAX</button>
+          </div>
+          <div class="bal-warn" id="balanceWarning">&#9888; Amount exceeds your available balance</div>
+        </div>
       </div>
-      <div class="amount-wrap">
-        <input class="control" id="amount" type="number" min="0" step="any" placeholder="0.00" inputmode="decimal"/>
-        <button class="max-btn" id="max" type="button">MAX</button>
-      </div>
-      <div class="bal-warn" id="balanceWarning">&#9888; Amount exceeds your available balance</div>
-    </div>
 
-    <div class="field">
-      <div class="field-lab">Lock duration</div>
-      <div class="dur-toggle">
-        <button class="on" id="tab-preset" type="button">Preset</button>
-        <button id="tab-date" type="button">Pick date</button>
-      </div>
-      <div class="presets" id="presets">
-        <button class="preset" type="button" data-ms="600000">10 minutes</button>
-        <button class="preset" type="button" data-ms="1800000">30 minutes</button>
-        <button class="preset" type="button" data-ms="3600000">1 hour</button>
-        <button class="preset" type="button" data-ms="86400000">1 day</button>
-        <button class="preset" type="button" data-ms="604800000">1 week</button>
-        <button class="preset" type="button" data-ms="2592000000">1 month</button>
-        <button class="preset" type="button" data-ms="7776000000">3 months</button>
-        <button class="preset" type="button" data-ms="15552000000">6 months</button>
-        <button class="preset" type="button" data-ms="31536000000">1 year</button>
-        <button class="preset" type="button" data-ms="63072000000">2 years</button>
-        <button class="preset" type="button" data-ms="157680000000">5 years</button>
-        <button class="preset" type="button" data-ms="315360000000">10 years</button>
-      </div>
-      <div class="datebox" id="datebox">
-        <input class="control" id="date" type="text" placeholder="Select unlock date &amp; time" readonly/>
-        <div class="date-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>Pick the date your crypto unlocks — up to 10 years from now.</div>
+      <div class="panel-col">
+        <div class="field">
+          <div class="field-lab">Lock duration</div>
+          <div class="dur-toggle">
+            <button class="on" id="tab-preset" type="button">Preset</button>
+            <button id="tab-date" type="button">Pick date</button>
+          </div>
+          <div class="presets" id="presets">
+            <button class="preset" type="button" data-ms="600000">10 minutes</button>
+            <button class="preset" type="button" data-ms="1800000">30 minutes</button>
+            <button class="preset" type="button" data-ms="3600000">1 hour</button>
+            <button class="preset" type="button" data-ms="86400000">1 day</button>
+            <button class="preset" type="button" data-ms="604800000">1 week</button>
+            <button class="preset" type="button" data-ms="2592000000">1 month</button>
+            <button class="preset" type="button" data-ms="7776000000">3 months</button>
+            <button class="preset" type="button" data-ms="15552000000">6 months</button>
+            <button class="preset" type="button" data-ms="31536000000">1 year</button>
+            <button class="preset" type="button" data-ms="63072000000">2 years</button>
+            <button class="preset" type="button" data-ms="157680000000">5 years</button>
+            <button class="preset" type="button" data-ms="315360000000">10 years</button>
+          </div>
+          <div class="datebox" id="datebox">
+            <input class="control" id="date" type="text" placeholder="Select unlock date &amp; time" readonly/>
+            <div class="date-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>Pick the date your crypto unlocks, up to 10 years from now.</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div id="lockLimitWarn" class="limit-warn"></div>
     <div class="lock-summary" id="summary"></div>
     <button class="btn full" id="lock" type="button">Connect Wallet</button>
+    <div class="panel-trust">
+      <span><i></i>Only your wallet can withdraw</span>
+      <span><i></i>Withdrawals always free</span>
+      <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener"><i></i>Verified contract &nearr;</a>
+    </div>
   </div>
 
   <!-- VAULTS -->
@@ -698,7 +720,7 @@ twq('config','tw-rda5s');
     </div>
     <div id="vaults">
       <div class="empty" id="empty">
-        <span class="ico">&#128275;</span>
+        <span class="empty-ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M16 11V8a4 4 0 0 0-7.8-1.3"/></svg></span>
         <p>No vaults yet. Connect your wallet and create your first lock above.</p>
       </div>
       <div class="vault-list" id="vlist"></div>

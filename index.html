@@ -45,7 +45,7 @@
 <!-- ?v= cache-bust is MANDATORY here, same as the JS includes below — without
      it browsers hold a stale stylesheet for days (this is how the footer social
      icons shipped unstyled to devices that had an older cached style.css). -->
-<link rel="stylesheet" href="style.css?v=20260704c" />
+<link rel="stylesheet" href="style.css?v=20260704d" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
      via trackEvent(), using the event IDs in TWQ_EVENT_IDS. -->
@@ -98,7 +98,7 @@ twq('config','tw-rda5s');
       <p class="lead reveal">Lock your crypto away for as long as you choose, from 10&nbsp;minutes to 10&nbsp;years. No early exit, no override, not even for you.</p>
       <div class="hero-cta reveal">
         <a href="#" data-launch="1" class="btn lg">Connect Wallet</a>
-        <a href="/how-to-lock-your-crypto/" class="btn ghost lg">See how it works</a>
+        <a href="/how-to-lock-your-crypto/" class="btn ghost lg">How to lock</a>
       </div>
       <div class="trust-row reveal">
         <span class="ti"><span class="dot"></span><b>Immutable</b>&nbsp;contract</span>
@@ -177,6 +177,119 @@ twq('config','tw-rda5s');
         <span class="num">3</span>
         <h3>Withdraw when ready</h3>
         <p>Once the lock expires, withdraw instantly. No waiting, no approvals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UNDER THE HOOD — depth slider: same explanation at three levels of detail -->
+<section class="block" id="under-the-hood">
+  <div class="wrap">
+    <div class="sec-head reveal" style="text-align:center;margin-left:auto;margin-right:auto">
+      <div class="sec-eyebrow">Under the hood</div>
+      <h2>How the lock actually works.</h2>
+      <p class="sec-sub">Same system, three depths. Drag the dial to the level that suits you.</p>
+    </div>
+
+    <div class="depth reveal">
+      <div class="depth-slider" id="depthSlider">
+        <div class="ds-track">
+          <div class="ds-fill" id="dsFill"></div>
+          <span class="ds-stop" style="left:0%"></span>
+          <span class="ds-stop" style="left:50%"></span>
+          <span class="ds-stop" style="left:100%"></span>
+          <button class="ds-knob" id="dsKnob" type="button" role="slider" aria-valuemin="0" aria-valuemax="2" aria-valuenow="0" aria-label="Explanation depth"></button>
+        </div>
+        <div class="ds-labels">
+          <button class="ds-lab on" type="button" data-level="0">Simple<span>new to crypto</span></button>
+          <button class="ds-lab" type="button" data-level="1">Standard<span>know the basics</span></button>
+          <button class="ds-lab" type="button" data-level="2">Technical<span>read the code</span></button>
+        </div>
+      </div>
+
+      <div class="depth-body" id="depthBody">
+
+        <!-- LEVEL 0 · SIMPLE -->
+        <article class="depth-pane on">
+          <div class="dp-grid">
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+              <h4>It's a safe with a timer</h4>
+              <p>When you lock crypto here, it goes into a digital safe on the Ethereum network. You choose the date the door opens. Until that date, the door will not open for anyone.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M14.5 9.5 20 4M17 7l3 3M9.5 14.5a4.5 4.5 0 1 1-3-3"/><circle cx="7.5" cy="16.5" r="1"/></svg></span>
+              <h4>Nobody has a spare key</h4>
+              <p>The safe is run by a computer program whose rules were permanently fixed the day it was created. We can't open it early. You can't either. There is no override and no support line that can help.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 3.8 5.2 3.8 8.5s-1.3 6.2-3.8 8.5c-2.5-2.3-3.8-5.2-3.8-8.5s1.3-6.2 3.8-8.5z"/></svg></span>
+              <h4>This website is just the remote</h4>
+              <p>Your money never sits with us or on this site. If the website vanished tomorrow, your safe would still be on the network, still counting down, and still opening on your date.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M12 4v11M8 11l4 4 4-4"/><rect x="4" y="17" width="16" height="3.5" rx="1.5"/></svg></span>
+              <h4>Getting it back</h4>
+              <p>When your date arrives, you press withdraw and the safe hands the crypto back to the exact same wallet that locked it. Withdrawing costs nothing.</p>
+            </div>
+          </div>
+          <div class="dp-foot">Want the full story? <a href="/how-to-lock-your-crypto/">Read the 2-minute guide</a></div>
+        </article>
+
+        <!-- LEVEL 1 · STANDARD -->
+        <article class="depth-pane">
+          <div class="dp-grid">
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M12 3 21 8 12 13 3 8z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span>
+              <h4>An immutable contract holds your funds</h4>
+              <p>Deposits go to a verified, non-upgradeable smart contract on Ethereum mainnet, not to a company wallet. Each lock records your address, the token, the amount, and your unlock timestamp on-chain.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5l1 1 2-2M4 11.5l1 1 2-2M4 17.5l1 1 2-2"/></svg></span>
+              <h4>Withdrawal has exactly three checks</h4>
+              <p>You must be the wallet that created the lock, the lock must not already be withdrawn, and the block time must be past your unlock time. That's the whole gate. No early-withdraw function exists in the code.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg></span>
+              <h4>No admin power over your funds</h4>
+              <p>No admin key can touch locked principal. The emergency pause only stops new deposits; withdrawals can never be paused. The 0.5% fee is taken once at deposit, and withdrawing is free.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></span>
+              <h4>The frontend is optional</h4>
+              <p>The contract source is verified on Etherscan. You can read every line, view your locks, and withdraw by calling the contract directly, with this site online or not.</p>
+            </div>
+          </div>
+          <div class="dp-foot">See for yourself: <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">verified contract on Etherscan &nearr;</a></div>
+        </article>
+
+        <!-- LEVEL 2 · TECHNICAL -->
+        <article class="depth-pane">
+          <div class="dp-grid">
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M8 6 3 12l5 6M16 6l5 6-5 6"/></svg></span>
+              <h4>Three requires, nothing else</h4>
+              <p><code>withdraw(uint256)</code> checks <code>lock.owner == msg.sender</code>, <code>!lock.withdrawn</code>, and <code>block.timestamp &gt;= unlockTime</code>. State is written before transfer, guarded by <code>nonReentrant</code>. No other selector moves principal.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 9.5h16M9.5 9.5V20"/></svg></span>
+              <h4>No proxy, no upgrade path</h4>
+              <p>A single plain contract: no delegatecall, no upgradeability, immutable bytecode. Bare <code>receive()</code> reverts, so ETH only enters via <code>lockNative()</code>; ERC-20s via <code>lockToken()</code> against an allowlist.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg></span>
+              <h4>Constrained admin surface</h4>
+              <p>The owner is a multisig, and owner ops (allowlist, role rotations) sit behind 48-hour timelocks. <code>pause()</code> gates deposits only, auto-expires after 30 days, and anyone may unpause after that. Withdrawals are never pausable.</p>
+            </div>
+            <div class="dp-card">
+              <span class="dp-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 21 21"/></svg></span>
+              <h4>Verify, don't trust</h4>
+              <p>Source is verified on Etherscan at <code>0x571B&hellip;794c</code>. Diff the deployed bytecode, read the ABI, and confirm yourself that no early-exit path exists. That beats anything this page can claim.</p>
+            </div>
+          </div>
+          <div class="dp-foot">Read the source: <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">CryptoTimeLock.sol on Etherscan &nearr;</a></div>
+        </article>
+
       </div>
     </div>
   </div>
@@ -872,7 +985,7 @@ if (typeof ethers === 'undefined') {
 <script src="js/ui-helpers.js?v=20260703a"></script>
 <script src="js/admin.js?v=20260703a"></script>
 <script src="js/dashboard.js?v=20260703a"></script>
-<script src="js/landing.js?v=20260703a"></script>
+<script src="js/landing.js?v=20260704a"></script>
 </body>
 </html>
 

@@ -361,8 +361,9 @@
 
   /* ---------- welcome modal (first visit, shown once) ---------- */
   .welcome-card{width:min(560px,100%);padding:44px 42px 36px;overflow-y:auto}
-  .welcome-title{font-family:'Syne';font-weight:700;font-size:1.8rem;line-height:1.15;margin:10px 0 24px}
-  .welcome-points{list-style:none;margin:0 0 28px;padding:0;display:flex;flex-direction:column;gap:18px}
+  .welcome-title{font-family:'Syne';font-weight:700;font-size:1.8rem;line-height:1.15;margin:10px 0 12px}
+  .welcome-sub{color:var(--muted);font-size:.98rem;line-height:1.58;margin:0 0 24px}
+  .welcome-points{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:18px}
   .welcome-points li{display:flex;gap:14px;align-items:flex-start}
   .wp-ico{flex-shrink:0;width:38px;height:38px;border-radius:11px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);display:flex;align-items:center;justify-content:center;color:var(--gold-bright)}
   .wp-ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -370,12 +371,19 @@
   .welcome-points b{color:var(--ink);display:block;margin-bottom:3px;font-weight:600}
   .welcome-points a{color:var(--gold-bright);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.4);transition:border-color .25s}
   .welcome-points a:hover{border-color:var(--gold-bright)}
+  .welcome-trust{display:flex;gap:12px;align-items:flex-start;margin:0 0 24px;padding:14px 16px;border-radius:12px;background:rgba(201,168,76,.06);border:1px solid var(--line-soft)}
+  .wt-ico{flex-shrink:0;width:30px;height:30px;border-radius:9px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;color:var(--gold-bright)}
+  .wt-ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .welcome-trust p{color:var(--muted);font-size:.84rem;line-height:1.5;margin:0}
+  .welcome-trust a{color:var(--gold-bright);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.4);white-space:nowrap;transition:border-color .25s}
+  .welcome-trust a:hover{border-color:var(--gold-bright)}
   .welcome-cta{display:flex;gap:12px;flex-wrap:wrap}
   .welcome-note{margin-top:18px;font-family:'Space Mono';font-size:.68rem;color:var(--muted);letter-spacing:.04em}
   @media(max-width:560px){
     .welcome-card{padding:30px 22px 24px}
-    .welcome-title{font-size:1.4rem;margin-bottom:18px}
-    .welcome-points{gap:14px;margin-bottom:22px}
+    .welcome-title{font-size:1.4rem;margin-bottom:10px}
+    .welcome-sub{font-size:.92rem;margin-bottom:20px}
+    .welcome-points{gap:14px;margin-bottom:18px}
     .welcome-points p{font-size:.88rem}
     .wp-ico{width:34px;height:34px}
     /* Stack the CTAs full-width so neither label wraps to two lines */

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://static.ads-twitter.com https://analytics.twitter.com; object-src 'none'; base-uri 'self'" />
+<title>How to Lock Your Crypto So You Can't Sell It (Step by Step)</title>
+<meta name="description" content="The real ways to lock your crypto so you can't panic sell — hardware wallets, staking and time-lock vaults compared — plus a plain step-by-step guide to time-locking ETH and tokens on Ethereum until a date you choose." />
+<link rel="canonical" href="https://cryptotimelock.xyz/how-to-lock-your-crypto/" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="How to Lock Your Crypto So You Can't Sell It" />
+<meta property="og:description" content="Willpower breaks first when the market drops. Here's how to remove the sell button entirely — the real ways to lock your crypto, compared, with a step-by-step for the one that actually works." />
+<meta property="og:url" content="https://cryptotimelock.xyz/how-to-lock-your-crypto/" />
+<meta property="og:image" content="https://cryptotimelock.xyz/icon-192.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="How to Lock Your Crypto So You Can't Sell It" />
+<meta name="twitter:description" content="The real ways to lock your crypto so you can't panic sell, compared — plus a step-by-step time-lock guide." />
+<meta name="twitter:image" content="https://cryptotimelock.xyz/icon-192.png" />
+<link rel="icon" type="image/svg+xml" href="/icon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20260703a" />
+<!-- X (Twitter) retargeting base pixel — same as the homepage, so guide readers
+     can be retargeted with the app. Individual events fire from the app pages. -->
+<script>
+!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+twq('config','tw-rda5s');
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Lock Your Crypto So You Can't Sell It",
+  "description": "The real ways to lock your crypto so you can't panic sell — hardware wallets, staking and time-lock vaults compared — plus a step-by-step guide to time-locking ETH and tokens on Ethereum.",
+  "image": "https://cryptotimelock.xyz/icon-192.png",
+  "author": { "@type": "Organization", "name": "TimeLock" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TimeLock",
+    "logo": { "@type": "ImageObject", "url": "https://cryptotimelock.xyz/icon-192.png" }
+  },
+  "mainEntityOfPage": "https://cryptotimelock.xyz/how-to-lock-your-crypto/",
+  "datePublished": "2026-07-03",
+  "dateModified": "2026-07-03"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I lock my crypto so I can't sell it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use a time-lock vault. You deposit your ETH or tokens into a smart contract, choose an unlock date, and the funds can't be withdrawn until that date passes. Because the contract has no early-withdrawal function, selling in a panic simply isn't possible while the lock is active."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I unlock my crypto early?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. With a genuine time-lock like CryptoTimeLock, the contract contains no function to withdraw before the unlock date. Not you, not the developer, not anyone else can release the funds early. That is the entire point."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is time-locking my crypto safe?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is self-custody. Your crypto is held by a public smart contract on Ethereum, not by a company. Only your own wallet can withdraw it, and only after the unlock date — so there is no account for anyone to freeze and no central party holding your keys."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long can I lock my crypto for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You choose. Lock for a few weeks, a year, or as long as ten years. The unlock date is set when you create the lock and can't be shortened afterwards."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does it cost to lock crypto?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CryptoTimeLock charges a one-time 0.5% fee when you create the lock. Withdrawing after the unlock date is free. You also pay standard Ethereum gas for each transaction."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="grain"></div>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="/" class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
+      TimeLock
+    </a>
+    <a href="/" class="btn">Open the app <span aria-hidden="true">&rarr;</span></a>
+  </div>
+</nav>
+
+<main class="guide">
+  <div class="guide-wrap">
+
+    <!-- HEADER -->
+    <header class="guide-head">
+      <div class="sec-eyebrow">Guide · Self-custody time-locks</div>
+      <h1>How to lock your crypto so you can't sell it</h1>
+      <p class="dek">If you've ever sworn you'd hold for years and then dumped the moment the chart went red, the problem isn't your strategy — it's that the sell button is always right there. Here's how to take it away from yourself.</p>
+    </header>
+
+    <article class="guide-body">
+      <p>Most people don't lose money in crypto because they picked the wrong coin. They lose it in the ten seconds where fear takes over and they sell at the bottom — the exact thing they promised themselves they'd never do. Willpower is the first thing to break when the market drops, so relying on it doesn't work.</p>
+
+      <p>The fix isn't more discipline. It's removing the option. Below are the real ways to lock your crypto, from weakest to strongest, and a plain step-by-step for the method that actually makes early selling impossible.</p>
+
+      <h2>What locking your crypto actually means</h2>
+      <p>Locking means putting your crypto somewhere you can't easily reach it for a set period. Some methods are just <strong>friction</strong> — they slow you down. Others are <strong>absolute</strong> — they make selling genuinely impossible until a date you choose.</p>
+      <p>The difference matters, because in a real panic, friction isn't enough. If a method can be undone in the heat of the moment, sooner or later it will be.</p>
+
+      <h2>The main ways to lock crypto, compared</h2>
+      <div class="table-scroll">
+        <table class="cmp">
+          <thead>
+            <tr><th>Method</th><th>How it locks</th><th>Break it early?</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hardware wallet</td>
+              <td>Keys held offline on a device</td>
+              <td><span class="no">Yes</span> — plug it in and sell anytime</td>
+            </tr>
+            <tr>
+              <td>Staking lockup</td>
+              <td>Funds committed to a network for rewards</td>
+              <td><span class="no">Often</span> — many have unbonding exits</td>
+            </tr>
+            <tr>
+              <td>Give keys to a friend</td>
+              <td>Someone else holds your seed phrase</td>
+              <td><span class="no">Yes</span> — and now they can steal it</td>
+            </tr>
+            <tr class="win">
+              <td>Time-lock vault</td>
+              <td>Smart contract with a fixed unlock date</td>
+              <td><span class="yes">No</span> — no early-exit function exists</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A hardware wallet protects you from hackers, not from yourself. Staking can usually be exited. Handing your keys to a friend just swaps one risk for a worse one. Only a <strong>time-lock vault</strong> removes early selling entirely — while keeping the crypto in your own control.</p>
+
+      <h2>How a time-lock vault makes selling impossible</h2>
+      <p>A time-lock vault is a smart contract. You deposit your ETH or tokens, pick an unlock date, and confirm. From that moment the funds are held by code on the blockchain — and that code contains <strong>no function to release them early</strong>. There's no emergency withdraw, no override, no support line that can let you out. When your date arrives, and only then, you withdraw.</p>
+      <p>Crucially, this is <strong>self-custody</strong>. The vault never hands your crypto to a company. It sits in a public contract that only your wallet can withdraw from, once the timer hits zero. Nobody — not the developer, not a stranger with the contract address — can move it early. You've locked it against the one person who tends to break the plan: you, at your worst moment.</p>
+
+      <h2>How to lock your crypto, step by step</h2>
+      <ol class="steps-list">
+        <li>
+          <div class="s-num">1</div>
+          <div class="s-body">
+            <h3>Decide what to lock</h3>
+            <p>Pick the bag you know you shouldn't touch — the long-term hold you always fumble in a panic. Keep your active trading funds separate and free. Only lock what's meant to sit.</p>
+          </div>
+        </li>
+        <li>
+          <div class="s-num">2</div>
+          <div class="s-body">
+            <h3>Connect your wallet</h3>
+            <p>Open the time-lock app and connect the wallet holding your ETH or tokens — MetaMask, Rabby, or any WalletConnect wallet. You stay in control of your keys the whole time.</p>
+          </div>
+        </li>
+        <li>
+          <div class="s-num">3</div>
+          <div class="s-body">
+            <h3>Choose your amount and unlock date</h3>
+            <p>Enter how much to lock and the date it should unlock — a few months, a year, up to ten years out. This date can't be shortened later, so choose one you'll respect.</p>
+          </div>
+        </li>
+        <li>
+          <div class="s-num">4</div>
+          <div class="s-body">
+            <h3>Confirm the lock</h3>
+            <p>Approve the transaction in your wallet. The crypto moves into the vault and the countdown begins. From here, there's no early exit.</p>
+          </div>
+        </li>
+        <li>
+          <div class="s-num">5</div>
+          <div class="s-body">
+            <h3>Withdraw when the date arrives</h3>
+            <p>When your unlock date passes, come back and withdraw — free. Until then, panic selling simply isn't on the table.</p>
+          </div>
+        </li>
+      </ol>
+
+      <!-- TOOL CALLOUT -->
+      <aside class="tool-card">
+        <div class="tc-brand">
+          <svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
+          <span>CryptoTimeLock</span>
+        </div>
+        <p>A self-custody vault on Ethereum that locks your ETH and ERC-20 tokens until a date you choose. No early withdrawal — the contract physically can't release funds early, not even by the developer. Your crypto never leaves your control; only your wallet can withdraw it once the timer ends. A one-time <strong>0.5% fee</strong> to lock, free to withdraw.</p>
+        <a href="/" class="btn lg">Lock your crypto now <span aria-hidden="true">&rarr;</span></a>
+      </aside>
+
+      <h2>Who should lock their crypto this way</h2>
+      <p>Time-locking is for the money you've already decided to hold long term but keep selling early anyway. If you're a long-term believer who folds every dip, someone taking profit-target discipline seriously, or anyone who wants to force themselves to hold through a full cycle — this is built for you.</p>
+      <p>It's <strong>not</strong> for funds you might genuinely need soon. Lock what should sit; keep the rest liquid.</p>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-block">
+        <div class="qa">
+          <h3>How do I lock my crypto so I can't sell it?</h3>
+          <p>Use a time-lock vault. You deposit your ETH or tokens into a smart contract, choose an unlock date, and the funds can't be withdrawn until that date passes. Because there's no early-withdrawal function, selling in a panic isn't possible while the lock is active.</p>
+        </div>
+        <div class="qa">
+          <h3>Can I unlock my crypto early?</h3>
+          <p>No. With a genuine time-lock like CryptoTimeLock, the contract contains no function to withdraw before the unlock date. Not you, not the developer, not anyone else can release the funds early. That's the entire point.</p>
+        </div>
+        <div class="qa">
+          <h3>Is time-locking my crypto safe?</h3>
+          <p>It's self-custody. Your crypto is held by a public smart contract on Ethereum, not by a company. Only your own wallet can withdraw it, and only after the unlock date — so there's no account for anyone to freeze and no central party holding your keys.</p>
+        </div>
+        <div class="qa">
+          <h3>How long can I lock my crypto for?</h3>
+          <p>You choose. Lock for a few weeks, a year, or as long as ten years. The unlock date is set when you create the lock and can't be shortened afterwards.</p>
+        </div>
+        <div class="qa">
+          <h3>What does it cost?</h3>
+          <p>CryptoTimeLock charges a one-time 0.5% fee when you create the lock. Withdrawing after the unlock date is free. You also pay standard Ethereum gas for each transaction.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- FINAL CTA -->
+    <section class="guide-cta">
+      <div class="sec-eyebrow">Stop selling the bottom</div>
+      <h2>Remove the access.</h2>
+      <p>If you've sold the bottom and hated yourself for it, you don't have a knowledge problem — you have an access problem. Take the option away.</p>
+      <a href="/" class="btn lg">Open CryptoTimeLock <span aria-hidden="true">&rarr;</span></a>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <a href="/" class="brand" style="font-size:1rem">
+      <svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
+      TimeLock
+    </a>
+    <nav class="foot-links">
+      <a class="foot-link" href="/">Home</a>
+      <a class="foot-link" href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">Show contract ↗</a>
+      <a class="foot-link" href="mailto:metaw1n100x@gmail.com?subject=TimeLock%20Support">Support</a>
+      <span class="foot-tm">TimeLock&trade;</span>
+      <div class="foot-social">
+        <a class="foot-social-link" href="https://x.com/cryptotimelock" target="_blank" rel="noopener" aria-label="X (Twitter)">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3l7.5 8.5L3.4 21h2.7l6-6.9 4.6 6.9H21l-7.8-9.3L20.4 3h-2.7l-5.6 6.4L7.7 3H3z"/></svg>
+        </a>
+        <a class="foot-social-link" href="https://t.me/cryptotimelock1" target="_blank" rel="noopener" aria-label="Telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 3.5 2.6 10.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.4.9.9.9.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8L23 4.7c.3-1.2-.4-1.7-1.5-1.2ZM8.4 13.7l9.6-6.1c.5-.3.9-.1.5.2l-8 7.2-.3 3-1.5-4.3Z"/></svg>
+        </a>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap guide-foot-note">
+    This guide is educational and not financial advice. Only lock funds you've decided to hold long term.
+    Contract: <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">0x571B…794c</a>
+  </div>
+</footer>
+
+<style>
+  /* ---------- guide / article page ---------- */
+  .guide{padding:56px 0 40px}
+  .guide-wrap{max-width:720px;margin:0 auto;padding:0 24px}
+
+  .guide-head{margin-bottom:44px}
+  .sec-eyebrow{
+    font-family:'Space Mono';font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:20px;
+  }
+  .guide-head h1{
+    font-family:'Syne',sans-serif;font-weight:750;line-height:1.08;letter-spacing:-.015em;
+    font-size:clamp(2rem,5.2vw,2.9rem);margin-bottom:22px;
+  }
+  .guide-head .dek{
+    font-size:1.2rem;line-height:1.62;color:var(--muted);max-width:34em;
+  }
+
+  /* body typography — warm off-white, generous line-height for long reading */
+  .guide-body{--read:#D8D2C7}
+  .guide-body p{
+    color:var(--read);font-size:1.12rem;line-height:1.78;margin:0 0 1.35em;
+    max-width:36em;
+  }
+  .guide-body strong{color:var(--ink);font-weight:600}
+
+  .guide-body h2{
+    font-family:'Syne',sans-serif;font-weight:700;letter-spacing:-.01em;
+    font-size:1.62rem;line-height:1.2;color:var(--ink);
+    margin:3.2rem 0 1.1rem;padding-top:.2rem;
+  }
+  .guide-body h3{
+    font-family:'Syne',sans-serif;font-weight:700;font-size:1.12rem;color:var(--ink);
+  }
+
+  /* comparison table */
+  .table-scroll{overflow-x:auto;margin:1.6rem 0 1.7rem;
+    border:1px solid var(--line-soft);border-radius:16px;background:rgba(21,17,12,.5)}
+  table.cmp{width:100%;border-collapse:collapse;min-width:520px;font-size:.98rem}
+  table.cmp th{
+    font-family:'Space Mono';font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gold);text-align:left;font-weight:700;
+    padding:15px 18px;border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  table.cmp td{
+    padding:15px 18px;color:var(--read);vertical-align:top;
+    border-bottom:1px solid var(--line-soft);line-height:1.5;
+  }
+  table.cmp td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  table.cmp tbody tr:last-child td{border-bottom:none}
+  table.cmp tr.win{background:rgba(201,168,76,.06)}
+  table.cmp tr.win td:first-child{color:var(--gold-bright)}
+  .cmp .no{color:#C98A6A;font-weight:600}
+  .cmp .yes{color:#7BC49A;font-weight:600}
+
+  /* step list */
+  .steps-list{list-style:none;margin:1.6rem 0 2rem;padding:0;display:flex;flex-direction:column;gap:6px}
+  .steps-list li{display:flex;gap:18px;align-items:flex-start;padding:18px 0;border-top:1px solid var(--line-soft)}
+  .steps-list li:first-child{border-top:none}
+  .s-num{
+    flex-shrink:0;width:38px;height:38px;border-radius:50%;
+    background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#150F04;
+    font-family:'Space Mono';font-weight:700;font-size:1rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 18px -6px rgba(201,168,76,.6);margin-top:2px;
+  }
+  .s-body h3{margin:0 0 5px}
+  .s-body p{margin:0;color:var(--read);font-size:1.04rem;line-height:1.62;max-width:32em}
+
+  /* tool callout card */
+  .tool-card{
+    margin:2.6rem 0;padding:32px 30px;border-radius:20px;
+    background:linear-gradient(165deg,rgba(24,19,9,.9),rgba(21,17,12,.7));
+    border:1px solid var(--line);box-shadow:0 30px 70px -40px rgba(0,0,0,.8);
+  }
+  .tc-brand{display:flex;align-items:center;gap:11px;font-family:'Syne';font-weight:700;font-size:1.2rem;margin-bottom:14px}
+  .tc-brand .brand-mark{width:24px;height:24px}
+  .tc-brand .brand-mark circle,.tc-brand .brand-mark line{stroke:var(--gold);stroke-width:7;fill:none;stroke-linecap:round}
+  .tool-card p{color:var(--read);font-size:1.05rem;line-height:1.65;margin:0 0 22px}
+  .tool-card strong{color:var(--gold-bright);font-weight:700}
+
+  /* FAQ */
+  .faq-block{margin:1.4rem 0 1rem}
+  .qa{padding:22px 0;border-top:1px solid var(--line-soft)}
+  .qa:first-child{border-top:none}
+  .qa h3{margin:0 0 8px;font-size:1.12rem;color:var(--gold-bright)}
+  .qa p{margin:0;color:var(--read);font-size:1.05rem;line-height:1.65;max-width:36em}
+
+  /* final CTA */
+  .guide-cta{
+    margin:3.4rem 0 1rem;padding:52px 34px;border-radius:24px;text-align:center;
+    background:radial-gradient(120% 140% at 50% 0%,rgba(201,168,76,.1),transparent 60%),linear-gradient(180deg,rgba(24,19,9,.7),rgba(12,10,8,.4));
+    border:1px solid var(--line);
+  }
+  .guide-cta .sec-eyebrow{margin-bottom:14px}
+  .guide-cta h2{font-family:'Syne';font-weight:750;font-size:clamp(1.7rem,4vw,2.3rem);margin-bottom:14px;letter-spacing:-.01em}
+  .guide-cta p{color:var(--muted);font-size:1.1rem;line-height:1.6;max-width:30em;margin:0 auto 28px}
+
+  /* footer note specific to the guide */
+  .guide-foot-note{
+    margin-top:22px;padding-top:20px;border-top:1px solid var(--line-soft);
+    font-family:'Space Mono';font-size:.72rem;line-height:1.7;color:var(--muted);max-width:var(--maxw);
+  }
+  .guide-foot-note a{color:var(--gold);text-decoration:none}
+  .guide-foot-note a:hover{color:var(--gold-bright)}
+
+  @media(max-width:560px){
+    .guide{padding:40px 0 30px}
+    .guide-body p,.qa p,.s-body p{font-size:1.06rem}
+    .guide-body h2{font-size:1.4rem;margin-top:2.6rem}
+    .tool-card{padding:26px 22px}
+    .guide-cta{padding:40px 24px}
+    .steps-list li{gap:14px}
+  }
+</style>
+</body>
+</html>

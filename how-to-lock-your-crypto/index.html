@@ -144,41 +144,52 @@ twq('config','tw-rda5s');
     <!-- lock lifecycle diagram -->
     <figure class="gd-diagram" aria-label="The life of a time-locked deposit: deposit, locked period, unlock date, free withdrawal">
       <div class="gd-diagram-scroll">
-        <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg" role="img">
+        <svg viewBox="0 0 860 208" xmlns="http://www.w3.org/2000/svg" role="img">
           <defs>
-            <linearGradient id="goldTrack" x1="0" y1="0" x2="1" y2="0">
+            <!-- userSpaceOnUse: gradients on horizontal lines don't render with
+                 the default objectBoundingBox units (zero-height bbox) -->
+            <linearGradient id="goldTrack" gradientUnits="userSpaceOnUse" x1="100" y1="0" x2="580" y2="0">
               <stop offset="0" stop-color="#8A6D2E"/>
               <stop offset=".55" stop-color="#C9A84C"/>
               <stop offset="1" stop-color="#E9D08A"/>
             </linearGradient>
           </defs>
-          <!-- track -->
-          <line x1="80" y1="88" x2="760" y2="88" stroke="rgba(242,237,227,.12)" stroke-width="4" stroke-linecap="round"/>
-          <line x1="80" y1="88" x2="545" y2="88" stroke="url(#goldTrack)" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- elapsed lock period: soft glow underlay + gold track -->
+          <line x1="100" y1="98" x2="580" y2="98" stroke="rgba(201,168,76,.16)" stroke-width="12" stroke-linecap="round"/>
+          <line x1="100" y1="98" x2="580" y2="98" stroke="url(#goldTrack)" stroke-width="4" stroke-linecap="round"/>
+          <!-- remaining lock period: dashed, still ahead -->
+          <line x1="592" y1="98" x2="740" y2="98" stroke="rgba(242,237,227,.22)" stroke-width="3" stroke-dasharray="1 10" stroke-linecap="round"/>
+
           <!-- node 1: deposit -->
-          <circle cx="80" cy="88" r="11" fill="#C9A84C"/>
-          <circle cx="80" cy="88" r="11" fill="none" stroke="rgba(201,168,76,.35)" stroke-width="7"/>
-          <text x="80" y="132" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Deposit</text>
-          <text x="80" y="154" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">one transaction</text>
-          <!-- node 2: locked (lock icon in a badge) -->
-          <g>
-            <circle cx="310" cy="88" r="26" fill="#181309" stroke="rgba(201,168,76,.45)" stroke-width="1.5"/>
-            <g transform="translate(298,76)" stroke="#E9D08A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="10" width="20" height="13" rx="3"/>
-              <path d="M6.5 10V7a5.5 5.5 0 0 1 11 0v3"/>
-            </g>
-            <text x="310" y="141" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Locked</text>
-            <text x="310" y="163" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">no sell button exists</text>
+          <circle cx="100" cy="98" r="15" fill="rgba(201,168,76,.16)"/>
+          <circle cx="100" cy="98" r="8" fill="#E9D08A"/>
+          <text x="100" y="156" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Deposit</text>
+          <text x="100" y="180" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">one transaction</text>
+
+          <!-- node 2: locked (lock badge sits on the gold span) -->
+          <circle cx="340" cy="98" r="30" fill="rgba(201,168,76,.1)"/>
+          <circle cx="340" cy="98" r="23" fill="#1D1710" stroke="rgba(233,208,138,.65)" stroke-width="1.5"/>
+          <g transform="translate(329,87)" stroke="#E9D08A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="9" width="20" height="12.5" rx="3"/>
+            <path d="M5.5 9V6.5a5.5 5.5 0 0 1 11 0V9"/>
           </g>
-          <!-- moving marker on the track -->
-          <circle cx="545" cy="88" r="9" fill="#E9D08A">
-            <animate attributeName="opacity" values="1;.45;1" dur="2.6s" repeatCount="indefinite"/>
+          <text x="340" y="156" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Locked</text>
+          <text x="340" y="180" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">no sell button exists</text>
+
+          <!-- today: tick + label tied to the track -->
+          <text x="580" y="34" text-anchor="middle" font-family="Space Mono,monospace" font-size="11" font-weight="700" fill="#C9A84C" letter-spacing="3">TODAY</text>
+          <line x1="580" y1="44" x2="580" y2="80" stroke="rgba(201,168,76,.4)" stroke-width="1.5" stroke-dasharray="3 4"/>
+          <circle cx="580" cy="98" r="13" fill="rgba(233,208,138,.18)">
+            <animate attributeName="r" values="10;15;10" dur="2.6s" repeatCount="indefinite"/>
           </circle>
-          <text x="545" y="52" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#C9A84C" letter-spacing="2">TODAY</text>
+          <circle cx="580" cy="98" r="7" fill="#E9D08A"/>
+
           <!-- node 3: unlock date -->
-          <circle cx="760" cy="88" r="11" fill="none" stroke="#C9A84C" stroke-width="3"/>
-          <text x="760" y="132" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Unlock date</text>
-          <text x="760" y="154" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">withdraw free, anytime after</text>
+          <circle cx="740" cy="98" r="15" fill="none" stroke="rgba(201,168,76,.25)" stroke-width="2"/>
+          <circle cx="740" cy="98" r="8" fill="#0C0A08" stroke="#C9A84C" stroke-width="2.5"/>
+          <text x="740" y="156" text-anchor="middle" font-family="Syne,sans-serif" font-weight="700" font-size="17" fill="#F2EDE3">Unlock date</text>
+          <text x="740" y="180" text-anchor="middle" font-family="Space Mono,monospace" font-size="11.5" fill="#8C857A">withdraw free, anytime after</text>
         </svg>
       </div>
       <figcaption>The whole system in one picture: between deposit and your unlock date, no withdraw function exists.</figcaption>
@@ -389,7 +400,7 @@ twq('config','tw-rda5s');
   .gd-dek{font-size:1.16rem;line-height:1.62;color:var(--muted);max-width:36em;margin:0 auto}
 
   /* lifecycle diagram */
-  .gd-diagram{margin:0 0 40px}
+  .gd-diagram{margin:0 0 48px}
   .gd-diagram-scroll{
     border:1px solid var(--line);border-radius:20px;overflow-x:auto;
     background:linear-gradient(165deg,rgba(24,19,9,.75),rgba(12,10,8,.5));
@@ -403,7 +414,7 @@ twq('config','tw-rda5s');
 
   /* reading column + prose */
   .gd-prose{max-width:720px;margin:0 auto}
-  .gd-prose + .gd-prose{margin-top:3rem}
+  .gd-prose + .gd-prose{margin-top:4.2rem}
   .gd-prose p{color:#D8D2C7;font-size:1.1rem;line-height:1.72;margin:0 0 1.1em}
   .gd-prose p:last-child{margin-bottom:0}
   .gd-prose strong{color:var(--ink);font-weight:600}
@@ -434,7 +445,7 @@ twq('config','tw-rda5s');
   .gd-callout strong{color:var(--gold-bright)}
 
   /* method cards */
-  .gd-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:1.6rem 0 3rem}
+  .gd-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:1.8rem 0 4.2rem}
   .gd-method{
     position:relative;padding:24px 24px 20px;border-radius:18px;
     background:rgba(21,17,12,.55);border:1px solid var(--line-soft);
@@ -494,7 +505,7 @@ twq('config','tw-rda5s');
 
   /* quick facts */
   .gd-facts{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:3rem 0;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:4.2rem 0;
   }
   .gd-fact{
     padding:16px 18px;border-radius:14px;text-align:center;
@@ -508,13 +519,13 @@ twq('config','tw-rda5s');
   .gd-fact .gd-link{border-bottom-width:1px;color:var(--gold-bright)}
 
   /* FAQ — accordion visuals come from style.css (.faq-list/.faq/.plus/.ans) */
-  .gd-faq-head{margin-top:3rem}
+  .gd-faq-head{margin-top:4.2rem}
   .gd-faq{max-width:720px;margin:.4rem auto 0}
   .gd-faq .ans p{font-size:1rem}
 
   /* final CTA */
   .gd-cta{
-    margin:56px 0 26px;padding:54px 34px 48px;border-radius:24px;text-align:center;
+    margin:72px 0 26px;padding:54px 34px 48px;border-radius:24px;text-align:center;
     background:radial-gradient(120% 140% at 50% 0%,rgba(201,168,76,.12),transparent 60%),linear-gradient(180deg,rgba(24,19,9,.7),rgba(12,10,8,.4));
     border:1px solid var(--line);
   }
@@ -531,6 +542,10 @@ twq('config','tw-rda5s');
   }
   @media(max-width:680px){
     .gd{padding:40px 0 22px}
+    .gd-prose + .gd-prose{margin-top:3.2rem}
+    .gd-methods{margin-bottom:3.2rem}
+    .gd-facts{margin:3.2rem 0}
+    .gd-faq-head{margin-top:3.2rem}
     .gd-dek{font-size:1.06rem}
     .gd-prose h2{font-size:1.32rem}
     .gd-methods{grid-template-columns:1fr}

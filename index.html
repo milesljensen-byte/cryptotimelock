@@ -45,7 +45,7 @@
 <!-- ?v= cache-bust is MANDATORY here, same as the JS includes below — without
      it browsers hold a stale stylesheet for days (this is how the footer social
      icons shipped unstyled to devices that had an older cached style.css). -->
-<link rel="stylesheet" href="style.css?v=20260705b" />
+<link rel="stylesheet" href="style.css?v=20260705c" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
      via trackEvent(), using the event IDs in TWQ_EVENT_IDS. -->
@@ -93,29 +93,17 @@ twq('config','tw-rda5s');
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow reveal">Self-custody · Immutable · Ethereum</span>
+      <span class="eyebrow reveal">Self-custody · Ethereum</span>
       <h1 class="reveal">Lock your crypto.<br><span class="lit">Eliminate temptation.</span></h1>
-      <p class="lead reveal">Lock it away for as long as you choose, from 10&nbsp;minutes to 10&nbsp;years. No early exit, no override, not even for you.</p>
-
-      <div class="safety reveal">
-        <div class="safety-top">
-          <span class="safety-shield"><svg viewBox="0 0 24 24"><path d="M12 2.5 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
-          <div>
-            <div class="safety-h">Nobody can take it. Not us, not a bug, not a court.</div>
-            <div class="safety-sub">Your crypto goes to a contract on Ethereum, never to us. Here is why that is safe:</div>
-          </div>
-        </div>
-        <ul class="safety-list">
-          <li><span class="sck"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><span class="stx"><b>Non-custodial.</b> Only your wallet can ever withdraw. We literally cannot move your funds.</span></li>
-          <li><span class="sck"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><span class="stx"><b>Immutable code.</b> No upgrades, no admin key, no backdoor, no early-exit function to exploit.</span></li>
-          <li><span class="sck"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><span class="stx"><b>Open and verifiable.</b> The full source is public. Read it before you trust a cent to it.</span></li>
-        </ul>
-        <a class="safety-link" href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">Read the contract yourself on Etherscan <span aria-hidden="true">&nearr;</span></a>
-      </div>
-
+      <p class="lead reveal">Lock your crypto away for as long as you choose, from 10&nbsp;minutes to 10&nbsp;years. No early exit, no override, not even for you.</p>
       <div class="hero-cta reveal">
         <a href="#" data-launch="1" class="btn lg">Connect Wallet</a>
         <a href="/how-to-lock-your-crypto/" class="btn ghost lg">How to lock</a>
+      </div>
+      <div class="trust-row reveal">
+        <span class="ti"><span class="dot"></span><b>Immutable</b>&nbsp;contract</span>
+        <span class="ti"><span class="dot"></span><b>0</b>&nbsp;admin keys</span>
+        <span class="ti"><span class="dot"></span><b>0.5%</b>&nbsp;one-time fee</span>
       </div>
     </div>
 

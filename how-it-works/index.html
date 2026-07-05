@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css?v=20260705g" />
+<link rel="stylesheet" href="/style.css?v=20260705h" />
 <!-- X (Twitter) retargeting base pixel, same as the homepage. -->
 <script>
 !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
@@ -83,11 +83,11 @@ twq('config','tw-rda5s');
           <span class="ds-stop" style="left:0%"></span>
           <span class="ds-stop" style="left:50%"></span>
           <span class="ds-stop" style="left:100%"></span>
-          <button class="ds-knob" id="dsKnob" type="button" role="slider" aria-valuemin="0" aria-valuemax="2" aria-valuenow="0" aria-label="Explanation depth"></button>
+          <button class="ds-knob" id="dsKnob" type="button" role="slider" aria-valuemin="0" aria-valuemax="2" aria-valuenow="1" aria-label="Explanation depth"></button>
         </div>
         <div class="ds-labels">
-          <button class="ds-lab on" type="button" data-level="0">Simple<span>new to crypto</span></button>
-          <button class="ds-lab" type="button" data-level="1">Standard<span>know the basics</span></button>
+          <button class="ds-lab" type="button" data-level="0">Simple<span>new to crypto</span></button>
+          <button class="ds-lab on" type="button" data-level="1">Standard<span>know the basics</span></button>
           <button class="ds-lab" type="button" data-level="2">Technical<span>read the code</span></button>
         </div>
       </div>
@@ -95,7 +95,7 @@ twq('config','tw-rda5s');
       <div class="depth-body" id="depthBody">
 
         <!-- LEVEL 0 · SIMPLE -->
-        <article class="depth-pane on">
+        <article class="depth-pane">
           <ol class="dp-steps">
             <li class="dp-step">
               <div class="dp-rail"><span class="dp-num">1</span></div>
@@ -130,7 +130,7 @@ twq('config','tw-rda5s');
         </article>
 
         <!-- LEVEL 1 · STANDARD -->
-        <article class="depth-pane">
+        <article class="depth-pane on">
           <ol class="dp-steps">
             <li class="dp-step">
               <div class="dp-rail"><span class="dp-num">1</span></div>
@@ -252,7 +252,11 @@ twq('config','tw-rda5s');
     const labs=Array.prototype.slice.call(slider.querySelectorAll('.ds-lab'));
     const body=document.getElementById('depthBody');
     const panes=Array.prototype.slice.call(body.querySelectorAll('.depth-pane'));
-    let level=0, dragging=false, heightTimer=null;
+    // Start level reflects whichever lab/pane is marked "on" in the markup,
+    // so the default depth can be changed there without touching this JS.
+    let level=Math.max(0,labs.findIndex(b=>b.classList.contains('on')));
+    let dragging=false, heightTimer=null;
+    paint(level*50);
 
     function paint(pct){ knob.style.left=pct+'%'; fill.style.width=pct+'%'; }
 

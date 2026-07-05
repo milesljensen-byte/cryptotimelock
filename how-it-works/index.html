@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://static.ads-twitter.com https://analytics.twitter.com; object-src 'none'; base-uri 'self'" />
+<title>How TimeLock Works: What Actually Happens to Your Crypto</title>
+<meta name="description" content="Exactly what happens when you time-lock your crypto, explained at three depths from simple to technical. An immutable contract on Ethereum, no admin keys, no early-exit function, and only your wallet can withdraw." />
+<link rel="canonical" href="https://cryptotimelock.xyz/how-it-works/" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="How TimeLock Works: What Actually Happens to Your Crypto" />
+<meta property="og:description" content="Follow your funds step by step, at the depth that suits you. Immutable contract, no admin keys, no early exit, only your wallet can withdraw." />
+<meta property="og:url" content="https://cryptotimelock.xyz/how-it-works/" />
+<meta property="og:image" content="https://cryptotimelock.xyz/icon-192.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="How TimeLock Works: What Actually Happens to Your Crypto" />
+<meta name="twitter:description" content="Follow your funds step by step, at the depth that suits you. Built so you don't have to trust us." />
+<meta name="twitter:image" content="https://cryptotimelock.xyz/icon-192.png" />
+<link rel="icon" type="image/svg+xml" href="/icon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20260705d" />
+<!-- X (Twitter) retargeting base pixel, same as the homepage. -->
+<script>
+!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+twq('config','tw-rda5s');
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "How TimeLock Works: What Actually Happens to Your Crypto",
+  "description": "Exactly what happens when you time-lock your crypto, explained at three depths from simple to technical.",
+  "image": "https://cryptotimelock.xyz/icon-192.png",
+  "author": { "@type": "Organization", "name": "TimeLock" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TimeLock",
+    "logo": { "@type": "ImageObject", "url": "https://cryptotimelock.xyz/icon-192.png" }
+  },
+  "mainEntityOfPage": "https://cryptotimelock.xyz/how-it-works/",
+  "datePublished": "2026-07-05",
+  "dateModified": "2026-07-05"
+}
+</script>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="grain"></div>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="/" class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
+      TimeLock
+    </a>
+    <a href="/" class="btn">Open the app <span aria-hidden="true">&rarr;</span></a>
+  </div>
+</nav>
+
+<!-- UNDER THE HOOD — depth slider: same explanation at three levels of detail -->
+<section class="block" id="under-the-hood">
+  <div class="wrap">
+    <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto">
+      <div class="sec-eyebrow">Under the hood</div>
+      <h2>What actually happens to your crypto.</h2>
+      <p class="sec-sub">Follow your funds step by step. Drag the dial to the depth that suits you.</p>
+    </div>
+
+    <div class="depth">
+      <div class="depth-slider" id="depthSlider">
+        <div class="ds-track">
+          <div class="ds-fill" id="dsFill"></div>
+          <span class="ds-stop" style="left:0%"></span>
+          <span class="ds-stop" style="left:50%"></span>
+          <span class="ds-stop" style="left:100%"></span>
+          <button class="ds-knob" id="dsKnob" type="button" role="slider" aria-valuemin="0" aria-valuemax="2" aria-valuenow="0" aria-label="Explanation depth"></button>
+        </div>
+        <div class="ds-labels">
+          <button class="ds-lab on" type="button" data-level="0">Simple<span>new to crypto</span></button>
+          <button class="ds-lab" type="button" data-level="1">Standard<span>know the basics</span></button>
+          <button class="ds-lab" type="button" data-level="2">Technical<span>read the code</span></button>
+        </div>
+      </div>
+
+      <div class="depth-body" id="depthBody">
+
+        <!-- LEVEL 0 · SIMPLE -->
+        <article class="depth-pane on">
+          <ol class="dp-steps">
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">1</span></div>
+              <div class="dp-body">
+                <h4>Your crypto travels to a vault, not to us</h4>
+                <p>When you press lock, your crypto is sent to a digital vault on the Ethereum network. We never receive it and can never touch it. The vault is a small computer program that runs on its own, with no one behind the counter.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">2</span></div>
+              <div class="dp-body">
+                <h4>The vault writes down three things</h4>
+                <p>Who locked it (your wallet's address), exactly what was locked, and the date it is allowed to leave. That note is saved on the blockchain, a public ledger that nobody can edit or delete afterwards. Not us, not even the people who run the network.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">3</span></div>
+              <div class="dp-body">
+                <h4>Ask early, and it checks the note</h4>
+                <p>Try to withdraw before your date and the vault does exactly one thing: it compares today's date with the date on your note. Too early? It refuses. There is no manager to convince, no support line, no override button anywhere in the system.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">4</span></div>
+              <div class="dp-body">
+                <h4>On the date, the door opens</h4>
+                <p>From your unlock date onwards, that same check passes. The vault hands the exact crypto you locked back to the exact wallet that locked it, and it can never give it to anyone else. Withdrawing is free.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="dp-foot">Want the full story? <a href="/how-to-lock-your-crypto/">Read the 2-minute guide</a></div>
+        </article>
+
+        <!-- LEVEL 1 · STANDARD -->
+        <article class="depth-pane">
+          <ol class="dp-steps">
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">1</span></div>
+              <div class="dp-body">
+                <h4>Locking creates an on-chain record</h4>
+                <p>Your deposit goes to a smart contract on Ethereum mainnet, not to a company wallet. The contract stores a lock entry with four fields: your address, the token, the amount, and your unlock timestamp. From that moment the record lives on the blockchain, not on our servers.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">2</span></div>
+              <div class="dp-body">
+                <h4>The rules were frozen at deployment</h4>
+                <p>The contract is immutable and non-upgradeable. Nobody can change the code, add an early exit, or redirect funds later. The exact code you can read on Etherscan today is the code that will run in ten years.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">3</span></div>
+              <div class="dp-body">
+                <h4>Every withdrawal runs the same three checks</h4>
+                <p>Are you the wallet that made the lock? Is it still unwithdrawn? Is the current block time past your unlock time? Fail any one and the transaction reverts. Pass all three and nothing can stop it: withdrawals can never be paused, and no admin key can touch locked funds.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">4</span></div>
+              <div class="dp-body">
+                <h4>You never depend on this website</h4>
+                <p>The site just formats transactions for your wallet to sign. Every lock and withdrawal is a public transaction anyone can inspect, and if this site ever went offline you could view your locks and withdraw straight from the verified contract on Etherscan. A one-time 0.5% fee at deposit; withdrawing is free.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="dp-foot">See for yourself: <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">verified contract on Etherscan &nearr;</a></div>
+        </article>
+
+        <!-- LEVEL 2 · TECHNICAL -->
+        <article class="depth-pane">
+          <ol class="dp-steps">
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">1</span></div>
+              <div class="dp-body">
+                <h4>Deposit: <code>lockNative()</code> or <code>lockToken()</code></h4>
+                <p>ETH enters through payable <code>lockNative()</code> (bare <code>receive()</code> reverts); ERC-20s through <code>lockToken()</code> via <code>transferFrom</code> against an allowlisted set. The 0.5% fee is skimmed at deposit and a lock struct <code>{owner, token, amount, unlockTime, withdrawn}</code> is written to storage.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">2</span></div>
+              <div class="dp-body">
+                <h4>Immutable bytecode, no proxy</h4>
+                <p>A single plain contract: no delegatecall, no upgrade path, no proxy pattern. The deployed bytecode is final, so the invariants you audit today hold for the life of the contract.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">3</span></div>
+              <div class="dp-body">
+                <h4><code>withdraw(uint256)</code>: three requires, nothing else</h4>
+                <p><code>lock.owner == msg.sender</code>, <code>!lock.withdrawn</code>, <code>block.timestamp &gt;= unlockTime</code>. Effects before interactions, <code>nonReentrant</code>, and principal only ever transfers to <code>msg.sender</code>. No other selector moves user funds. <code>pause()</code> gates deposits only and auto-expires after 30 days.</p>
+              </div>
+            </li>
+            <li class="dp-step">
+              <div class="dp-rail"><span class="dp-num">4</span></div>
+              <div class="dp-body">
+                <h4>Minimal, timelocked admin surface</h4>
+                <p>The owner is a multisig, and admin ops (token allowlist, role rotations) sit behind 48-hour timelocks. None of them can reach locked principal. Diff the bytecode and read the ABI at <code>0x571B&hellip;794c</code>; confirming no early-exit path exists beats anything this page can claim.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="dp-foot">Read the source: <a href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">CryptoTimeLock.sol on Etherscan &nearr;</a></div>
+        </article>
+
+      </div>
+
+      <div class="dp-chips">
+        <span><i></i>Immutable code</span>
+        <span><i></i>No admin keys over funds</span>
+        <span><i></i>Everything public on-chain</span>
+      </div>
+      <div class="hero-cta" style="margin-top:30px;justify-content:center">
+        <a href="/" class="btn lg">Lock your crypto <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <a href="/" class="brand" style="font-size:1rem">
+      <svg class="brand-mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><line x1="50" y1="50" x2="50" y2="26"/><line x1="50" y1="50" x2="68" y2="58"/></svg>
+      TimeLock
+    </a>
+    <nav class="foot-links">
+      <a class="foot-link" href="/">Home</a>
+      <a class="foot-link" href="/how-to-lock-your-crypto/">Guide</a>
+      <a class="foot-link" href="https://etherscan.io/address/0x571B99eF530879239c9274180Acb2792f03A794c#code" target="_blank" rel="noopener">Show contract ↗</a>
+      <a class="foot-link" href="mailto:metaw1n100x@gmail.com?subject=TimeLock%20Support">Support</a>
+      <span class="foot-tm">TimeLock&trade;</span>
+      <div class="foot-social">
+        <a class="foot-social-link" href="https://x.com/cryptotimelock" target="_blank" rel="noopener" aria-label="X (Twitter)">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3l7.5 8.5L3.4 21h2.7l6-6.9 4.6 6.9H21l-7.8-9.3L20.4 3h-2.7l-5.6 6.4L7.7 3H3z"/></svg>
+        </a>
+        <a class="foot-social-link" href="https://t.me/cryptotimelock1" target="_blank" rel="noopener" aria-label="Telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 3.5 2.6 10.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.4.9.9.9.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8L23 4.7c.3-1.2-.4-1.7-1.5-1.2ZM8.4 13.7l9.6-6.1c.5-.3.9-.1.5.2l-8 7.2-.3 3-1.5-4.3Z"/></svg>
+        </a>
+      </div>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  // Depth slider — "How the lock actually works" at three levels of detail.
+  // Self-contained: drag the knob (pointer events + capture), click a label or
+  // the track, or use arrow keys. Content switches live while dragging past the
+  // midpoints; on release the knob snaps to the nearest stop. Pane swap animates
+  // direction-aware (--dir) and the container height is tweened between panes.
+  (function(){
+    const slider=document.getElementById('depthSlider');
+    if(!slider) return;
+    const track=slider.querySelector('.ds-track');
+    const knob=document.getElementById('dsKnob');
+    const fill=document.getElementById('dsFill');
+    const labs=Array.prototype.slice.call(slider.querySelectorAll('.ds-lab'));
+    const body=document.getElementById('depthBody');
+    const panes=Array.prototype.slice.call(body.querySelectorAll('.depth-pane'));
+    let level=0, dragging=false, heightTimer=null;
+
+    function paint(pct){ knob.style.left=pct+'%'; fill.style.width=pct+'%'; }
+
+    function switchPane(l,dir){
+      const startH=body.offsetHeight;
+      panes.forEach((p,i)=>p.classList.toggle('on',i===l));
+      body.style.setProperty('--dir',dir);
+      const endH=panes[l].offsetHeight;
+      body.style.height=startH+'px';
+      void body.offsetHeight; // reflow so the height transition has a start value
+      body.style.height=endH+'px';
+      clearTimeout(heightTimer);
+      heightTimer=setTimeout(()=>{ body.style.height=''; },480);
+    }
+
+    function applyLevel(l){
+      labs.forEach((b,i)=>b.classList.toggle('on',i===l));
+      knob.setAttribute('aria-valuenow',String(l));
+      knob.setAttribute('aria-valuetext',labs[l].textContent.trim());
+    }
+
+    function setLevel(l){
+      l=Math.max(0,Math.min(2,l));
+      if(l===level){ paint(l*50); return; }
+      const dir=l>level?1:-1;
+      level=l;
+      paint(l*50);
+      applyLevel(l);
+      switchPane(l,dir);
+    }
+
+    function pctFromEvent(e){
+      const r=track.getBoundingClientRect();
+      return Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));
+    }
+
+    knob.addEventListener('pointerdown',e=>{
+      dragging=true;
+      slider.classList.add('dragging');
+      try{ knob.setPointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+    });
+    knob.addEventListener('pointermove',e=>{
+      if(!dragging) return;
+      const pct=pctFromEvent(e);
+      paint(pct);
+      const near=Math.round(pct/50);
+      if(near!==level){
+        const dir=near>level?1:-1;
+        level=near;
+        applyLevel(near);
+        switchPane(near,dir);
+      }
+    });
+    function endDrag(){
+      if(!dragging) return;
+      dragging=false;
+      slider.classList.remove('dragging');
+      paint(level*50); // snap to the nearest stop
+    }
+    knob.addEventListener('pointerup',endDrag);
+    knob.addEventListener('pointercancel',endDrag);
+
+    track.addEventListener('pointerdown',e=>{
+      if(e.target===knob) return;
+      setLevel(Math.round(pctFromEvent(e)/50));
+    });
+    labs.forEach((b,i)=>b.addEventListener('click',()=>setLevel(i)));
+    knob.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowUp'){ setLevel(level+1); e.preventDefault(); }
+      else if(e.key==='ArrowLeft'||e.key==='ArrowDown'){ setLevel(level-1); e.preventDefault(); }
+      else if(e.key==='Home'){ setLevel(0); e.preventDefault(); }
+      else if(e.key==='End'){ setLevel(2); e.preventDefault(); }
+    });
+  })();
+</script>
+</body>
+</html>

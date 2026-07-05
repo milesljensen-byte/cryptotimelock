@@ -45,7 +45,7 @@
 <!-- ?v= cache-bust is MANDATORY here, same as the JS includes below — without
      it browsers hold a stale stylesheet for days (this is how the footer social
      icons shipped unstyled to devices that had an older cached style.css). -->
-<link rel="stylesheet" href="style.css?v=20260705e" />
+<link rel="stylesheet" href="style.css?v=20260705f" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
      via trackEvent(), using the event IDs in TWQ_EVENT_IDS. -->
@@ -183,31 +183,32 @@ twq('config','tw-rda5s');
 </section>
 
 <!-- TRUST LEAD — compact "you don't have to trust us" summary that funnels
-     down into the full depth-slider explainer below (#under-the-hood) -->
-<section class="trust-lead-sec">
+     into the full depth-slider explainer on its own page (/how-it-works/) -->
+<section class="block" id="trust-lead">
   <div class="wrap">
-    <div class="trust-lead reveal">
-      <span class="tl-mark"><svg viewBox="0 0 24 24"><path d="M12 2.5 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span>
-      <div class="tl-eyebrow">Why it's safe</div>
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Why it's safe</div>
       <h2>Built so you don't have to trust us.</h2>
-      <p>When you lock crypto, it goes to an immutable contract on Ethereum, never to us. The contract records who locked what and until when, then releases it only to your wallet, only on your date. No admin key, no backdoor, no early-exit function. You don't have to take our word for it: the code is public and anyone can read it.</p>
-      <div class="tl-points">
-        <div class="tl-point">
-          <span class="tl-pico"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg></span>
-          <b>Non-custodial</b>
-          <span>Only your wallet can ever withdraw. We cannot move your funds.</span>
-        </div>
-        <div class="tl-point">
-          <span class="tl-pico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
-          <b>Immutable</b>
-          <span>No upgrades, no admin key, no backdoor, no early-exit.</span>
-        </div>
-        <div class="tl-point">
-          <span class="tl-pico"><svg viewBox="0 0 24 24"><path d="M8 6 3 12l5 6M16 6l5 6-5 6"/></svg></span>
-          <b>Open source</b>
-          <span>The full contract is public and verified on Etherscan.</span>
-        </div>
+      <p class="tl-desc">When you lock crypto, it goes to an immutable contract on Ethereum, never to us. The contract records who locked what and until when, then releases it only to your wallet, only on your date. No admin key, no backdoor, no early-exit function. You don't have to take our word for it: the code is public and anyone can read it.</p>
+    </div>
+    <div class="tl-points reveal">
+      <div class="tl-point">
+        <span class="tl-pico"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg></span>
+        <b>Non-custodial</b>
+        <span>Only your wallet can ever withdraw. We cannot move your funds.</span>
       </div>
+      <div class="tl-point">
+        <span class="tl-pico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+        <b>Immutable</b>
+        <span>No upgrades, no admin key, no backdoor, no early-exit.</span>
+      </div>
+      <div class="tl-point">
+        <span class="tl-pico"><svg viewBox="0 0 24 24"><path d="M8 6 3 12l5 6M16 6l5 6-5 6"/></svg></span>
+        <b>Open source</b>
+        <span>The full contract is public and verified on Etherscan.</span>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:32px">
       <a href="/how-it-works/" class="btn ghost">See exactly what happens <span class="tl-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </div>

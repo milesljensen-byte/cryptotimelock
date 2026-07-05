@@ -446,27 +446,23 @@
   .dp-chips span{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono';font-size:.74rem;letter-spacing:.05em;color:var(--muted)}
   .dp-chips i{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
 
-  /* ---------- trust lead (compact "don't have to trust us" summary) ---------- */
-  .trust-lead-sec{padding:44px 0 8px;position:relative}
-  .trust-lead{margin:0 auto;text-align:center;
-    padding:46px clamp(26px,5vw,52px) 42px;border-radius:24px;
-    background:radial-gradient(120% 150% at 50% 0%,rgba(201,168,76,.12),transparent 62%),linear-gradient(180deg,rgba(24,19,9,.72),rgba(12,10,8,.42));
-    border:1px solid var(--line);box-shadow:0 30px 70px -46px rgba(0,0,0,.85),inset 0 1px 0 rgba(233,208,138,.1)}
-  .tl-mark{width:48px;height:48px;border-radius:14px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(150deg,rgba(201,168,76,.2),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.3)}
-  .tl-mark svg{width:25px;height:25px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .tl-eyebrow{font-family:'Space Mono';font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:13px}
-  .trust-lead h2{font-family:'Syne';font-weight:750;font-size:clamp(1.7rem,3.6vw,2.3rem);letter-spacing:-.01em;line-height:1.1;margin-bottom:16px}
-  .trust-lead p{color:var(--muted);font-size:1.06rem;line-height:1.66;max-width:46em;margin:0 auto 26px}
-  .tl-points{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 auto 28px;text-align:left}
-  .tl-point{padding:18px 18px 16px;border-radius:15px;background:rgba(20,16,9,.5);border:1px solid var(--line-soft)}
-  .tl-pico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:11px;
+  /* ---------- trust lead (compact "don't have to trust us" summary) ----------
+     Matches the plain "How it works" style: sec-head (eyebrow + h2) with a
+     wider description paragraph, then a row of small proof cards. No boxed
+     background around the whole section, unlike the mission band. */
+  .tl-desc{color:var(--muted);font-size:1.08rem;line-height:1.66;max-width:52em;margin-top:16px}
+  .tl-points{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .tl-point{padding:26px 24px 24px;border-radius:20px;
+    background:linear-gradient(165deg,var(--bg-elev),rgba(12,10,8,.4));
+    border:1px solid var(--line-soft);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s}
+  .tl-point:hover{transform:translateY(-6px);border-color:var(--line)}
+  .tl-pico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;
     background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.24)}
-  .tl-pico svg{width:19px;height:19px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .tl-point b{display:block;font-family:'Syne';font-weight:700;font-size:.96rem;color:var(--ink);margin-bottom:4px}
-  .tl-point > span{font-size:.83rem;line-height:1.5;color:var(--muted)}
-  .trust-lead .btn .tl-arrow{transition:transform .25s}
-  .trust-lead .btn:hover .tl-arrow{transform:translateX(3px)}
+  .tl-pico svg{width:20px;height:20px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .tl-point b{display:block;font-family:'Syne';font-weight:700;font-size:1.04rem;color:var(--ink);margin-bottom:8px}
+  .tl-point > span{font-size:.92rem;line-height:1.55;color:var(--muted)}
+  .tl-arrow{transition:transform .25s;display:inline-block}
+  .btn:hover .tl-arrow{transform:translateX(3px)}
 
   /* ---------- reveal ---------- */
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
@@ -480,9 +476,8 @@
     .lock-halo{width:360px;height:320px}
     .lock-stack{width:100%}
     .lc-ghost{display:none}
-    .steps,.tilt-row,.use-grid{grid-template-columns:1fr}
+    .steps,.tilt-row,.use-grid,.tl-points{grid-template-columns:1fr}
     .dp-step{gap:15px}
-    .tl-points{grid-template-columns:1fr;max-width:420px}
     .nav-cta-hide{display:none}
   }
   @media(max-width:560px){

@@ -450,7 +450,7 @@
      Matches the plain "How it works" style: sec-head (eyebrow + h2) with a
      wider description paragraph, then a row of small proof cards. No boxed
      background around the whole section, unlike the mission band. */
-  .tl-desc{color:var(--muted);font-size:1.08rem;line-height:1.66;max-width:52em;margin-top:28px}
+  .tl-desc{color:var(--muted);font-size:1.08rem;line-height:1.66;margin:28px 0 44px}
   .tl-points{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
   .tl-point{padding:34px 30px 30px;border-radius:22px;
     background:linear-gradient(165deg,var(--bg-elev),rgba(12,10,8,.4));

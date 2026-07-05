@@ -97,7 +97,7 @@
   .btn.lg{padding:18px 36px;font-size:.86rem}
 
   /* ---------- HERO ---------- */
-  .hero{position:relative;padding:84px 0 96px}
+  .hero{position:relative;padding:60px 0 90px}
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
   .eyebrow{
     font-family:'Space Mono';font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
@@ -105,15 +105,40 @@
   }
   h1{
     font-family:'Syne',sans-serif;font-weight:750;line-height:1.07;letter-spacing:-.015em;
-    font-size:clamp(2.1rem,4.4vw,3.35rem);margin-bottom:24px;
+    font-size:clamp(2.1rem,4.4vw,3.35rem);margin-bottom:20px;
   }
   h1 .lit{
     display:inline-block;margin-top:.12em;
     background:linear-gradient(120deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }
-  .hero p.lead{font-size:1.12rem;color:var(--muted);max-width:30em;margin-bottom:36px}
+  .hero p.lead{font-size:1.12rem;color:var(--muted);max-width:30em;margin-bottom:28px}
   .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+
+  /* safety proof — the "it's safe to trust with real money" block, loud above the fold */
+  .safety{margin:0 0 26px;padding:20px 22px 16px;border-radius:18px;max-width:35em;
+    background:radial-gradient(120% 140% at 0% 0%,rgba(201,168,76,.1),transparent 60%),linear-gradient(165deg,rgba(24,19,9,.8),rgba(12,10,8,.5));
+    border:1px solid var(--line);box-shadow:0 24px 54px -38px rgba(0,0,0,.85),inset 0 1px 0 rgba(233,208,138,.1)}
+  .safety-top{display:flex;gap:13px;align-items:flex-start;margin-bottom:14px}
+  .safety-shield{flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,rgba(201,168,76,.2),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.3)}
+  .safety-shield svg{width:21px;height:21px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .safety-h{font-family:'Syne';font-weight:700;font-size:1.02rem;line-height:1.25;color:var(--ink);margin-bottom:4px}
+  .safety-sub{font-size:.88rem;line-height:1.45;color:var(--muted)}
+  .safety-list{list-style:none;margin:0 0 4px;padding:0;display:flex;flex-direction:column;gap:9px}
+  .safety-list li{display:flex;align-items:flex-start;gap:11px}
+  .safety-list .stx{font-size:.9rem;line-height:1.45;color:var(--muted)}
+  .safety-list b{color:var(--ink);font-weight:600}
+  .sck{flex:0 0 auto;width:20px;height:20px;margin-top:1px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;
+    background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25)}
+  .sck svg{width:12px;height:12px;stroke:var(--gold-bright);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .safety-link{display:inline-flex;align-items:center;gap:7px;font-family:'Space Mono';font-size:.76rem;letter-spacing:.03em;
+    color:var(--gold-bright);text-decoration:none;margin-top:14px;padding-top:13px;border-top:1px solid var(--line-soft);width:100%;
+    transition:color .25s}
+  .safety-link:hover{color:#F6EAC4}
+  .safety-link:hover span{transform:translate(2px,-2px)}
+  .safety-link span{transition:transform .25s}
+
   .trust-row{display:flex;gap:26px;margin-top:38px;flex-wrap:wrap}
   .trust-row .ti{font-family:'Space Mono';font-size:.74rem;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:8px}
   .trust-row .ti b{color:var(--ink);font-weight:700}
@@ -445,6 +470,21 @@
   .dp-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:14px 26px;margin-top:38px}
   .dp-chips span{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono';font-size:.74rem;letter-spacing:.05em;color:var(--muted)}
   .dp-chips i{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+
+  /* ---------- trust lead (compact "don't have to trust us" summary) ---------- */
+  .trust-lead-sec{padding:44px 0 8px;position:relative}
+  .trust-lead{max-width:700px;margin:0 auto;text-align:center;
+    padding:44px clamp(26px,5vw,52px) 40px;border-radius:24px;
+    background:radial-gradient(120% 150% at 50% 0%,rgba(201,168,76,.12),transparent 62%),linear-gradient(180deg,rgba(24,19,9,.72),rgba(12,10,8,.42));
+    border:1px solid var(--line);box-shadow:0 30px 70px -46px rgba(0,0,0,.85),inset 0 1px 0 rgba(233,208,138,.1)}
+  .tl-mark{width:48px;height:48px;border-radius:14px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,rgba(201,168,76,.2),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.3)}
+  .tl-mark svg{width:25px;height:25px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .tl-eyebrow{font-family:'Space Mono';font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:13px}
+  .trust-lead h2{font-family:'Syne';font-weight:750;font-size:clamp(1.7rem,3.6vw,2.3rem);letter-spacing:-.01em;line-height:1.1;margin-bottom:16px}
+  .trust-lead p{color:var(--muted);font-size:1.06rem;line-height:1.66;max-width:46em;margin:0 auto 28px}
+  .trust-lead .btn .tl-arrow{transition:transform .25s}
+  .trust-lead .btn:hover .tl-arrow{transform:translateY(3px)}
 
   /* ---------- reveal ---------- */
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}

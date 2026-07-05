@@ -451,16 +451,16 @@
      wider description paragraph, then a row of small proof cards. No boxed
      background around the whole section, unlike the mission band. */
   .tl-desc{color:var(--muted);font-size:1.08rem;line-height:1.66;max-width:52em;margin-top:16px}
-  .tl-points{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  .tl-point{padding:26px 24px 24px;border-radius:20px;
+  .tl-points{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+  .tl-point{padding:34px 30px 30px;border-radius:22px;
     background:linear-gradient(165deg,var(--bg-elev),rgba(12,10,8,.4));
     border:1px solid var(--line-soft);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s}
   .tl-point:hover{transform:translateY(-6px);border-color:var(--line)}
-  .tl-pico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  .tl-pico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;
     background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.24)}
-  .tl-pico svg{width:20px;height:20px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .tl-point b{display:block;font-family:'Syne';font-weight:700;font-size:1.04rem;color:var(--ink);margin-bottom:8px}
-  .tl-point > span{font-size:.92rem;line-height:1.55;color:var(--muted)}
+  .tl-pico svg{width:23px;height:23px;stroke:var(--gold-bright);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .tl-point b{display:block;font-family:'Syne';font-weight:700;font-size:1.14rem;color:var(--ink);margin-bottom:11px}
+  .tl-point > span{font-size:.94rem;line-height:1.62;color:var(--muted)}
   .tl-arrow{transition:transform .25s;display:inline-block}
   .btn:hover .tl-arrow{transform:translateX(3px)}
 

@@ -45,7 +45,7 @@
 <!-- ?v= cache-bust is MANDATORY here, same as the JS includes below — without
      it browsers hold a stale stylesheet for days (this is how the footer social
      icons shipped unstyled to devices that had an older cached style.css). -->
-<link rel="stylesheet" href="style.css?v=20260705f" />
+<link rel="stylesheet" href="style.css?v=20260705g" />
 <!-- X (Twitter) conversion tracking base code. Individual funnel events
      (wallet_connected, deposit_completed, ...) are fired from js/ui-helpers.js
      via trackEvent(), using the event IDs in TWQ_EVENT_IDS. -->
@@ -195,17 +195,17 @@ twq('config','tw-rda5s');
       <div class="tl-point">
         <span class="tl-pico"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg></span>
         <b>Non-custodial</b>
-        <span>Only your wallet can ever withdraw. We cannot move your funds.</span>
+        <span>Only your wallet can ever withdraw. Your crypto sits in a contract on Ethereum, not in an account we control, so there's no company balance sheet holding your money and nothing for us to freeze, seize, or lose.</span>
       </div>
       <div class="tl-point">
         <span class="tl-pico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
         <b>Immutable</b>
-        <span>No upgrades, no admin key, no backdoor, no early-exit.</span>
+        <span>No upgrades, no admin key, no backdoor, no early-exit. Once deployed, the contract's logic is permanently fixed: the rules you see today are exactly the rules that will run in ten years, whether we're still around or not.</span>
       </div>
       <div class="tl-point">
         <span class="tl-pico"><svg viewBox="0 0 24 24"><path d="M8 6 3 12l5 6M16 6l5 6-5 6"/></svg></span>
         <b>Open source</b>
-        <span>The full contract is public and verified on Etherscan.</span>
+        <span>The full contract is public and verified on Etherscan, so you can read every line yourself, confirm there's no early-withdraw function, and trust the code instead of taking our word for it.</span>
       </div>
     </div>
     <div class="reveal" style="margin-top:32px">
